@@ -1,0 +1,50 @@
+cExtensions {
+  c
+  h
+}
+
+cppHeaderExtensions {
+  hpp
+  inl
+}
+
+cppSrcExtensions {
+  cpp
+}
+
+otherExtensions {
+}
+
+genFolderExclude {
+  CMakeFiles
+}
+
+genFileExclude {
+  \.d$
+  \.o$
+  CMakeCache\.txt$
+  FRCUserProgram$
+  Makefile$
+  cmake_install\.cmake$
+}
+
+modifiableFolderExclude {
+}
+
+modifiableFileExclude {
+}
+
+includeRelated {
+}
+
+includeCSys {
+}
+
+includeCppSys {
+}
+
+includeOtherLibs {
+}
+
+includeProject {
+}

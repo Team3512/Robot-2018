@@ -1,0 +1,47 @@
+cExtensions {
+  c
+  h
+}
+
+cppHeaderExtensions {
+  hpp
+  inl
+}
+
+cppSrcExtensions {
+  cpp
+}
+
+otherExtensions {
+}
+
+genFolderExclude {
+}
+
+genFileExclude {
+  \.d$
+  \.exe$
+  \.o$
+}
+
+modifiableFolderExclude {
+}
+
+modifiableFileExclude {
+  std_lib_facilities\.h$
+}
+
+includeRelated {
+}
+
+includeCSys {
+}
+
+includeCppSys {
+}
+
+includeOtherLibs {
+}
+
+includeProject {
+}

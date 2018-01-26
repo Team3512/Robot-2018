@@ -28,7 +28,7 @@ constexpr int k_mjpegServerPort = 1180;
 // Joystick ports
 constexpr int k_driveStick1Port = 0;
 constexpr int k_driveStick2Port = 1;
-constexpr int k_grabberStickPort = 2;
+constexpr int k_appendageStickPort = 2;
 
 // Joystick axis deadband range
 constexpr double k_joystickDeadband = 0.02;
@@ -49,3 +49,26 @@ constexpr double k_turnNonLinearity = 1.0;
 constexpr double k_inertiaDampen = 2.5;
 constexpr double k_inertiaHighTurn = 3.0;
 constexpr double k_inertiaLowTurn = 3.0;
+
+/*
+ * Elevator
+ */
+
+// Elevator GearBox ID
+constexpr int k_elevatorMasterID = 5;
+constexpr int k_elevatorSlaveID = 6;
+
+// Elevator PID
+constexpr double k_elevatorP = 0.0;
+constexpr double k_elevatorI = 0.0;
+constexpr double k_elevatorD = 0.0;
+constexpr double k_elevatorControllerPeriod = 1.0;
+
+// Elevator Setpoints
+constexpr double k_groundHeight = 0.0;
+constexpr double k_switchHeight = 12.0;
+constexpr double k_scaleHeight = 60.0;
+constexpr double k_climbHeight = 80.0;
+
+// Hall Effect Sensor Port
+constexpr int k_elevatorHallPort = 1;

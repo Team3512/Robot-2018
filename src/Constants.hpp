@@ -49,3 +49,12 @@ constexpr double k_turnNonLinearity = 1.0;
 constexpr double k_inertiaDampen = 2.5;
 constexpr double k_inertiaHighTurn = 3.0;
 constexpr double k_inertiaLowTurn = 3.0;
+
+/*
+ * Elevator
+ */
+
+// Elevator GearBox ID
+constexpr int k_elevatorMasterID = 5;
+constexpr int k_elevatorSlaveID = 6;
+

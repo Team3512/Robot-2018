@@ -28,7 +28,7 @@ constexpr int k_mjpegServerPort = 1180;
 // Joystick ports
 constexpr int k_driveStick1Port = 0;
 constexpr int k_driveStick2Port = 1;
-constexpr int k_grabberStickPort = 2;
+constexpr int k_appendageStickPort = 2;
 
 // Joystick axis deadband range
 constexpr double k_joystickDeadband = 0.02;
@@ -49,3 +49,13 @@ constexpr double k_turnNonLinearity = 1.0;
 constexpr double k_inertiaDampen = 2.5;
 constexpr double k_inertiaHighTurn = 3.0;
 constexpr double k_inertiaLowTurn = 3.0;
+
+/*
+ * Intake
+ */
+
+constexpr int k_intakeClawPort = 1;
+constexpr int k_intakeArmPort = 2;
+constexpr int k_intakeLeft = 1;
+constexpr int k_intakeRight = 2;
+

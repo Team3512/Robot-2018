@@ -24,7 +24,10 @@ void Robot::RobotPeriodic() { DS_PrintOut(); }
 
 void Robot::DisabledPeriodic() {}
 
-void Robot::AutonomousPeriodic() { dsDisplay.ExecAutonomous(); }
+void Robot::AutonomousPeriodic() {
+    gameData = frc::DriverStation::GetInstance().GetGameSpecificMessage();
+    dsDisplay.ExecAutonomous();
+}
 
 void Robot::TeleopPeriodic() {
     // Drive Stick Controls

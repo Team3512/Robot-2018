@@ -2,9 +2,13 @@
 
 #pragma once
 
+<<<<<<< HEAD
 #include <string>
 
 #include <DriverStation.h>
+=======
+#include <CameraServer.h>
+>>>>>>> Added cameras and cleaned code
 #include <Joystick.h>
 #include <TimedRobot.h>
 #include <Timer.h>
@@ -59,6 +63,12 @@ private:
 
     // Used for sending data to the Driver Station
     DSDisplay dsDisplay{k_dsPort};
+
+    // Camera
+    cs::UsbCamera camera1{"Camera 1", 0};
+    cs::UsbCamera camera2{"Camera 2", 1};
+
+    cs::MjpegServer server{"Server", k_mjpegServerPort};
 
     // LiveGrapher host
     // LiveGrapher liveGrapher{k_liveGrapherPort};

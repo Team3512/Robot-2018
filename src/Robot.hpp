@@ -2,6 +2,9 @@
 
 #pragma once
 
+#include <string>
+
+#include <DriverStation.h>
 #include <Joystick.h>
 #include <TimedRobot.h>
 #include <Timer.h>
@@ -31,9 +34,16 @@ public:
     void AutonomousPeriodic() override;
     void TeleopPeriodic() override;
 
+    void AutoAutoLine();
+    void AutoLeftPos();
+    void AutoCenterPos();
+    void AutoRightPos();
+
     void DS_PrintOut();
 
 private:
+    std::string gameData;
+
     using TalonSRX = ctre::phoenix::motorcontrol::can::TalonSRX;
 
     DriveTrain robotDrive;

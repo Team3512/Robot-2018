@@ -10,8 +10,11 @@
 
 #include "Constants.hpp"
 #include "Subsystems/CANTalonGroup.hpp"
+#include "DriveTrain.hpp"
+#include "Service.hpp"
+#include "TimerEventGenerator.hpp"
 
-class Elevator {
+class Elevator : public Service {
 public:
     using WPI_TalonSRX = ctre::phoenix::motorcontrol::can::WPI_TalonSRX;
 
@@ -35,6 +38,8 @@ public:
     // Returns whether or not elevator has reached reference
     bool HeightAtReference() const;
 
+    void HandleEvent(Event event) override;
+
 private:
     WPI_TalonSRX m_elevatorMasterMotor{k_elevatorMasterID};
     WPI_TalonSRX m_elevatorSlaveMotor{k_elevatorSlaveID};
@@ -52,4 +57,5 @@ private:
     frc::PIDController m_elevatorController{
         k_elevatorP,       k_elevatorI,       k_elevatorD,
         m_elevatorEncoder, m_elevatorGearbox, k_elevatorControllerPeriod};
+
 };

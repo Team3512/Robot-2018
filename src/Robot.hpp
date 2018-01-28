@@ -5,6 +5,7 @@
 #include <Joystick.h>
 #include <TimedRobot.h>
 #include <Timer.h>
+#include <XboxController.h>
 #include <cscore.h>
 #include <ctre/phoenix/MotorControl/CAN/TalonSRX.h>
 #include <ctre/phoenix/MotorControl/CAN/WPI_TalonSRX.h>
@@ -13,9 +14,10 @@
 #include "DSDisplay/DSDisplay.hpp"
 #include "LiveGrapher/LiveGrapher.hpp"
 #include "Subsystems/CANTalonGroup.hpp"
+#include "Subsystems/Climber.hpp"
 #include "Subsystems/DriveTrain.hpp"
-#include "Subsystems/Intake.hpp"
 #include "Subsystems/Elevator.hpp"
+#include "Subsystems/Intake.hpp"
 
 class Robot : public frc::TimedRobot {
 public:
@@ -33,13 +35,14 @@ public:
 
     void DS_PrintOut();
 
+    static Intake intake;
+    static Elevator elevator;
+    static Climber climber;
+
 private:
     using TalonSRX = ctre::phoenix::motorcontrol::can::TalonSRX;
 
     DriveTrain robotDrive;
-
-    Intake intake;
-    Elevator elevator;
 
     frc::Joystick driveStick1{k_driveStick1Port};
     frc::Joystick driveStick2{k_driveStick2Port};

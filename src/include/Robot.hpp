@@ -14,8 +14,8 @@
 #include "LiveGrapher/LiveGrapher.hpp"
 #include "Subsystems/CANTalonGroup.hpp"
 #include "Subsystems/DriveTrain.hpp"
-#include "Subsystems/Intake.hpp"
 #include "Subsystems/Elevator.hpp"
+#include "Subsystems/Intake.hpp"
 
 class Robot : public frc::TimedRobot {
 public:

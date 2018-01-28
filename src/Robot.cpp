@@ -4,6 +4,10 @@
 
 #include <iostream>
 
+Intake Robot::intake;
+Elevator Robot::elevator;
+Climber Robot::climber;
+
 Robot::Robot() {
     // Auton: does nothing
     dsDisplay.AddAutoMethod("No-op", [] {});
@@ -20,7 +24,17 @@ void Robot::TeleopInit() { robotDrive.StopClosedLoop(); }
 
 void Robot::TestInit() {}
 
-void Robot::RobotPeriodic() { DS_PrintOut(); }
+void Robot::RobotPeriodic() {
+    DS_PrintOut();
+    for (int i = 1; i < 12; i++) {
+        if (appendageStick.GetRawButtonPressed(i)) {
+            Event event{EventType::kButtonPressed, i};
+            climber.HandleEvent(event);
+            elevator.HandleEvent(event);
+            intake.HandleEvent(event);
+        }
+    }
+}
 
 void Robot::DisabledPeriodic() {}
 
@@ -54,7 +68,7 @@ void Robot::TeleopPeriodic() {
         intake.SetMotors(MotorState::k_idle);
     }
 
-    // Elevator Contols
+    // Elevator Controls
     elevator.SetVelocity(appendageStick.GetY());
 
     if (appendageStick.GetRawButton(7)) {

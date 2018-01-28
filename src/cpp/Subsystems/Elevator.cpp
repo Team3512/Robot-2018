@@ -1,6 +1,6 @@
 // Copyright (c) 2018 FRC Team 3512. All Rights Reserved.
 
-#include "Elevator.hpp"
+#include "Subsystems/Elevator.hpp"
 
 Elevator::Elevator() { m_elevatorGearbox.Set(0.0); }
 

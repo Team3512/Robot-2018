@@ -10,8 +10,9 @@
 #include "CANTalonGroup.hpp"
 #include "Constants.hpp"
 #include "DriveTrain.hpp"
+#include "Service.hpp"
 
-class Elevator {
+class Elevator : public Service {
 public:
     using WPI_TalonSRX = ctre::phoenix::motorcontrol::can::WPI_TalonSRX;
 
@@ -34,6 +35,8 @@ public:
 
     // Returns whether or not elevator has reached reference
     bool HeightAtReference() const;
+
+    void HandleEvent(Event event) override;
 
 private:
     WPI_TalonSRX m_elevatorMasterMotor{k_elevatorMasterID};

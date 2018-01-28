@@ -23,3 +23,12 @@ double Elevator::GetHeightReference() const {
 bool Elevator::HeightAtReference() const {
     return m_elevatorController.OnTarget();
 }
+
+void Elevator::HandleEvent(Event event){
+	if (event.type == EventType::kClimberSetup){
+		SetHeightReference.Set(k_climbHeight);
+		if (HeightAtReference()){
+			Event event djlakgfklakdfgla
+		}
+	}
+}

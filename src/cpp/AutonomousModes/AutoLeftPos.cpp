@@ -18,13 +18,13 @@ void Robot::AutoLeftPos() {
     switch (state) {
         case State::kInit:
             robotDrive.StartClosedLoop();
-
+            elevator.ResetEncoder();
             robotDrive.ResetEncoders();
             robotDrive.ResetGyro();
             if (gameData[0] == 'L') {
-                robotDrive.SetPositionReference(150);
+                robotDrive.SetPositionReference(168 - k_robotLength/2); // Back bumper to middle of robot
             } else {
-                robotDrive.SetPositionReference(200);
+                robotDrive.SetPositionReference(228 - k_robotLength/2);
             }
 
             state = State::kInitialForward;
@@ -44,7 +44,7 @@ void Robot::AutoLeftPos() {
         case State::kLeftRotate:
             if (robotDrive.AngleAtReference() && autoTimer.HasPeriodPassed(1)) {
                 robotDrive.ResetEncoders();
-                robotDrive.SetPositionReference(200);  // Estimate
+                robotDrive.SetPositionReference(150);  // Estimate
                 state = State::kLeftForward;
             }
         case State::kLeftForward:
@@ -60,7 +60,7 @@ void Robot::AutoLeftPos() {
         case State::kFinalRotate:
             if (robotDrive.AngleAtReference() && autoTimer.HasPeriodPassed(1)) {
                 robotDrive.ResetEncoders();
-                robotDrive.SetPositionReference(15);  // Estimate
+                robotDrive.SetPositionReference(20);  // Estimate
                 state = State::kFinalForward;
             }
             break;

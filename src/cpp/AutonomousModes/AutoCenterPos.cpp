@@ -18,36 +18,32 @@ void Robot::AutoCenterPos() {
     switch (state) {
         case State::kInit:
             robotDrive.StartClosedLoop();
-
             robotDrive.ResetEncoders();
             robotDrive.ResetGyro();
+
+            robotDrive.SetPositionReference(50);  // Estimate
 
             state = State::kInitialForward;
             break;
 
         case State::kInitialForward:
-            robotDrive.SetPositionReference(50);  // Estimate
-
-            state = State::kInitialRotate;
-            break;
-        case State::kInitialRotate:
             if (robotDrive.PosAtReference()) {
                 if (gameData[0] == 'R') {
-                    robotDrive.SetAngleReference(90);  // Estimate
+                    robotDrive.SetAngleReference(90);
                 } else {
                     robotDrive.SetAngleReference(-90);
                 }
+                state = State::kInitialRotate;
             }
-            state = State::kSecondForward;
+            break;
+        case State::kInitialRotate:
+            if (robotDrive.AngleAtReference()) {
+                robotDrive.SetPositionReference(100);  // Estimate
+                state = State::kSecondForward;
+            }
 
             break;
         case State::kSecondForward:
-            if (robotDrive.AngleAtReference()) {
-                robotDrive.SetPositionReference(100);  // Estimate
-                state = State::kFinalRotate;
-            }
-            break;
-        case State::kFinalRotate:
             if (robotDrive.PosAtReference()) {
                 robotDrive.ResetEncoders();  // For Simplicity
 
@@ -59,9 +55,14 @@ void Robot::AutoCenterPos() {
                 state = State::kFinalForward;
             }
             break;
-        case State::kFinalForward:
+        case State::kFinalRotate:
             if (robotDrive.AngleAtReference()) {
                 robotDrive.SetPositionReference(30);  // Estimate
+                state = State::kFinalForward;
+            }
+            break;
+        case State::kFinalForward:
+            if(robotDrive.PosAtReference()){
                 state = State::kIdle;
             }
             break;

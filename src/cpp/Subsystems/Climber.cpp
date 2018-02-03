@@ -15,25 +15,31 @@ void Climber::HandleEvent(Event event) {
     switch (state) {
         case State::kInit:
             if (event.type == EventType::kButtonPressed && event.param == 1) {
-                m_alignmentArms.Set(true);
-                Robot::intake.HandleEvent(EventType::kClimberSetup);
-                Robot::elevator.HandleEvent(EventType::kClimberSetup);
                 nextState = State::kSetup;
                 makeTransition = true;
+            }
+            if (event.type == EventType::kExit) {
+                Robot::intake.HandleEvent(EventType::kClimberSetup);
+                Robot::elevator.HandleEvent(EventType::kClimberSetup);
+                m_alignmentArms.Set(true);
             }
             break;
         case State::kSetup:
             if (event.type == EventType::kAtSetHeight) {
-                m_setupSolenoid.Set(true);
                 nextState = State::kWaiting;
                 makeTransition = true;
+            }
+            if (event.type == EventType::kExit) {
+                m_setupSolenoid.Set(true);
             }
             break;
         case State::kWaiting:
             if (event.type == EventType::kButtonPressed && event.param == 1) {
-                Robot::elevator.HandleEvent(EventType::kClimberClimb);
                 nextState = State::kClimb;
                 makeTransition = true;
+            }
+            if (event.type == EventType::kExit) {
+                Robot::elevator.HandleEvent(EventType::kClimberClimb);
             }
             break;
         case State::kClimb:
@@ -45,7 +51,7 @@ void Climber::HandleEvent(Event event) {
         case State::kIdle:
             break;
     }
-    if (makeTransition == true) {
+    if (makeTransition) {
         HandleEvent(EventType::kExit);
         state = nextState;
         HandleEvent(EventType::kEntry);

@@ -31,34 +31,50 @@ bool Elevator::HeightAtReference() const {
 void Elevator::HandleEvent(Event event) {
     enum State { Idle, ClimberSetup, ClimberClimb };
     static State state = State::Idle;
+    bool makeTransition = false;
+    State nextState;
     switch (state) {
         case State::Idle:
             if (event.type == EventType::kClimberSetup) {
                 StartClosedLoop();
                 SetHeightReference(k_climbHeight);
-                m_notifier.StartPeriodic(0.05);
-                state = State::ClimberSetup;
+                nextState = State::ClimberSetup;
+                makeTransition = true;
             }
             if (event.type == EventType::kClimberClimb) {
                 StartClosedLoop();
                 SetHeightReference(k_scaleHeight);
+                nextState = State::ClimberClimb;
+                makeTransition = true;
+            }
+            if (event.type == EventType::kExit) {
                 m_notifier.StartPeriodic(0.05);
-                state = State::ClimberClimb;
             }
             break;
         case State::ClimberSetup:
             if (HeightAtReference()) {
+                nextState = State::Idle;
+                makeTransition = true;
+            }
+            if (event.type == EventType::kExit) {
                 m_notifier.Stop();
                 Robot::climber.HandleEvent(EventType::kAtSetHeight);
-                state = State::Idle;
             }
             break;
         case State::ClimberClimb:
             if (HeightAtReference()) {
+                nextState = State::Idle;
+                makeTransition = true;
+            }
+            if (event.type == EventType::kExit) {
                 m_notifier.Stop();
                 Robot::climber.HandleEvent(EventType::kAtSetHeight);
-                state = State::Idle;
             }
             break;
+    }
+    if (makeTransition) {
+        HandleEvent(EventType::kExit);
+        state = nextState;
+        HandleEvent(EventType::kEntry);
     }
 }

@@ -5,6 +5,9 @@
 #include <array>
 #include <cstddef>
 
+/**
+ * Makes a bounded queue that routines through its contents of a given class
+ */
 template <class T, size_t N>
 class circular_buffer {
 public:

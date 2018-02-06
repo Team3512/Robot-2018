@@ -13,11 +13,20 @@
 
 class Service {
 public:
+    /**
+     * Makes a thread for each service
+     */
     Service();
     virtual ~Service();
 
+    /**
+     * Performs an event for a serviced subsystem
+     */
     virtual void HandleEvent(Event event) = 0;
 
+    /**
+     * Posts the event to an event queue and wakes up the condition variable
+     */
     void PostEvent(Event event);
 
 private:
@@ -27,5 +36,9 @@ private:
     std::thread m_thread;
     std::atomic<bool> m_isRunning{true};
 
+    /**
+     * Blocks the thread until the event queue receives at least one event or
+     * until the service deconstructs, then handles each event.
+     */
     void RunFramework();
 };

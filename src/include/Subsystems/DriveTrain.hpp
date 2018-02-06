@@ -71,13 +71,13 @@ public:
 
 private:
     // Left gearbox used in position PID
-    TalonSRX m_leftFront{k_leftDriveMasterID};
-    TalonSRX m_leftRear{k_leftDriveSlaveID};
+    TalonSRX m_leftFront{kLeftDriveMasterID};
+    TalonSRX m_leftRear{kLeftDriveSlaveID};
     CANTalonGroup m_leftGrbx{m_leftFront, m_leftRear};
 
     // Right gearbox used in position PID
-    TalonSRX m_rightFront{k_rightDriveMasterID};
-    TalonSRX m_rightRear{k_rightDriveSlaveID};
+    TalonSRX m_rightFront{kRightDriveMasterID};
+    TalonSRX m_rightRear{kRightDriveSlaveID};
     CANTalonGroup m_rightGrbx{m_rightFront, m_rightRear};
 
     frc::DifferentialDrive m_drive{m_leftGrbx, m_rightGrbx};

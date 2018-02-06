@@ -62,7 +62,7 @@ void Robot::AutoCenterPos() {
             }
             break;
         case State::kFinalForward:
-            if(robotDrive.PosAtReference()){
+            if (robotDrive.PosAtReference()) {
                 state = State::kIdle;
             }
             break;

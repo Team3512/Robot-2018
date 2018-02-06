@@ -9,7 +9,7 @@
 using ctre::phoenix::motorcontrol::FeedbackDevice;
 
 DriveTrain::DriveTrain() {
-    m_drive.SetDeadband(k_joystickDeadband);
+    m_drive.SetDeadband(kJoystickDeadband);
 
     m_leftGrbx.SetSensorDirection(true);
 
@@ -19,8 +19,8 @@ DriveTrain::DriveTrain() {
     m_leftGrbx.Set(0.0);
     m_rightGrbx.Set(0.0);
 
-    m_controller.GetPositionPID().SetPID(k_posP, k_posI, k_posD);
-    m_controller.GetAnglePID().SetPID(k_angleP, k_angleI, k_angleD);
+    m_controller.GetPositionPID().SetPID(kPosP, kPosI, kPosD);
+    m_controller.GetAnglePID().SetPID(kAngleP, kAngleI, kAngleD);
 
     m_controller.GetPositionPID().SetOutputRange(-0.25, 0.25);
     m_controller.GetAnglePID().SetOutputRange(-0.5, 0.5);

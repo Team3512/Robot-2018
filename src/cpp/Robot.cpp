@@ -74,21 +74,21 @@ void Robot::TeleopPeriodic() {
         intake.ToggleDeploy();
     }
     if (appendageStick.GetRawButtonPressed(4)) {
-        intake.SetMotors(MotorState::k_intake);
+        intake.SetMotors(MotorState::kIntake);
     }
     if (appendageStick.GetRawButtonPressed(6)) {
-        intake.SetMotors(MotorState::k_outtake);
+        intake.SetMotors(MotorState::kOuttake);
     }
     if (appendageStick.GetRawButtonReleased(4) ||
         appendageStick.GetRawButtonReleased(6)) {
-        intake.SetMotors(MotorState::k_idle);
+        intake.SetMotors(MotorState::kIdle);
     }
 
     // Elevator Controls
     elevator.SetVelocity(appendageStick.GetY());
 
     if (appendageStick.GetRawButton(7)) {
-        elevator.SetHeightReference(k_groundHeight);
+        elevator.SetHeightReference(k_floorHeight);
     }
     if (appendageStick.GetRawButton(8)) {
         elevator.SetHeightReference(k_switchHeight);

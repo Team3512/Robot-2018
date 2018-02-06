@@ -93,7 +93,7 @@ constexpr double k_elevatorD = 0.0;
 constexpr double k_elevatorControllerPeriod = 1.0;
 
 // Elevator Setpoints
-constexpr double k_groundHeight = 0.0;
+constexpr double k_floorHeight = 0.0;
 constexpr double k_switchHeight = 12.0;
 constexpr double k_scaleHeight = 60.0;
 constexpr double k_climbHeight = 80.0;

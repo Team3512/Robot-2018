@@ -22,9 +22,10 @@ void Robot::AutoLeftPos() {
             robotDrive.ResetEncoders();
             robotDrive.ResetGyro();
             if (gameData[0] == 'R') {
-                robotDrive.SetPositionReference(168 - k_robotLength/2); // Back bumper to middle of robot
+                robotDrive.SetPositionReference(
+                    168 - k_robotLength / 2);  // Back bumper to middle of robot
             } else {
-                robotDrive.SetPositionReference(228 - k_robotLength/2);
+                robotDrive.SetPositionReference(228 - k_robotLength / 2);
             }
 
             state = State::kInitialForward;

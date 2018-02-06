@@ -8,7 +8,7 @@
 #include "Constants.hpp"
 #include "ES/Service.hpp"
 
-enum class MotorState { k_intake, k_outtake, k_idle };
+enum class MotorState { kIntake, kOuttake, kIdle };
 
 class Intake : public Service {
 public:

@@ -8,20 +8,20 @@ void Intake::ToggleDeploy() { m_intakeArm.Set(!m_intakeArm.Get()); }
 
 void Intake::SetMotors(MotorState state) {
     // IntakeLeft is Inverted, IntakeRight is not
-    if (state == MotorState::k_intake) {
+    if (state == MotorState::kIntake) {
         m_intakeLeft.Set(0.5);
         m_intakeRight.Set(-0.5);
-    } else if (state == MotorState::k_outtake) {
+    } else if (state == MotorState::kOuttake) {
         m_intakeLeft.Set(-0.5);
         m_intakeRight.Set(0.5);
-    } else if (state == MotorState::k_idle) {
+    } else if (state == MotorState::kIdle) {
         m_intakeLeft.Set(0.0);
         m_intakeRight.Set(0.0);
     }
 }
 
 void Intake::HandleEvent(Event event) {
-    if (event.type == EventType::kClimberSetup) {
+    if (event.type == EventType::kElevatorSetClimb) {
         m_intakeArm.Set(false);
     }
 }

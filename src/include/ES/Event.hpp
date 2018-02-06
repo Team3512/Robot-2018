@@ -4,6 +4,9 @@
 
 #include <stdint.h>
 
+/**
+ * Event names to be polled and handled
+ */
 enum EventType {
     kNoEvent,
     kExit,
@@ -14,6 +17,10 @@ enum EventType {
     kClimberClimb
 };
 
+/**
+ * Defaults events without specifications of event type and parameter to kNoEvent and 0,
+ * respectively
+ */
 struct Event {
     Event() = default;
     Event(EventType type, int32_t param = 0);  // NOLINT(runtime/explicit)

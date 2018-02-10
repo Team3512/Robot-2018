@@ -16,6 +16,9 @@ DriveTrain::DriveTrain() {
     m_leftGrbx.SetFeedbackDevice(FeedbackDevice::QuadEncoder);
     m_rightGrbx.SetFeedbackDevice(FeedbackDevice::QuadEncoder);
 
+    m_leftGrbx.SetDistancePerPulse(k_leftDpP);
+    m_rightGrbx.SetDistancePerPulse(k_rightDpP);
+
     m_leftGrbx.Set(0.0);
     m_rightGrbx.Set(0.0);
 
@@ -36,7 +39,7 @@ int32_t DriveTrain::GetLeftRaw() const { return m_leftGrbx.Get(); }
 int32_t DriveTrain::GetRightRaw() const { return m_rightGrbx.Get(); }
 
 void DriveTrain::Drive(double throttle, double turn, bool isQuickTurn) {
-    m_drive.CurvatureDrive(throttle, turn, isQuickTurn);
+    m_drive.CurvatureDrive(throttle, -turn, isQuickTurn);
 }
 
 void DriveTrain::SetLeftManual(double value) { m_leftGrbx.Set(value); }

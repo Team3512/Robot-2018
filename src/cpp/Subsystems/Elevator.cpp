@@ -4,6 +4,8 @@
 
 #include "Robot.hpp"
 
+#include <iostream> // TODO: to be removed after testing, if you're seeing this then I failed
+
 Elevator::Elevator() : m_notifier([&] { Robot::elevator.PostEvent({}); }) {
     m_elevatorGearbox.Set(0.0);
     m_elevatorGearbox.SetDistancePerPulse(k_elevatorDpP);
@@ -34,7 +36,7 @@ bool Elevator::HeightAtReference() const {
 bool Elevator::GetHallEffect() { return m_elevatorHallEffect.Get(); }
 
 void Elevator::HandleEvent(Event event) {
-    enum State { Idle, ClimberSetup, ClimberClimb };
+    enum State { Idle, ClimberSetup, ClimberClimb, kSetGroundHeight };
     static State state = State::Idle;
     bool makeTransition = false;
     State nextState;
@@ -46,6 +48,8 @@ void Elevator::HandleEvent(Event event) {
             } else if (event.type == EventType::kClimberClimb) {
                 nextState = State::ClimberClimb;
                 makeTransition = true;
+            } else if (event.type == EventType::kButtonPressed && event.param == 7){
+            	nextState = State::kSetGroundHeight;
             } else if (event.type == EventType::kExit) {
                 m_notifier.StartPeriodic(0.05);
             }
@@ -74,6 +78,18 @@ void Elevator::HandleEvent(Event event) {
                 Robot::climber.PostEvent(EventType::kAtSetHeight);
             }
             break;
+        case State::kSetGroundHeight:
+        	if (event.type == EventType::kEntry){
+        		StopClosedLoop();
+        		SetVelocity(-0.25);
+        	} else if (m_elevatorHallEffect.Get() == false){
+        		SetVelocity(0);
+        		ResetEncoder();
+        		std::cout << "Encoders Reset" << std::endl;
+        		nextState = State::Idle;
+        	} else if (event.type == EventType::kExit){
+        		StartClosedLoop();
+        	}
     }
     if (makeTransition) {
         PostEvent(EventType::kExit);

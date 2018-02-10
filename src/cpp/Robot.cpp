@@ -92,11 +92,11 @@ void Robot::TeleopPeriodic() {
     }
 
     // Elevator Controls
-    elevator.SetVelocity(appendageStick.GetY());
+    elevator.SetVelocity(appendageStick.GetY()); // TODO: remove manual mode, or switch between them
 
-    if (appendageStick.GetRawButton(7)) {
+    /* if (appendageStick.GetRawButton(7)) {
         elevator.SetHeightReference(k_groundHeight);
-    }
+    } */
     if (appendageStick.GetRawButton(8)) {
         elevator.SetHeightReference(k_switchHeight);
     }
@@ -116,6 +116,9 @@ void Robot::TeleopPeriodic() {
     }
 }
 
-void Robot::DS_PrintOut() { robotDrive.Debug(); }
+void Robot::DS_PrintOut() {
+	robotDrive.Debug();
+	std::cout << elevator.GetHeight() << std::endl;
+}
 
 START_ROBOT_CLASS(Robot)

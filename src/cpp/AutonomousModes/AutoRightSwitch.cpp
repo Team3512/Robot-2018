@@ -26,11 +26,11 @@ void Robot::AutoRightSwitch() {
                 frc::DriverStation::GetInstance().GetGameSpecificMessage();
 
             if (platePosition[kFriendlySwitch] == 'R') {
-                robotDrive.SetPositionReference(
+                robotDrive.SetPositionGoal(
                     168.0 -
                     kRobotLength / 2.0);  // Back bumper to middle of robot
             } else {
-                robotDrive.SetPositionReference(228.0 - kRobotLength / 2.0);
+                robotDrive.SetPositionGoal(228.0 - kRobotLength / 2.0);
             }
             robotDrive.StartClosedLoop();
 
@@ -41,44 +41,44 @@ void Robot::AutoRightSwitch() {
             break;
 
         case State::kInitialForward:
-            if (robotDrive.PosAtReference() && autoTimer.HasPeriodPassed(1.0)) {
+            if (robotDrive.AtPositionGoal() && autoTimer.HasPeriodPassed(1.0)) {
                 if (platePosition[kFriendlySwitch] == 'L') {
                     state = State::kFinalRotate;
                 } else {
                     robotDrive.ResetGyro();
-                    robotDrive.SetAngleReference(90.0);
+                    robotDrive.SetAngleGoal(90.0);
                     state = State::kRightForward;
                 }
             }
             break;
         case State::kRightRotate:
-            if (robotDrive.AngleAtReference() &&
+            if (robotDrive.AtAngleGoal() &&
                 autoTimer.HasPeriodPassed(1.0)) {
                 robotDrive.ResetEncoders();
-                robotDrive.SetPositionReference(137.0);  // Estimate
+                robotDrive.SetPositionGoal(137.0);  // Estimate
                 state = State::kRightForward;
             }
             break;
         case State::kRightForward:
-            if (robotDrive.PosAtReference() && autoTimer.HasPeriodPassed(1.0)) {
+            if (robotDrive.AtPositionGoal() && autoTimer.HasPeriodPassed(1.0)) {
                 robotDrive.ResetEncoders();  // For Simplicity
 
                 robotDrive.ResetGyro();
-                robotDrive.SetAngleReference(90.0);
+                robotDrive.SetAngleGoal(90.0);
 
                 state = State::kFinalRotate;
             }
             break;
         case State::kFinalRotate:
-            if (robotDrive.AngleAtReference() &&
+            if (robotDrive.AtAngleGoal() &&
                 autoTimer.HasPeriodPassed(1.0)) {
                 robotDrive.ResetEncoders();
-                robotDrive.SetPositionReference(20.0);  // Estimate
+                robotDrive.SetPositionGoal(20.0);  // Estimate
                 state = State::kFinalForward;
             }
             break;
         case State::kFinalForward:
-            if (robotDrive.PosAtReference() && autoTimer.HasPeriodPassed(1.0)) {
+            if (robotDrive.AtPositionGoal() && autoTimer.HasPeriodPassed(1.0)) {
                 robotDrive.StopClosedLoop();
                 state = State::kIdle;
             }

@@ -69,6 +69,8 @@ constexpr double kInertiaDampen = 2.5;
 constexpr double kInertiaHighTurn = 3.0;
 constexpr double kInertiaLowTurn = 3.0;
 
+constexpr double kWheelbaseWidth = 0.6;
+
 /*
  * Intake
  */

@@ -2,7 +2,10 @@
 
 #pragma once
 
+#include <array>
+#include <memory>
 #include <string>
+#include <tuple>
 
 #include <CameraServer.h>
 #include <DriverStation.h>
@@ -13,6 +16,7 @@
 #include <cscore.h>
 #include <ctre/phoenix/MotorControl/CAN/TalonSRX.h>
 #include <ctre/phoenix/MotorControl/CAN/WPI_TalonSRX.h>
+#include <pathfinder.h>
 
 #include "Constants.hpp"
 #include "DSDisplay/DSDisplay.hpp"
@@ -44,6 +48,18 @@ public:
 
     void DS_PrintOut();
 
+    /**
+     * Uses waypoints to generate a trajectory
+     *
+     * @return a tuple with the center trajectory, the left trajectory, then the right trajectory
+     */
+    template <int N>
+    auto GenerateTrajectory(std::array<Waypoint, N> waypoints);
+
+    static std::unique_ptr<Segment[]> trajectory;
+    static std::unique_ptr<Segment[]> leftTrajectory;
+    static std::unique_ptr<Segment[]> rightTrajectory;
+
     static Intake intake;
     static Elevator elevator;
     static Climber climber;
@@ -73,3 +89,5 @@ private:
     // LiveGrapher host
     // LiveGrapher liveGrapher{kLiveGrapherPort};
 };
+
+#include "Robot.inc"

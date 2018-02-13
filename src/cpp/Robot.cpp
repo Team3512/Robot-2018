@@ -2,9 +2,15 @@
 
 #include "Robot.hpp"
 
+std::unique_ptr<Segment[]> Robot::trajectory;
+std::unique_ptr<Segment[]> Robot::leftTrajectory;
+std::unique_ptr<Segment[]> Robot::rightTrajectory;
+
 Intake Robot::intake;
 Elevator Robot::elevator;
 Climber Robot::climber;
+
+LiveGrapher Robot::liveGrapher{kLiveGrapherPort};
 
 Robot::Robot() {
     // Auton: does nothing
@@ -18,6 +24,14 @@ Robot::Robot() {
                             std::bind(&Robot::AutoCenterPos, this));
     dsDisplay.AddAutoMethod("Right Position",
                             std::bind(&Robot::AutoRightPos, this));
+
+    std::array<Waypoint, 3> waypoints;
+    waypoints[0] = {-4, -1, d2r(45)};
+    waypoints[1] = {-1, 2, 0};
+    waypoints[2] = {2, 4, 0};
+
+    //    std::tie(trajectory, leftTrajectory, rightTrajectory) =
+    //        GenerateTrajectory(waypoints);
 
     camera1.SetResolution(640, 480);
     camera1.SetFPS(30);
@@ -160,19 +174,14 @@ void Robot::TeleopPeriodic() {
 }
 
 void Robot::DS_PrintOut() {
-    robotDrive.Debug();
-    /*if (liveGrapher.HasIntervalPassed()) {
-        liveGrapher.GraphData(robotDrive.GetAngleReference(),
-                              "Angle Reference");
+    if (liveGrapher.HasIntervalPassed()) {
+        /*liveGrapher.GraphData(robotDrive.GetPosition() , "Position");
+        liveGrapher.GraphData(robotDrive.GetPositionGoal(),  "Position Goal");
         liveGrapher.GraphData(robotDrive.GetAngle(), "Angle");
-        liveGrapher.GraphData(elevator.GetHeight(), "Elevator Height");
-        liveGrapher.GraphData(elevator.GetHeightReference(), "Elevator
-    Reference");
-
-        liveGrapher.GraphData(robotDrive.GetPosReference(), "Position
-    Reference"); liveGrapher.GraphData(robotDrive.GetPosition(), "Position");
+        liveGrapher.GraphData(robotDrive.GetAngleGoal(), "Angle Goal");*/
+        robotDrive.Debug();
         liveGrapher.ResetInterval();
-    }*/
+    }
 }
 
 START_ROBOT_CLASS(Robot)

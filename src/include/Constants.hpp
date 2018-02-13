@@ -48,14 +48,22 @@ constexpr double kLeftDpP = 169.0 / ((10926.0 + 10910.0) / 2.0);
 constexpr double kRightDpP = 169.0 / ((10913.0 + 10802.0) / 2.0);
 
 // DriveTrain position PID, Extra //'s mean practice PID values
-constexpr double kDriveMaxSpeed = 24000;  // in/sec
-constexpr double kPosP = 0.05;            // 0.01
+constexpr double kPosP = 0.05;  // 0.05
 constexpr double kPosI = 0.00;
-constexpr double kPosD = 0.024;  // 0.02
+constexpr double kPosD = 0.024;
+
+// Drive trapezoid profile constants
+constexpr double kRobotMaxV = 227.2;               // in/sec
+constexpr double kRobotTimeToMaxV = 3.0;           // sec
+constexpr double kRobotMaxRotateRate = 50.0;       // deg/sec
+constexpr double kRobotTimeToMaxRotateRate = 2.0;  // sec
+
+// Drive motor feedforwards
+constexpr double kV = 1.0 / 227.2;  // 1 / max velocity
+constexpr double kA = 0.1;          // (V - (kV * v + Vmin)) / a
 
 // DriveTrain angle PID
-constexpr double kRotateMaxSpeed = 320;
-constexpr double kAngleP = 0.05;
+constexpr double kAngleP = 0.05;  // 0.05
 constexpr double kAngleI = 0.00;
 constexpr double kAngleD = 0.012;
 
@@ -70,6 +78,9 @@ constexpr double kTurnNonLinearity = 1.0;
 constexpr double kInertiaDampen = 2.5;
 constexpr double kInertiaHighTurn = 3.0;
 constexpr double kInertiaLowTurn = 3.0;
+
+constexpr double kWheelbaseWidth = 0.6;
+constexpr double kDegreesToRadians = 3.1415926535897932 / 180.0;
 
 /*
  * Intake

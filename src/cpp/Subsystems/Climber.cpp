@@ -4,6 +4,8 @@
 
 #include "Robot.hpp"
 
+void Climber::Shift(bool high) { m_setupSolenoid.Set(high); }
+
 enum class State { kInit, kSetup, kWaiting, kClimb, kIdle };
 
 void Climber::HandleEvent(Event event) {

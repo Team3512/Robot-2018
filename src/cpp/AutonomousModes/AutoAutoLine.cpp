@@ -14,13 +14,13 @@ void Robot::AutoAutoLine() {
 
             robotDrive.ResetEncoders();
             robotDrive.ResetGyro();
-            robotDrive.SetPositionReference(kRobotLength + 120);  // Estimate
-            robotDrive.SetAngleReference(0);
+            robotDrive.SetPositionGoal(kRobotLength + 120);  // Estimate
+            robotDrive.SetAngleGoal(0);
 
             state = State::kMoveForward;
             break;
         case State::kMoveForward:
-            if (robotDrive.PosAtReference() && autoTimer.HasPeriodPassed(1)) {
+            if (robotDrive.AtPositionGoal() && autoTimer.HasPeriodPassed(1)) {
                 robotDrive.StopClosedLoop();
 
                 state = State::kIdle;

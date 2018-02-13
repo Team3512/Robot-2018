@@ -1,11 +1,6 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2017-2018 FIRST. All Rights Reserved.                        */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
-/*----------------------------------------------------------------------------*/
+// Copyright (c) 2017-2018 FRC Team 3512. All Rights Reserved.
 
-#include "CtrlSys/DiffDriveController.h"
+#include "DiffDriveController.hpp"
 
 using namespace frc;
 
@@ -22,12 +17,10 @@ using namespace frc;
  * @param rightMotor right motor output
  * @param period the loop time for doing calculations.
  */
-DiffDriveController::DiffDriveController(INode& positionRef, INode& angleRef,
-                                         INode& leftEncoder,
-                                         INode& rightEncoder,
-                                         INode& angleSensor, bool clockwise,
-                                         PIDOutput& leftMotor,
-                                         PIDOutput& rightMotor, double period)
+DiffDriveController::DiffDriveController(
+    MotionProfile& positionRef, MotionProfile& angleRef, INode& leftEncoder,
+    INode& rightEncoder, INode& angleSensor, bool clockwise,
+    PIDOutput& leftMotor, PIDOutput& rightMotor, double period)
     : m_positionRef(positionRef),
       m_angleRef(angleRef),
       m_leftEncoder(leftEncoder),
@@ -36,9 +29,13 @@ DiffDriveController::DiffDriveController(INode& positionRef, INode& angleRef,
       m_clockwise(clockwise),
       m_leftMotor(leftMotor),
       m_rightMotor(rightMotor),
-      m_leftMotorInput(m_positionPID, false, m_anglePID, !m_clockwise),
+      m_leftMotorInput(m_positionPID, false, m_anglePID, !m_clockwise,
+                       m_positionFeedForward, false, m_angleFeedForward,
+                       !m_clockwise),
       m_leftOutput(m_leftMotorInput, m_leftMotor),
-      m_rightMotorInput(m_positionPID, true, m_anglePID, !m_clockwise),
+      m_rightMotorInput(m_positionPID, true, m_anglePID, !m_clockwise,
+                        m_positionFeedForward, true, m_angleFeedForward,
+                        !m_clockwise),
       m_rightOutput(m_rightMotorInput, m_rightMotor),
       m_outputs(m_leftOutput, m_rightOutput),
       m_period(period) {}
@@ -57,16 +54,16 @@ double DiffDriveController::GetAngle() { return m_angleSensor.GetOutput(); }
 
 void DiffDriveController::SetPositionTolerance(double tolerance,
                                                double deltaTolerance) {
-  m_positionError.SetTolerance(tolerance, deltaTolerance);
+    m_positionError.SetTolerance(tolerance, deltaTolerance);
 }
 
 void DiffDriveController::SetAngleTolerance(double tolerance,
                                             double deltaTolerance) {
-  m_angleError.SetTolerance(tolerance, deltaTolerance);
+    m_angleError.SetTolerance(tolerance, deltaTolerance);
 }
 
 bool DiffDriveController::AtPosition() const {
-  return m_positionError.InTolerance();
+    return m_positionError.InTolerance() && m_posRef.AtGoal();
 }
 
-bool DiffDriveController::AtAngle() const { return m_angleError.InTolerance(); }
+bool DiffDriveController::AtAngle() const { return m_angleError.InTolerance() && m_angleRef.AtGoal(); }

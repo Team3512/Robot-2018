@@ -3,7 +3,6 @@
 #pragma once
 
 #include <ADXRS450_Gyro.h>
-#include <CtrlSys/DiffDriveController.h>
 #include <CtrlSys/FuncNode.h>
 #include <CtrlSys/RefInput.h>
 #include <Drive/DifferentialDrive.h>
@@ -11,6 +10,7 @@
 #include <ctre/phoenix/MotorControl/CAN/WPI_TalonSRX.h>
 
 #include "Constants.hpp"
+#include "DiffDriveController.hpp"
 #include "Subsystems/CANTalonGroup.hpp"
 
 class CANTalonGroup;
@@ -69,9 +69,13 @@ public:
     double GetPosReference() const;
     double GetAngleReference() const;
 
-    // Returns whether or not robot has reached reference
-    bool PosAtReference() const;
-    bool AngleAtReference() const;
+    // Returns final goals for PID loops
+    double GetPosGoal() const;
+    double GetAngleGoal() const;
+
+    // Returns whether or not robot has reached its final goal
+    bool PosAtGoal() const;
+    bool AngleAtGoal() const;
 
     // Resets gyro
     void ResetGyro();
@@ -99,8 +103,8 @@ private:
     ADXRS450_Gyro m_gyro;
 
     // Control system references
-    frc::RefInput m_posRef{0.0};
-    frc::RefInput m_angleRef{0.0};
+    frc::TrapezoidProfile m_posRef{0.0};
+    frc::TrapezoidProfile m_angleRef{0.0};
 
     // Sensor adapters
     frc::FuncNode m_leftEncoder{[this] { return m_leftGrbx.GetPosition(); }};

@@ -73,18 +73,22 @@ void DriveTrain::StopClosedLoop() {
 }
 
 void DriveTrain::SetPositionReference(double position) {
-    m_posRef.Set(position);
+    m_posRef.SetGoal(position);
 }
 
-void DriveTrain::SetAngleReference(double angle) { m_angleRef.Set(angle); }
+void DriveTrain::SetAngleReference(double angle) { m_angleRef.SetGoal(angle); }
 
 double DriveTrain::GetPosReference() const { return m_posRef.GetOutput(); }
 
 double DriveTrain::GetAngleReference() const { return m_angleRef.GetOutput(); }
 
-bool DriveTrain::PosAtReference() const { return m_controller.AtPosition(); }
+double DriveTrain::GetPosGoal() const { return m_posRef.GetGoal(); }
 
-bool DriveTrain::AngleAtReference() const { return m_controller.AtAngle(); }
+double DriveTrain::GetAngleGoal() const { return m_angleRef.GetGoal(); }
+
+bool DriveTrain::PosAtGoal() const { return m_controller.AtPosition(); }
+
+bool DriveTrain::AngleAtGoal() const { return m_controller.AtAngle(); }
 
 void DriveTrain::ResetGyro() { m_gyro.Reset(); }
 

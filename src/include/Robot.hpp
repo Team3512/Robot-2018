@@ -51,6 +51,8 @@ public:
 private:
     std::string gameData;
 
+    ElevatorMode eleMode = ElevatorMode::kPositionMode;
+
     using TalonSRX = ctre::phoenix::motorcontrol::can::TalonSRX;
 
     DriveTrain robotDrive;

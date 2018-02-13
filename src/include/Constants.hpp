@@ -56,6 +56,16 @@ constexpr double kPosP = 0.05;
 constexpr double kPosI = 0.00;
 constexpr double kPosD = 0.024;
 
+// Drive trapezoid profile constants
+constexpr double kRobotMaxV = 227.2;               // in/sec
+constexpr double kRobotTimeToMaxV = 3.0;           // sec
+constexpr double kRobotMaxRotateRate = 50.0;       // deg/sec
+constexpr double kRobotTimeToMaxRotateRate = 2.0;  // sec
+
+// Drive motor feedforwards
+constexpr double kV = 1.0 / 227.2;  // 1 / max velocity
+constexpr double kA = 0.1;          // (V - (kV * v + Vmin)) / a
+
 // DriveTrain angle PID
 constexpr double kAngleP = 0.05;
 constexpr double kAngleI = 0.00;
@@ -63,6 +73,8 @@ constexpr double kAngleD = 0.012;
 
 // Physical Robot Constants
 constexpr int kRobotLength = 0;
+constexpr double kWheelbaseWidth = 0.6;
+constexpr double kDegreesToRadians = 3.1415926535897932 / 180.0;
 
 // CheesyDrive constants
 constexpr double kLowGearSensitive = 0.75;

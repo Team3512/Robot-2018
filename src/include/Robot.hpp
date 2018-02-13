@@ -2,7 +2,12 @@
 
 #pragma once
 
+#include <pathfinder.h>
+
+#include <array>
+#include <memory>
 #include <string>
+#include <tuple>
 
 #include <CameraServer.h>
 #include <DriverStation.h>
@@ -44,6 +49,19 @@ public:
 
     void DS_PrintOut();
 
+    /**
+     * Uses waypoints to generate a trajectory
+     *
+     * @return a tuple with the center trajectory, the left trajectory, then the
+     * right trajectory
+     */
+    template <size_t N>
+    auto GenerateTrajectory(std::array<Waypoint, N>& waypoints);
+
+    static std::unique_ptr<Segment[]> trajectory;
+    static std::unique_ptr<Segment[]> leftTrajectory;
+    static std::unique_ptr<Segment[]> rightTrajectory;
+
     static Intake intake;
     static Elevator elevator;
     static Climber climber;
@@ -73,3 +91,5 @@ private:
     // LiveGrapher host
     // LiveGrapher liveGrapher{kLiveGrapherPort};
 };
+
+#include "Robot.inc"

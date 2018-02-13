@@ -4,6 +4,10 @@
 
 #include <iostream>
 
+std::unique_ptr<Segment[]> Robot::trajectory;
+std::unique_ptr<Segment[]> Robot::leftTrajectory;
+std::unique_ptr<Segment[]> Robot::rightTrajectory;
+
 Intake Robot::intake;
 Elevator Robot::elevator;
 Climber Robot::climber;
@@ -20,6 +24,14 @@ Robot::Robot() {
                             std::bind(&Robot::AutoCenterPos, this));
     dsDisplay.AddAutoMethod("Right Position",
                             std::bind(&Robot::AutoRightPos, this));
+
+    std::array<Waypoint, 3> waypoints;
+    waypoints[0] = {-4, -1, d2r(45)};
+    waypoints[1] = {-1, 2, 0};
+    waypoints[2] = {2, 4, 0};
+
+    std::tie(trajectory, leftTrajectory, rightTrajectory) =
+        GenerateTrajectory(waypoints);
 
     camera1.SetResolution(640, 480);
     camera1.SetFPS(30);
@@ -77,8 +89,10 @@ void Robot::DisabledPeriodic() {
 void Robot::AutonomousPeriodic() { dsDisplay.ExecAutonomous(); }
 
 void Robot::TeleopPeriodic() {
-    robotDrive.SetPositionReference(driveStick1.GetY() * -50.0);
-    robotDrive.SetAngleReference(driveStick1.GetX() * 0.0);
+    if (robotDrive.AtPositionGoal() && robotDrive.AtAngleGoal()) {
+        robotDrive.SetPositionGoal(driveStick1.GetY() * -50.0);
+        robotDrive.SetAngleGoal(driveStick1.GetX() * 0.0);
+    }
     /*    // Drive Stick Controls
 if (driveStick1.GetRawButton(1)) {
     robotDrive.Drive(driveStick1.GetY() * 0.5, driveStick2.GetX() * 0.5,

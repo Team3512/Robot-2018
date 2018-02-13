@@ -4,6 +4,10 @@
 
 #include <iostream>
 
+std::unique_ptr<Segment[]> Robot::trajectory;
+std::unique_ptr<Segment[]> Robot::leftTrajectory;
+std::unique_ptr<Segment[]> Robot::rightTrajectory;
+
 Intake Robot::intake;
 Elevator Robot::elevator;
 Climber Robot::climber;
@@ -20,6 +24,14 @@ Robot::Robot() {
                             std::bind(&Robot::AutoCenterPos, this));
     dsDisplay.AddAutoMethod("Right Position",
                             std::bind(&Robot::AutoRightPos, this));
+
+    std::array<Waypoint, 3> waypoints;
+    waypoints[0] = {-4, -1, d2r(45)};
+    waypoints[1] = {-1, 2, 0};
+    waypoints[2] = {2, 4, 0};
+
+    std::tie(trajectory, leftTrajectory, rightTrajectory) =
+        GenerateTrajectory(waypoints);
 
     camera1.SetResolution(640, 480);
     camera1.SetFPS(30);

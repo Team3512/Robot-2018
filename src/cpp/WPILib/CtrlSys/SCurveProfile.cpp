@@ -151,6 +151,9 @@ MotionProfile::State SCurveProfile::UpdateSetpoint(double currentTime) {
     // Ramp up acceleration
     std::get<2>(m_ref) = m_jerk * (m_t6 - currentTime);
     std::get<1>(m_ref) = 0.5 * m_jerk * std::pow(m_t6 - currentTime, 2);
+  } else {
+    std::get<2>(m_ref) = 0.0;
+    std::get<1>(m_ref) = 0.0;
   }
 
   if (currentTime < m_t7) {

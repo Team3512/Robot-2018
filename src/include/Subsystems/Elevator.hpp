@@ -14,6 +14,8 @@
 #include "ES/Service.hpp"
 #include "Subsystems/CANTalonGroup.hpp"
 
+enum class ElevatorMode { k_PositionMode, k_VelocityMode };
+
 class Elevator : public Service {
 public:
     using WPI_TalonSRX = ctre::phoenix::motorcontrol::can::WPI_TalonSRX;

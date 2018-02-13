@@ -3,7 +3,6 @@
 #include "Subsystems/DriveTrain.hpp"
 
 #include <cmath>
-#include <iostream>
 #include <limits>
 
 DriveTrain::DriveTrain() {
@@ -17,9 +16,6 @@ DriveTrain::DriveTrain() {
 
     m_controller.GetPositionPID().SetPID(kPosP, kPosI, kPosD);
     m_controller.GetAnglePID().SetPID(kAngleP, kAngleI, kAngleD);
-
-    m_controller.GetPositionPID().SetOutputRange(-0.25, 0.25);
-    m_controller.GetAnglePID().SetOutputRange(-0.5, 0.5);
 
     m_controller.SetPositionTolerance(1.5,
                                       std::numeric_limits<double>::infinity());
@@ -72,25 +68,30 @@ void DriveTrain::StopClosedLoop() {
     m_drive.SetSafetyEnabled(true);
 }
 
-void DriveTrain::SetPositionReference(double position) {
-    m_posRef.Set(position);
+void DriveTrain::SetPositionGoal(double position) {
+    m_posRef.SetGoal(position);
 }
 
-void DriveTrain::SetAngleReference(double angle) { m_angleRef.Set(angle); }
+void DriveTrain::SetAngleGoal(double angle) { m_angleRef.SetGoal(angle); }
 
-double DriveTrain::GetPosReference() const { return m_posRef.GetOutput(); }
+double DriveTrain::GetPosReference() {
+    return m_posRef.GetPositionNode().GetOutput();
+}
 
-double DriveTrain::GetAngleReference() const { return m_angleRef.GetOutput(); }
+double DriveTrain::GetAngleReference() {
+    return m_angleRef.GetPositionNode().GetOutput();
+}
 
-bool DriveTrain::PosAtReference() const { return m_controller.AtPosition(); }
+double DriveTrain::GetPositionGoal() const { return m_posRef.GetGoal(); }
 
-bool DriveTrain::AngleAtReference() const { return m_controller.AtAngle(); }
+double DriveTrain::GetAngleGoal() const { return m_angleRef.GetGoal(); }
+
+bool DriveTrain::AtPositionGoal() const { return m_controller.AtPosition(); }
+
+bool DriveTrain::AtAngleGoal() const { return m_controller.AtAngle(); }
 
 void DriveTrain::ResetGyro() { m_gyro.Reset(); }
 
 void DriveTrain::CalibrateGyro() { m_gyro.Calibrate(); }
 
-void DriveTrain::Debug() {
-    std::cout << "Right Grbx Pos: " << m_rightGrbx.GetPosition()
-              << " Left Grbx Pos: " << m_leftGrbx.GetPosition() << std::endl;
-}
+void DriveTrain::Debug() { m_controller.Debug(); }

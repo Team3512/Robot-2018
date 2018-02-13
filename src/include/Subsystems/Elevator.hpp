@@ -14,6 +14,8 @@
 #include "ES/Service.hpp"
 #include "Subsystems/CANTalonGroup.hpp"
 
+enum class ElevatorMode { k_PositionMode, k_VelocityMode };
+
 class Elevator : public Service {
 public:
     using WPI_TalonSRX = ctre::phoenix::motorcontrol::can::WPI_TalonSRX;
@@ -63,6 +65,6 @@ private:
         [this] { return m_elevatorGearbox.GetPosition(); }};
 
     frc::PIDController m_elevatorController{
-        kElevatorP,        kElevatorI,        kElevatorD,
+        k_elevatorP,        k_elevatorI,        k_elevatorD,
         m_elevatorEncoder, m_elevatorGearbox, kElevatorControllerPeriod};
 };

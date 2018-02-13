@@ -13,6 +13,7 @@
 
 class Climber : public Service {
 public:
+    void Shift();
     void HandleEvent(Event event) override;
 
 private:

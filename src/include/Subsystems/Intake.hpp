@@ -17,14 +17,18 @@ public:
     /**
      * Opens and closes the claw of the Intake
      */
-    void ToggleOpen();
+    void Open();
+
+    void Close();
 
     /**
      * Stows and Deploys the Intake back into the frame of the elevator
      */
-    void ToggleDeploy();
+    void Deploy();
 
-    bool GetDeploy();
+    void Stow();
+
+    bool IsDeployed() const;
 
     void SetMotors(MotorState state);
 

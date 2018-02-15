@@ -11,6 +11,8 @@ Climber Robot::climber;
 Robot::Robot() {
     // Auton: does nothing
     dsDisplay.AddAutoMethod("No-op", [] {});
+    dsDisplay.AddAutoMethod("Autoline Timed",
+                            std::bind(&Robot::AutoAutoLineTimed, this));
     dsDisplay.AddAutoMethod("Autoline", std::bind(&Robot::AutoAutoLine, this));
     dsDisplay.AddAutoMethod("Left Position",
                             std::bind(&Robot::AutoLeftPos, this));
@@ -33,9 +35,10 @@ void Robot::DisabledInit() { robotDrive.StopClosedLoop(); }
 void Robot::AutonomousInit() {
     autoTimer.Reset();
     autoTimer.Start();
-    if (!intake.GetDeploy()) {
-        intake.ToggleDeploy();
-    }
+    robotDrive.ResetEncoders();
+    robotDrive.ResetGyro();
+    elevator.ResetEncoder();
+    intake.Deploy;
 }
 
 void Robot::TeleopInit() { robotDrive.StopClosedLoop(); }

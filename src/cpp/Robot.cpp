@@ -45,9 +45,9 @@ void Robot::TestInit() {}
 void Robot::RobotPeriodic() {
     DS_PrintOut();
 
-    if (!elevator.GetHallEffect()) {
-        elevator.ResetEncoder();
-    }
+//    if (!elevator.GetForwardHallEffect()) {
+//        elevator.ResetEncoder();
+//    }
 
     for (int i = 1; i < 12; i++) {
         if (appendageStick.GetRawButtonPressed(i)) {

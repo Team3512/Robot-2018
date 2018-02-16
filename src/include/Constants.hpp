@@ -60,7 +60,8 @@ constexpr double kAngleD = 0.00;
 
 // Climber Solenoid ports
 constexpr int kAlignmentArmsPort = 3;
-constexpr int kSetupSolenoidPort = 4;
+constexpr int kSetupForwardPort = 4;
+constexpr int kSetupReversePort = 5;
 
 // CheesyDrive constants
 constexpr double kLowGearSensitive = 0.75;

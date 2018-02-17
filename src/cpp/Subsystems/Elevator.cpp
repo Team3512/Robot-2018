@@ -31,8 +31,9 @@ bool Elevator::HeightAtReference() const { return m_errorSum.InTolerance(); }
 bool Elevator::GetForwardHallEffect() { return m_elevatorForwardHall.Get(); }
 
 void Elevator::HandleEvent(Event event) {
-    enum State {
+    enum class State {
         kIdle,
+        kElevatorFloor,
         kElevatorClimb,
         kElevatorScale,
         kElevatorSwitch,
@@ -42,17 +43,32 @@ void Elevator::HandleEvent(Event event) {
     State nextState;
     switch (state) {
         case State::kIdle:
-            if (event.type == EventType::kElevatorSetSwitch) {
+            if (event.type == EventType::kCmdElevatorSetFloor) {
+                nextState = State::kElevatorFloor;
+                makeTransition = true;
+            } else if (event.type == EventType::kCmdElevatorSetSwitch) {
                 nextState = State::kElevatorSwitch;
                 makeTransition = true;
-            } else if (event.type == EventType::kElevatorSetScale) {
+            } else if (event.type == EventType::kCmdElevatorSetScale) {
                 nextState = State::kElevatorScale;
                 makeTransition = true;
-            } else if (event.type == EventType::kElevatorSetClimb) {
+            } else if (event.type == EventType::kCmdElevatorSetClimb) {
                 nextState = State::kElevatorClimb;
                 makeTransition = true;
             } else if (event.type == EventType::kExit) {
                 m_notifier.StartPeriodic(0.05);
+            }
+            break;
+        case State::kElevatorFloor:
+            if (event.type == EventType::kEntry) {
+                StartClosedLoop();
+                SetHeightReference(kFloorHeight);
+            } else if (HeightAtReference()) {
+                nextState = State::kIdle;
+                makeTransition = true;
+            } else if (event.type == EventType::kExit) {
+                m_notifier.Stop();
+                Robot::climber.PostEvent(EventType::kDoneAtSetHeight);
             }
             break;
         case State::kElevatorSwitch:
@@ -64,7 +80,7 @@ void Elevator::HandleEvent(Event event) {
                 makeTransition = true;
             } else if (event.type == EventType::kExit) {
                 m_notifier.Stop();
-                Robot::climber.PostEvent(EventType::kAtSetHeight);
+                Robot::climber.PostEvent(EventType::kDoneAtSetHeight);
             }
             break;
         case State::kElevatorScale:
@@ -76,7 +92,7 @@ void Elevator::HandleEvent(Event event) {
                 makeTransition = true;
             } else if (event.type == EventType::kExit) {
                 m_notifier.Stop();
-                Robot::climber.PostEvent(EventType::kAtSetHeight);
+                Robot::climber.PostEvent(EventType::kDoneAtSetHeight);
             }
             break;
         case State::kElevatorClimb:
@@ -88,13 +104,13 @@ void Elevator::HandleEvent(Event event) {
                 makeTransition = true;
             } else if (event.type == EventType::kExit) {
                 m_notifier.Stop();
-                Robot::climber.PostEvent(EventType::kAtSetHeight);
+                Robot::climber.PostEvent(EventType::kDoneAtSetHeight);
             }
             break;
-            if (makeTransition) {
-                PostEvent(EventType::kExit);
-                state = nextState;
-                PostEvent(EventType::kEntry);
-            }
+    }
+    if (makeTransition) {
+        PostEvent(EventType::kExit);
+        state = nextState;
+        PostEvent(EventType::kEntry);
     }
 }

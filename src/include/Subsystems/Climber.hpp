@@ -21,5 +21,5 @@ private:
     frc::DoubleSolenoid m_setupSolenoid{kSetupForwardPort, kSetupReversePort};
     frc::Solenoid m_alignmentArms{kAlignmentArmsPort};
 
-    Timer timer;
+    frc::Timer m_timer;
 };

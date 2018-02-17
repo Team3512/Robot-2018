@@ -5,7 +5,6 @@
 #include <DoubleSolenoid.h>
 #include <Joystick.h>
 #include <Solenoid.h>
-#include <Timer.h>
 
 #include "../Constants.hpp"
 #include "ES/Service.hpp"
@@ -20,6 +19,4 @@ public:
 private:
     frc::DoubleSolenoid m_setupSolenoid{kSetupForwardPort, kSetupReversePort};
     frc::Solenoid m_alignmentArms{kAlignmentArmsPort};
-
-    Timer timer;
 };

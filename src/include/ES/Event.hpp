@@ -6,16 +6,24 @@
 
 /**
  * Event names to be polled and handled
+ *
+ * Event-Naming Prefix Key:
+ * 	no prefix indicates system-level events
+ * 	'Event' = user level events
+ * 	'Done' = reply messaging events
+ * 	'Cmd' = command events to another service
  */
 enum EventType {
     kNoEvent,
     kExit,
     kEntry,
-    kButtonPressed,
-    kAtSetHeight,
-    kElevatorSetSwitch,
-    kElevatorSetScale,
-    kElevatorSetClimb,
+    kEventButtonPressed,
+    kDoneAtSetHeight,
+    kCmdIntakeStow,
+    kCmdElevatorSetFloor,
+    kCmdElevatorSetSwitch,
+    kCmdElevatorSetScale,
+    kCmdElevatorSetClimb,
 };
 
 struct Event {

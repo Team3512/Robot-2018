@@ -29,7 +29,7 @@ void Intake::SetMotors(MotorState state) {
 }
 
 void Intake::HandleEvent(Event event) {
-    if (event.type == EventType::kElevatorSetClimb) {
+    if (event.type == EventType::kCmdIntakeStow) {
         m_intakeArm.Set(false);
     }
 }

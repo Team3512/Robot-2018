@@ -54,7 +54,7 @@ void Robot::RobotPeriodic() {
 
     for (int i = 1; i < 12; i++) {
         if (appendageStick.GetRawButtonPressed(i)) {
-            Event event{EventType::kButtonPressed, i};
+            Event event{EventType::kEventButtonPressed, i};
             climber.PostEvent(event);
             elevator.PostEvent(event);
             intake.PostEvent(event);

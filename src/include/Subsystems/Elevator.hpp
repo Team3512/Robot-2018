@@ -9,6 +9,7 @@
 #include <CtrlSys/SumNode.h>
 #include <DigitalInput.h>
 #include <Notifier.h>
+#include <Timer.h>
 #include <ctre/phoenix/MotorControl/CAN/WPI_TalonSRX.h>
 
 #include "Constants.hpp"
@@ -57,6 +58,7 @@ private:
     CANTalonGroup m_elevatorGearbox{m_elevatorMasterMotor,
                                     m_elevatorSlaveMotor};
 
+    Timer m_timer;
     Notifier m_notifier;
     // Reference
     frc::RefInput m_heightRef{0.0};

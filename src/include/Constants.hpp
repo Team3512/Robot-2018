@@ -94,7 +94,7 @@ constexpr double kElevatorControllerPeriod = 0.02;
 constexpr double kGravityFeedForward = -0.01;
 
 // Elevator Setpoints
-constexpr double kFloorHeight = 0.0;
+constexpr double kFloorHeight = 75.0;
 constexpr double kSwitchHeight = -12.0;
 constexpr double kScaleHeight = -60.0;
 constexpr double kClimbHeight = -80.0;

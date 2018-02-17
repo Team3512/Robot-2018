@@ -58,6 +58,7 @@ private:
                                     m_elevatorSlaveMotor};
 
     Notifier m_notifier;
+
     // Reference
     frc::RefInput m_heightRef{0.0};
 

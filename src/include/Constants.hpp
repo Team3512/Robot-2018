@@ -98,6 +98,7 @@ constexpr double kElevatorP = 0.0;
 constexpr double kElevatorI = 0.0;
 constexpr double kElevatorD = 0.0;
 constexpr double kElevatorControllerPeriod = 1.0;
+constexpr double kGravityFeedForward = 0.0;
 
 // Elevator Setpoints
 constexpr double kFloorHeight = 0.0;

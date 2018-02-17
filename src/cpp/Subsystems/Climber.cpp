@@ -4,7 +4,15 @@
 
 #include "Robot.hpp"
 
-enum class State { kInit, kSetup, kWaiting, kClimb, kIdle };
+enum class State {
+    kInit,
+    kElevatorReset,
+    kIntakeStow,
+    kSetup,
+    kWaiting,
+    kClimb,
+    kIdle
+};
 
 void Climber::HandleEvent(Event event) {
     static State state = State::kInit;
@@ -15,13 +23,31 @@ void Climber::HandleEvent(Event event) {
     switch (state) {
         case State::kInit:
             if (event.type == EventType::kButtonPressed && event.param == 1) {
+                nextState = State::kElevatorReset;
+                makeTransition = true;
+            }
+            break;
+        case State::kElevatorReset:
+            if (event.type == EventType::kEntry) {
+                Robot::elevator.PostEvent(EventType::kElevatorSetFloor);
+            } else if (event.type == EventType::kAtSetHeight) {
+                nextState = State::kIntakeStow;
+                makeTransition = true;
+            }
+            break;
+        case State::kIntakeStow:
+            if (event.type == EventType::kEntry) {
+                Robot::intake.PostEvent(EventType::kElevatorSetClimb);
+                m_timer.Start();
+            } else if (m_timer.HasPeriodPassed(3.0)) {
                 nextState = State::kSetup;
                 makeTransition = true;
+            } else if (event.type == EventType::kExit) {
+                m_timer.Stop();
             }
             break;
         case State::kSetup:
             if (event.type == EventType::kEntry) {
-                Robot::intake.PostEvent(EventType::kElevatorSetClimb);
                 Robot::elevator.PostEvent(EventType::kElevatorSetClimb);
                 m_alignmentArms.Set(true);
             } else if (event.type == EventType::kAtSetHeight) {

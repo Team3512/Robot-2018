@@ -11,12 +11,14 @@ enum class State {
     kInitialForward,
     kInitialRotate,
     kSecondForward,
+    kSecondRotate,
+    kThirdForward,
     kFinalRotate,
     kFinalForward,
     kIdle
 };
 
-void Robot::AutoCenterPos() {
+void Robot::AutoCenterScale() {
     static State state = State::kInit;
     static std::string gameData;
 
@@ -47,35 +49,44 @@ void Robot::AutoCenterPos() {
             break;
         case State::kInitialRotate:
             if (robotDrive.AngleAtReference() && autoTimer.HasPeriodPassed(1)) {
+                robotDrive.ResetEncoders();
                 if (gameData[0] == 'R') {
-                    robotDrive.ResetEncoders();
-                    robotDrive.SetPositionReference(90);
+                    robotDrive.SetPositionReference(150);  // ESTIMATE
                 } else {
-                    robotDrive.ResetEncoders();
-                    robotDrive.SetPositionReference(110);
+                    robotDrive.SetPositionReference(170);  // ESTIMATE
                 }
                 state = State::kInitialRotate;
             }
             break;
         case State::kSecondForward:
             if (robotDrive.PosAtReference() && autoTimer.HasPeriodPassed(1)) {
+                robotDrive.ResetGyro();
                 if (gameData[0] == 'R') {
-                    robotDrive.ResetGyro();
                     robotDrive.SetAngleReference(-90);
                 } else {
-                    robotDrive.ResetGyro();
                     robotDrive.SetAngleReference(90);
                 }
-                state = State::kFinalRotate;
+                state = State::kSecondRotate;
             }
             break;
-        case State::kFinalRotate:
+        case State::kSecondRotate:
             if (robotDrive.AngleAtReference() && autoTimer.HasPeriodPassed(1)) {
                 robotDrive.ResetEncoders();
-                robotDrive.SetPositionReference(30);  // Estimate
-                state = State::kFinalForward;
+                robotDrive.SetPositionReference(150);  // Estimate
+                state = State::kThirdForward;
             }
             break;
+        case State::kThirdForward:
+            if (robotDrive.PosAtReference() && autoTimer.HasPeriodPassed(1)) {
+                robotDrive.ResetGyro();
+                if (gameData[0] == 'R') {
+                    robotDrive.SetAngleReference(-90);
+                } else {
+                    robotDrive.SetAngleReference(90);
+                }
+
+                state = State::kFinalForward;
+            }
         case State::kFinalForward:
             if (robotDrive.PosAtReference() && autoTimer.HasPeriodPassed(1)) {
                 intake.Open();

@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <functional>
 #include <limits>
 #include <memory>
 #include <mutex>
@@ -14,6 +15,7 @@
 #include <vector>
 
 #include "CtrlSys/INode.h"
+#include "CtrlSys/Output.h"
 
 namespace frc {
 
@@ -28,6 +30,7 @@ class SumNode : public INode {
 
   SumNode(INode& input, bool positive);
 
+  void SetCallback(Output& output) override;
   double GetOutput() override;
 
   void SetContinuous(bool continuous = true);
@@ -42,6 +45,8 @@ class SumNode : public INode {
    * Second argument is whether to add or subtract its output.
    */
   std::vector<std::pair<INode&, bool>> m_inputs;
+
+  std::function<void()> m_callback = [] {};
 
   double m_currentResult = 0.0;
   double m_lastResult = 0.0;

@@ -39,6 +39,7 @@ class Output : public Controller {
 
   friend class OutputGroup;
   friend class RefInput;
+  friend class SumNode;
 
  private:
   INode& m_input;

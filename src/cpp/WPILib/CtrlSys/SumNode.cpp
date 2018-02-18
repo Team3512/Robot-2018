@@ -21,6 +21,13 @@ SumNode::SumNode(INode& input, bool positive) {
   m_inputs.emplace_back(input, positive);
 }
 
+void SumNode::SetCallback(Output& output) {
+  if (GetInputNode() != nullptr) {
+    GetInputNode()->SetCallback(output);
+  }
+  m_callback = std::bind(&Output::OutputFunc, std::ref(output));
+}
+
 double SumNode::GetOutput() {
   double sum = 0.0;
 
@@ -93,6 +100,8 @@ void SumNode::SetTolerance(double tolerance, double deltaTolerance) {
  * by SetTolerance().
  */
 bool SumNode::InTolerance() const {
+  m_callback();
+
   std::lock_guard<std::mutex> lock(m_mutex);
   return std::abs(m_currentResult) < m_tolerance &&
          std::abs(m_currentResult - m_lastResult) < m_deltaTolerance;

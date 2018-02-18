@@ -34,9 +34,12 @@ public:
 
     void AutoAutoLine();
     void AutoAutoLineTimed();
-    void AutoLeftPos();
-    void AutoCenterPos();
-    void AutoRightPos();
+    void AutoLeftSwitch();
+    void AutoCenterSwitch();
+    void AutoRightSwitch();
+    void AutoLeftScale();
+    void AutoCenterScale();
+    void AutoRightScale();
 
     void DS_PrintOut();
 

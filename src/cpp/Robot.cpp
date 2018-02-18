@@ -74,19 +74,20 @@ void Robot::DisabledPeriodic() {
     }
 }
 
-void Robot::AutonomousPeriodic() { dsDisplay.ExecAutonomous(); }
+void Robot::AutonomousPeriodic() {
+    gameData = frc::DriverStation::GetInstance().GetGameSpecificMessage();
+    dsDisplay.ExecAutonomous();
+}
 
 void Robot::TeleopPeriodic() {
-    robotDrive.SetPositionReference(driveStick1.GetY() * -50.0);
-    robotDrive.SetAngleReference(driveStick1.GetX() * 0.0);
-    /*    // Drive Stick Controls
-if (driveStick1.GetRawButton(1)) {
-    robotDrive.Drive(driveStick1.GetY() * 0.5, driveStick2.GetX() * 0.5,
+    // Drive Stick Controls
+	if (driveStick1.GetRawButton(1)) {
+		robotDrive.Drive(driveStick1.GetY() * 0.5, driveStick2.GetX() * 0.5,
+				driveStick2.GetRawButton(2));
+	} else {
+		robotDrive.Drive(driveStick1.GetY(), driveStick2.GetX(),
                      driveStick2.GetRawButton(2));
-} else {
-    robotDrive.Drive(driveStick1.GetY(), driveStick2.GetX(),
-                     driveStick2.GetRawButton(2));
-}*/
+	}
 
     // Intake Controls
     if (appendageStick.GetRawButtonPressed(3)) {
@@ -128,7 +129,7 @@ if (driveStick1.GetRawButton(1)) {
             }
 
             if (appendageStick.GetRawButton(8)) {
-                elevator.SetHeightReference(/*kSwitchHeight*/ -8.0);
+                elevator.SetHeightReference(/*kSwitchHeight*/-8.0);
             }
             if (appendageStick.GetRawButton(9)) {
                 elevator.SetHeightReference(/*kScaleHeight*/ -20.0);
@@ -165,19 +166,16 @@ if (driveStick1.GetRawButton(1)) {
 
 void Robot::DS_PrintOut() {
     robotDrive.Debug();
-    if (liveGrapher.HasIntervalPassed()) {
+    /*if (liveGrapher.HasIntervalPassed()) {
         liveGrapher.GraphData(robotDrive.GetAngleReference(),
                               "Angle Reference");
         liveGrapher.GraphData(robotDrive.GetAngle(), "Angle");
-        // liveGrapher.GraphData(robotDrive.GetPosReference(), "Position
-        // Reference");  liveGrapher.GraphData(robotDrive.GetPosition(),
-        // "Position");
+        liveGrapher.GraphData(elevator.GetHeight(), "Elevator Height");
+        liveGrapher.GraphData(elevator.GetHeightReference(), "Elevator Reference");
+
+        liveGrapher.GraphData(robotDrive.GetPosReference(), "Position Reference");
+        liveGrapher.GraphData(robotDrive.GetPosition(), "Position");
         liveGrapher.ResetInterval();
-    }
-    /*if (liveGrapher.HasIntervalPassed()){
-            liveGrapher.GraphData(elevator.GetHeight(), "Elevator Height");
-            liveGrapher.GraphData(elevator.GetHeightReference(), "Elevator
-    Reference"); liveGrapher.ResetInterval();
     }*/
 }
 

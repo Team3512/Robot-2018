@@ -26,9 +26,7 @@ void Robot::AutoLeftSwitch() {
                 frc::DriverStation::GetInstance().GetGameSpecificMessage();
 
             if (platePosition[kFriendlySwitch] == 'L') {
-                robotDrive.SetPositionReference(
-                    168.0 -
-                    kRobotLength / 2.0);  // Back bumper to middle of robot
+                robotDrive.SetPositionReference(168.0 - kRobotLength / 2.0);  // Back bumper to middle of robot
             } else {
                 robotDrive.SetPositionReference(228.0 - kRobotLength / 2.0);
             }
@@ -43,13 +41,14 @@ void Robot::AutoLeftSwitch() {
 
         case State::kInitialForward:
             if (robotDrive.PosAtReference() && autoTimer.HasPeriodPassed(1.0)) {
-                if (platePosition[kFriendlySwitch] == 'R') {
+                if (platePosition[kFriendlySwitch] == 'L') {
                     robotDrive.SetAngleReference(90.0);
                     state = State::kFinalRotate;
                 } else {
                     robotDrive.ResetGyro();
                     robotDrive.SetAngleReference(90.0);
                     state = State::kLeftRotate;
+
                 }
             }
             break;
@@ -73,7 +72,7 @@ void Robot::AutoLeftSwitch() {
             if (robotDrive.AngleAtReference() &&
                 autoTimer.HasPeriodPassed(1.0)) {
                 robotDrive.ResetEncoders();
-                robotDrive.SetPositionReference(20.0);  // Estimate
+                robotDrive.SetPositionReference(10.0);  // Estimate
                 state = State::kFinalForward;
             }
             break;

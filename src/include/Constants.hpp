@@ -92,8 +92,7 @@ constexpr int kElevatorMasterID = 7;
 constexpr int kElevatorSlaveID = 8;
 
 // Hall Effect Sensor Port
-constexpr int kElevatorForwardHallPort = 1;
-constexpr int kElevatorReverseHallPort = 0;
+constexpr int kElevatorBottomHallPort = 1;
 
 // Distance per Pulse
 constexpr double kElevatorDpP = 0.00142230843;
@@ -109,7 +108,7 @@ constexpr double kGravityFeedForward = -0.01;
 constexpr double kFloorHeight = 0.0;
 constexpr double kSwitchHeight = -12.0;
 constexpr double kScaleHeight = -60.0;
-constexpr double kClimbHeight = -80.0;
+constexpr double kClimbHeight = -72.0;
 
 /*
  * Climber

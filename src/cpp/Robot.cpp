@@ -116,7 +116,7 @@ void Robot::TeleopPeriodic() {
         case ElevatorMode::kPosition:  // TODO: change the Height
                                        // References back to constants when
                                        // we know the correct heights
-            if (!elevator.GetForwardHallEffect()) {
+            if (!elevator.GetBottomHallEffect()) {
                 elevator.ResetEncoder();
             }
             if (appendageStick.GetRawButton(7)) {
@@ -140,7 +140,7 @@ void Robot::TeleopPeriodic() {
             break;
         case ElevatorMode::kVelocity:
             elevator.SetVelocity(appendageStick.GetY());
-            if (!elevator.GetForwardHallEffect()) {
+            if (!elevator.GetBottomHallEffect()) {
                 elevator.ResetEncoder();
             }
             if (appendageStick.GetRawButtonPressed(12)) {

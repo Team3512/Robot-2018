@@ -84,12 +84,12 @@ constexpr int kElevatorForwardHallPort = 1;
 constexpr int kElevatorReverseHallPort = 0;
 
 // Distance per Pulse
-constexpr double kElevatorDpP = 0.00142230843;
+constexpr double kElevatorDpP = 0.00142230843;  // Compbot: 29.41667/19261.33
 
 // Elevator PID
-constexpr double kElevatorP = 0.09;
-constexpr double kElevatorI = 0.004;
-constexpr double kElevatorD = 0.0;
+constexpr double kElevatorP = 0.09;   // 0.27
+constexpr double kElevatorI = 0.004;  // 0.001
+constexpr double kElevatorD = 0.0;    // 0.0
 constexpr double kElevatorControllerPeriod = 0.02;
 constexpr double kGravityFeedForward = -0.01;
 

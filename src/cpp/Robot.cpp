@@ -88,7 +88,13 @@ void Robot::TeleopPeriodic() {
         robotDrive.Drive(driveStick1.GetY(), driveStick2.GetX(),
                          driveStick2.GetRawButton(2));
     }
-
+    if (appendageStick.GetRawButton(1)) {
+        elevator.SetHeightReference(50.0);
+    }
+    if (appendageStick.GetRawButton(2)) {
+        elevator.SetHeightReference(0);
+    }
+    /*
     // Intake Controls
     if (appendageStick.GetRawButtonPressed(2)) {
         climber.Shift();
@@ -118,10 +124,10 @@ void Robot::TeleopPeriodic() {
         appendageStick.GetRawButtonReleased(6)) {
         intake.SetMotors(MotorState::kIdle);
     }
-
+     */
     // Elevator Controls
 
-    switch (elevatorMode) {
+    /* switch (elevatorMode) {
         case ElevatorMode::kPosition:  // TODO: change the Height
                                        // References back to constants when
                                        // we know the correct heights
@@ -133,13 +139,13 @@ void Robot::TeleopPeriodic() {
             }
 
             if (appendageStick.GetRawButton(8)) {
-                elevator.SetHeightReference(/*kSwitchHeight*/ -8.0);
+                elevator.SetHeightReference(kSwitchHeight);
             }
             if (appendageStick.GetRawButton(9)) {
-                elevator.SetHeightReference(/*kScaleHeight*/ -20.0);
+                elevator.SetHeightReference(kScaleHeight);
             }
             if (appendageStick.GetRawButton(10)) {
-                elevator.SetHeightReference(/*kClimbHeight*/ -80.0);
+                elevator.SetHeightReference(kClimbHeight);
             }
             if (appendageStick.GetRawButtonPressed(12)) {
                 elevator.SetHeightReference(elevator.GetHeight());
@@ -157,7 +163,7 @@ void Robot::TeleopPeriodic() {
                 elevator.StartClosedLoop();
                 elevatorMode = ElevatorMode::kPosition;
             }
-    }
+    }*/
 
     /*if (appendageStick.GetRawButtonPressed(11)) {
         if (server.GetSource() == camera1) {
@@ -170,18 +176,19 @@ void Robot::TeleopPeriodic() {
 
 void Robot::DS_PrintOut() {
     // robotDrive.Debug();
-    /*if (liveGrapher.HasIntervalPassed()) {
-        liveGrapher.GraphData(robotDrive.GetAngleReference(),
-                              "Angle Reference");
-        liveGrapher.GraphData(robotDrive.GetAngle(), "Angle");
+    if (liveGrapher.HasIntervalPassed()) {
+        // liveGrapher.GraphData(robotDrive.GetAngleReference(),
+        //                       "Angle Reference");
+        // liveGrapher.GraphData(robotDrive.GetAngle(), "Angle");
         liveGrapher.GraphData(elevator.GetHeight(), "Elevator Height");
-        liveGrapher.GraphData(elevator.GetHeightReference(), "Elevator
-    Reference");
+        liveGrapher.GraphData(elevator.GetHeightReference(),
+                              "Elevator Reference");
 
-        liveGrapher.GraphData(robotDrive.GetPosReference(), "Position
-    Reference"); liveGrapher.GraphData(robotDrive.GetPosition(), "Position");
+        // liveGrapher.GraphData(robotDrive.GetPosReference(), "Position
+        // Reference"); liveGrapher.GraphData(robotDrive.GetPosition(),
+        // "Position");
         liveGrapher.ResetInterval();
-    }*/
+    }
 }
 
 START_ROBOT_CLASS(Robot)

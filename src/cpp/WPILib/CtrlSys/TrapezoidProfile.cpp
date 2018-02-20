@@ -114,8 +114,6 @@ void TrapezoidProfile::SetTimeToMaxV(double timeToMaxV) {
 }
 
 MotionProfile::State TrapezoidProfile::UpdateSetpoint(double currentTime) {
-  std::lock_guard<std::mutex> lock(m_mutex);
-
   if (currentTime < m_timeToMaxVelocity) {
     // Accelerate up
     std::get<2>(m_ref) = m_acceleration;

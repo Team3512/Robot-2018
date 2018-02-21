@@ -15,6 +15,7 @@
 class Climber : public Service {
 public:
     void Shift();
+    void Align();
     void HandleEvent(Event event) override;
 
 private:

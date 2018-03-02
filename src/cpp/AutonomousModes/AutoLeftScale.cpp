@@ -29,7 +29,7 @@ void Robot::AutoLeftScalePeriodic() {
 
             if (platePosition[kScale] == 'L') {
                 robotDrive.SetPositionReference(
-                    260.0 -
+                    300.0 -
                     kRobotLength /
                         2.0);  // Back bumper to middle of robot (ESTIMATE)
             } else {
@@ -45,7 +45,7 @@ void Robot::AutoLeftScalePeriodic() {
             break;
 
         case State::kInitialForward:
-            if (robotDrive.PosAtReference() && autoTimer.HasPeriodPassed(1.0)) {
+            if (robotDrive.PosAtReference() && autoTimer.HasPeriodPassed(2.0)) {
                 robotDrive.SetAngleReference(90.0);
                 if (platePosition[kScale] == 'L') {
                     state = State::kFinalRotate;
@@ -63,7 +63,7 @@ void Robot::AutoLeftScalePeriodic() {
             }
             break;
         case State::kLeftForward:
-            if (robotDrive.PosAtReference() && autoTimer.HasPeriodPassed(1.0)) {
+            if (robotDrive.PosAtReference() && autoTimer.HasPeriodPassed(2.0)) {
                 robotDrive.ResetGyro();
                 robotDrive.SetAngleReference(-90.0);
 
@@ -75,7 +75,7 @@ void Robot::AutoLeftScalePeriodic() {
                 autoTimer.HasPeriodPassed(1.0)) {
                 robotDrive.ResetEncoders();
                 if (platePosition[kScale] == 'L') {
-                    robotDrive.SetPositionReference(20.0);  // ESTIMATE
+                    robotDrive.SetPositionReference(24.0);  // ESTIMATE
                 } else {
                     robotDrive.SetPositionReference(50.0);  // ESTIMATE
                 }                                           // Estimate
@@ -83,7 +83,7 @@ void Robot::AutoLeftScalePeriodic() {
             }
             break;
         case State::kFinalForward:
-            if (robotDrive.PosAtReference() && autoTimer.HasPeriodPassed(1.0)) {
+            if (robotDrive.PosAtReference() && autoTimer.HasPeriodPassed(2.0)) {
                 intake.Open();
 
                 robotDrive.StopClosedLoop();

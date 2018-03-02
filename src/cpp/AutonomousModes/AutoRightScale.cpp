@@ -28,12 +28,9 @@ void Robot::AutoRightScalePeriodic() {
                 frc::DriverStation::GetInstance().GetGameSpecificMessage();
 
             if (platePosition[kScale] == 'R') {
-                robotDrive.SetPositionReference(
-                    260.0 -
-                    kRobotLength /
-                        2.0);  // Back bumper to middle of robot (ESTIMATE)
+                robotDrive.SetPositionReference(324.0 - kRobotLength / 2.0);
             } else {
-                robotDrive.SetPositionReference(228.0 - kRobotLength / 2.0);
+                robotDrive.SetPositionReference(236.5 - kRobotLength / 2.0);
             }
             robotDrive.SetAngleReference(0.0);
             robotDrive.StartClosedLoop();
@@ -58,7 +55,7 @@ void Robot::AutoRightScalePeriodic() {
             if (robotDrive.AngleAtReference() &&
                 autoTimer.HasPeriodPassed(1.0)) {
                 robotDrive.ResetEncoders();
-                robotDrive.SetPositionReference(137.0);  // Estimate
+                robotDrive.SetPositionReference(199.0);
                 state = State::kLeftForward;
             }
             break;
@@ -75,10 +72,10 @@ void Robot::AutoRightScalePeriodic() {
                 autoTimer.HasPeriodPassed(1.0)) {
                 robotDrive.ResetEncoders();
                 if (platePosition[kScale] == 'R') {
-                    robotDrive.SetPositionReference(20.0);  // ESTIMATE
+                    robotDrive.SetPositionReference(24.0 - kRobotLength / 2.0);
                 } else {
-                    robotDrive.SetPositionReference(50.0);  // ESTIMATE
-                }                                           // Estimate
+                    robotDrive.SetPositionReference(56.0 - kRobotLength / 2.0);
+                }
                 state = State::kFinalForward;
             }
             break;

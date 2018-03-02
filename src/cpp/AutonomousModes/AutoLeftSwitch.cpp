@@ -28,11 +28,9 @@ void Robot::AutoLeftSwitchPeriodic() {
                 frc::DriverStation::GetInstance().GetGameSpecificMessage();
 
             if (platePosition[kFriendlySwitch] == 'L') {
-                robotDrive.SetPositionReference(
-                    168.0 -
-                    kRobotLength / 2.0);  // Back bumper to middle of robot
+                robotDrive.SetPositionReference(168.0 - kRobotLength / 2.0);
             } else {
-                robotDrive.SetPositionReference(228.0 - kRobotLength / 2.0);
+                robotDrive.SetPositionReference(236.5 - kRobotLength / 2.0);
             }
             robotDrive.SetAngleReference(0.0);
             robotDrive.StartClosedLoop();
@@ -59,7 +57,7 @@ void Robot::AutoLeftSwitchPeriodic() {
             if (robotDrive.AngleAtReference() &&
                 autoTimer.HasPeriodPassed(1.0)) {
                 robotDrive.ResetEncoders();
-                robotDrive.SetPositionReference(137.0);  // Estimate
+                robotDrive.SetPositionReference(236.5 - kRobotWidth / 2.0);
                 state = State::kLeftForward;
             }
             break;
@@ -75,13 +73,13 @@ void Robot::AutoLeftSwitchPeriodic() {
             if (robotDrive.AngleAtReference() &&
                 autoTimer.HasPeriodPassed(1.0)) {
                 robotDrive.ResetEncoders();
-                robotDrive.SetPositionReference(10.0);  // Estimate
+                robotDrive.SetPositionReference(55 - kRobotLength / 2.0);
                 state = State::kFinalForward;
             }
             break;
         case State::kFinalForward:
             if (robotDrive.PosAtReference() && autoTimer.HasPeriodPassed(1.0)) {
-                intake.Open();
+                intake.SetMotors(MotorState::kOuttake);
 
                 robotDrive.StopClosedLoop();
                 elevator.StopClosedLoop();

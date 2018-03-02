@@ -27,7 +27,7 @@ void Robot::AutoCenterSwitchPeriodic() {
             platePosition =
                 frc::DriverStation::GetInstance().GetGameSpecificMessage();
 
-            robotDrive.SetPositionReference(50.0);  // Estimate
+            robotDrive.SetPositionReference(67.0 - kRobotLength / 2.0);
             robotDrive.SetAngleReference(0.0);
             robotDrive.StartClosedLoop();
 
@@ -50,14 +50,14 @@ void Robot::AutoCenterSwitchPeriodic() {
         case State::kInitialRotate:
             if (robotDrive.AngleAtReference() &&
                 autoTimer.HasPeriodPassed(1.0)) {
+                robotDrive.ResetEncoders();
                 if (platePosition[kFriendlySwitch] == 'R') {
-                    robotDrive.ResetEncoders();
-                    robotDrive.SetPositionReference(90.0);
+                    robotDrive.SetPositionReference(60.0);  // Estimate
                 } else {
-                    robotDrive.ResetEncoders();
-                    robotDrive.SetPositionReference(110.0);
+                    robotDrive.SetPositionReference(
+                        60.0 + kExchangeOffset);  // Estimate
                 }
-                state = State::kInitialRotate;
+                state = State::kSecondForward;
             }
             break;
         case State::kSecondForward:
@@ -76,13 +76,13 @@ void Robot::AutoCenterSwitchPeriodic() {
             if (robotDrive.AngleAtReference() &&
                 autoTimer.HasPeriodPassed(1.0)) {
                 robotDrive.ResetEncoders();
-                robotDrive.SetPositionReference(30.0);  // Estimate
+                robotDrive.SetPositionReference(73.0 - kRobotLength / 2.0);
                 state = State::kFinalForward;
             }
             break;
         case State::kFinalForward:
             if (robotDrive.PosAtReference() && autoTimer.HasPeriodPassed(1.0)) {
-                intake.Open();
+                intake.SetMotors(MotorState::kOuttake);
                 robotDrive.StopClosedLoop();
                 elevator.StopClosedLoop();
 

@@ -59,6 +59,9 @@ public:
     void AutoRightScaleInit();
     void AutoRightScalePeriodic();
 
+    void AutoLeftDoubleInit();
+    void AutoLeftDoublePeriodic();
+
     void DS_PrintOut();
 
     static Intake intake;

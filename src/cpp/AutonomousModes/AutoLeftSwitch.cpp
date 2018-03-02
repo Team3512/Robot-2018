@@ -75,7 +75,7 @@ void Robot::AutoLeftSwitchPeriodic() {
             if (robotDrive.AngleAtReference() &&
                 autoTimer.HasPeriodPassed(1.0)) {
                 robotDrive.ResetEncoders();
-                robotDrive.SetPositionReference(10.0);  // Estimate
+                robotDrive.SetPositionReference(30.0);  // Estimate
                 state = State::kFinalForward;
             }
             break;

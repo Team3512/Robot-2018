@@ -91,6 +91,8 @@ bool DriveTrain::AtPositionGoal() const { return m_controller.AtPosition(); }
 
 bool DriveTrain::AtAngleGoal() const { return m_controller.AtAngle(); }
 
+double DriveTrain::ProfileTimeTotal() const { return ProfileTimeTotal(); }
+
 void DriveTrain::ResetGyro() { m_gyro.Reset(); }
 
 void DriveTrain::CalibrateGyro() { m_gyro.Calibrate(); }

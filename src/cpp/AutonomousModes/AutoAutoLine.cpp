@@ -14,7 +14,8 @@ void Robot::AutoAutoLinePeriodic() {
 
     switch (state) {
         case State::kInit:
-            robotDrive.SetPositionGoal(kRobotLength + 120.0);  // Estimate
+            robotDrive.SetPositionGoal(168.0 -
+                    kRobotLength / 2.0);
             robotDrive.SetAngleGoal(0.0);
             robotDrive.StartClosedLoop();
 

@@ -29,7 +29,8 @@ void Robot::AutoCenterScalePeriodic() {
             platePosition =
                 frc::DriverStation::GetInstance().GetGameSpecificMessage();
 
-            robotDrive.SetPositionGoal(50.0);  // Estimate
+            robotDrive.SetPositionGoal(67.0 -
+                                            kRobotLength / 2.0);  // Estimate
             robotDrive.SetAngleGoal(0.0);
             robotDrive.StartClosedLoop();
 
@@ -53,9 +54,12 @@ void Robot::AutoCenterScalePeriodic() {
             if (robotDrive.AtAngleGoal() && autoTimer.HasPeriodPassed(1.0)) {
                 robotDrive.ResetEncoders();
                 if (platePosition[kScale] == 'R') {
-                    robotDrive.SetPositionGoal(150.0);  // ESTIMATE
+                    robotDrive.SetPositionGoal(132.0 + kRobotWidth -
+                                                    kRobotLength / 2.0);
                 } else {
-                    robotDrive.SetPositionGoal(170.0);  // ESTIMATE
+                    robotDrive.SetPositionGoal(
+                        132.0 + kExchangeOffset + kRobotWidth -
+                        kRobotLength / 2.0);  // ESTIMATE
                 }
                 state = State::kSecondForward;
             }
@@ -74,7 +78,7 @@ void Robot::AutoCenterScalePeriodic() {
         case State::kSecondRotate:
             if (robotDrive.AtAngleGoal() && autoTimer.HasPeriodPassed(1.0)) {
                 robotDrive.ResetEncoders();
-                robotDrive.SetPositionGoal(150.0);  // Estimate
+                robotDrive.SetPositionGoal(257.0 - kRobotLength / 2.0);
                 state = State::kThirdForward;
             }
             break;
@@ -86,6 +90,15 @@ void Robot::AutoCenterScalePeriodic() {
                 } else {
                     robotDrive.SetAngleGoal(90.0);
                 }
+
+                state = State::kFinalRotate;
+            }
+            break;
+        case State::kFinalRotate:
+            if (robotDrive.AtAngleGoal() &&
+                autoTimer.HasPeriodPassed(1.0)) {
+                robotDrive.ResetEncoders();
+                robotDrive.SetPositionGoal(48.0 - kRobotLength / 2.0);
 
                 state = State::kFinalForward;
             }

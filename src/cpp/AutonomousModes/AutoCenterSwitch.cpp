@@ -27,7 +27,7 @@ void Robot::AutoCenterSwitchPeriodic() {
             platePosition =
                 frc::DriverStation::GetInstance().GetGameSpecificMessage();
 
-            robotDrive.SetPositionGoal(50.0);  // Estimate
+            robotDrive.SetPositionGoal(67.0 - kRobotLength / 2.0);
             robotDrive.SetAngleGoal(0.0);
             robotDrive.StartClosedLoop();
 
@@ -49,14 +49,14 @@ void Robot::AutoCenterSwitchPeriodic() {
             break;
         case State::kInitialRotate:
             if (robotDrive.AtAngleGoal() && autoTimer.HasPeriodPassed(1.0)) {
+                robotDrive.ResetEncoders();
                 if (platePosition[kFriendlySwitch] == 'R') {
-                    robotDrive.ResetEncoders();
-                    robotDrive.SetPositionGoal(90.0);
+                    robotDrive.SetPositionGoal(60.0);  // Estimate
                 } else {
-                    robotDrive.ResetEncoders();
-                    robotDrive.SetPositionGoal(110.0);
+                    robotDrive.SetPositionGoal(60.0 +
+                                               kExchangeOffset);  // Estimate
                 }
-                state = State::kInitialRotate;
+                state = State::kSecondForward;
             }
             break;
         case State::kSecondForward:
@@ -74,13 +74,13 @@ void Robot::AutoCenterSwitchPeriodic() {
         case State::kFinalRotate:
             if (robotDrive.AtAngleGoal() && autoTimer.HasPeriodPassed(1.0)) {
                 robotDrive.ResetEncoders();
-                robotDrive.SetPositionGoal(30.0);  // Estimate
+                robotDrive.SetPositionGoal(73.0 - kRobotLength / 2.0);
                 state = State::kFinalForward;
             }
             break;
         case State::kFinalForward:
             if (robotDrive.AtPositionGoal() && autoTimer.HasPeriodPassed(1.0)) {
-                intake.Open();
+                intake.SetMotors(MotorState::kOuttake);
                 robotDrive.StopClosedLoop();
                 elevator.StopClosedLoop();
 

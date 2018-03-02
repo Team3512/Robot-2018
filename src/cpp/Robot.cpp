@@ -39,6 +39,9 @@ Robot::Robot() {
     dsDisplay.AddAutoMethod("Right Position Scale",
                             std::bind(&Robot::AutoRightScaleInit, this),
                             std::bind(&Robot::AutoRightScalePeriodic, this));
+    dsDisplay.AddAutoMethod("Left Position Double",
+                            std::bind(&Robot::AutoLeftDoubleInit, this),
+                            std::bind(&Robot::AutoLeftDoublePeriodic, this));
     server.SetSource(camera1);
 
     std::array<Waypoint, 3> waypoints;

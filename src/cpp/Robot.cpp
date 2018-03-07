@@ -75,6 +75,14 @@ void Robot::RobotPeriodic() {
     for (int i = 1; i < 12; i++) {
         if (appendageStick.GetRawButtonPressed(i)) {
             Event event{EventType::kButtonPressed, i};
+            Robot::PostEvent(event);
+            climber.PostEvent(event);
+            elevator.PostEvent(event);
+            intake.PostEvent(event);
+        }
+        if (appendageStick.GetRawButtonReleased(i)) {
+            Event event{EventType::kButtonReleased, i};
+            Robot::PostEvent(event);
             climber.PostEvent(event);
             elevator.PostEvent(event);
             intake.PostEvent(event);
@@ -82,11 +90,7 @@ void Robot::RobotPeriodic() {
     }
 }
 
-void Robot::DisabledPeriodic() {
-    if (driveStick1.GetRawButtonPressed(12)) {
-        robotDrive.ResetEncoders();
-    }
-}
+void Robot::DisabledPeriodic() {}
 
 void Robot::AutonomousPeriodic() { dsDisplay.ExecAutonomousPeriodic(); }
 
@@ -99,20 +103,39 @@ void Robot::TeleopPeriodic() {
         robotDrive.Drive(driveStick1.GetY(), driveStick2.GetX(),
                          driveStick2.GetRawButton(2));
     }
+}
 
+void Robot::DS_PrintOut() {
+    // robotDrive.Debug();
+    if (liveGrapher.HasIntervalPassed()) {
+        liveGrapher.GraphData(robotDrive.GetAngleReference(),
+                              "Angle Reference");
+        liveGrapher.GraphData(robotDrive.GetAngle(), "Angle");
+        // liveGrapher.GraphData(elevator.GetHeight(), "Elevator Height");
+        // liveGrapher.GraphData(elevator.GetHeightReference(), "Elevator
+        // Reference");
+
+        liveGrapher.GraphData(robotDrive.GetPosReference(),
+                              "Position Reference");
+        liveGrapher.GraphData(robotDrive.GetPosition(), "Position");
+        liveGrapher.ResetInterval();
+    }
+}
+
+void Robot::HandleEvent(Event event) {
     // Intake Controls
-    if (appendageStick.GetRawButtonPressed(2)) {
+    if (event.type == EventType::kButtonPressed && event.param == 2) {
         climber.Shift();
     }
 
-    if (appendageStick.GetRawButtonPressed(3)) {
+    if (event.type == EventType::kButtonPressed && event.param == 3) {
         if (intake.IsOpen()) {
             intake.Close();
         } else {
             intake.Open();
         }
     }
-    if (appendageStick.GetRawButtonPressed(5) &&
+    if (event.type == EventType::kButtonPressed && event.param == 5 &&
         !elevator.GetBottomHallEffect()) {
         if (intake.IsDeployed()) {
             intake.Stow();
@@ -120,14 +143,14 @@ void Robot::TeleopPeriodic() {
             intake.Deploy();
         }
     }
-    if (appendageStick.GetRawButtonPressed(4)) {
+    if (event.type == EventType::kButtonPressed && event.param == 4) {
         intake.SetMotors(MotorState::kIntake);
     }
-    if (appendageStick.GetRawButtonPressed(6)) {
+    if (event.type == EventType::kButtonPressed && event.param == 6) {
         intake.SetMotors(MotorState::kOuttake);
     }
-    if (appendageStick.GetRawButtonReleased(4) ||
-        appendageStick.GetRawButtonReleased(6)) {
+    if (event.type == EventType::kButtonReleased && event.param == 4 ||
+        event.type == EventType::kButtonReleased && event.param == 6) {
         intake.SetMotors(MotorState::kIdle);
     }
 
@@ -155,7 +178,7 @@ void Robot::TeleopPeriodic() {
             if (appendageStick.GetRawButton(11)) {
                 elevator.SetHeightReference(kClimbHeight);
             }
-            if (appendageStick.GetRawButtonPressed(5) &&
+            if (event.type == EventType::kButtonPressed && event.param == 5 &&
                 !elevator.GetBottomHallEffect()) {
                 if (intake.IsDeployed()) {
                     intake.Stow();
@@ -163,7 +186,7 @@ void Robot::TeleopPeriodic() {
                     intake.Deploy();
                 }
             }
-            if (appendageStick.GetRawButtonPressed(12)) {
+            if (event.type == EventType::kButtonPressed && event.param == 12) {
                 elevator.SetHeightReference(elevator.GetHeight());
                 elevator.StopClosedLoop();
                 elevatorMode = ElevatorMode::kVelocity;
@@ -174,37 +197,20 @@ void Robot::TeleopPeriodic() {
             if (!elevator.GetBottomHallEffect()) {
                 elevator.ResetEncoder();
             }
-            if (appendageStick.GetRawButtonPressed(12)) {
+            if (event.type == EventType::kButtonPressed && event.param == 12) {
                 elevator.SetHeightReference(elevator.GetHeight());
                 elevator.StartClosedLoop();
                 elevatorMode = ElevatorMode::kPosition;
             }
     }
 
-    /*if (appendageStick.GetRawButtonPressed(11)) {
+    /*if (event.type == EventType::kButtonPressed && event.param == 11) {
         if (server.GetSource() == camera1) {
             server.SetSource(camera2);
         } else {
             server.SetSource(camera1);
         }
     }*/
-}
-
-void Robot::DS_PrintOut() {
-    // robotDrive.Debug();
-    if (liveGrapher.HasIntervalPassed()) {
-        liveGrapher.GraphData(robotDrive.GetAngleReference(),
-                              "Angle Reference");
-        liveGrapher.GraphData(robotDrive.GetAngle(), "Angle");
-        // liveGrapher.GraphData(elevator.GetHeight(), "Elevator Height");
-        // liveGrapher.GraphData(elevator.GetHeightReference(), "Elevator
-        // Reference");
-
-        liveGrapher.GraphData(robotDrive.GetPosReference(),
-                              "Position Reference");
-        liveGrapher.GraphData(robotDrive.GetPosition(), "Position");
-        liveGrapher.ResetInterval();
-    }
 }
 
 START_ROBOT_CLASS(Robot)

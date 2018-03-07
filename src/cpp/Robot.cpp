@@ -75,6 +75,7 @@ void Robot::RobotPeriodic() {
     for (int i = 1; i < 12; i++) {
         if (appendageStick.GetRawButtonPressed(i)) {
             Event event{EventType::kButtonPressed, i};
+            Robot::PostEvent(event);
             climber.PostEvent(event);
             elevator.PostEvent(event);
             intake.PostEvent(event);
@@ -99,7 +100,26 @@ void Robot::TeleopPeriodic() {
         robotDrive.Drive(driveStick1.GetY(), driveStick2.GetX(),
                          driveStick2.GetRawButton(2));
     }
+}
 
+void Robot::DS_PrintOut() {
+    // robotDrive.Debug();
+    if (liveGrapher.HasIntervalPassed()) {
+        liveGrapher.GraphData(robotDrive.GetAngleReference(),
+                              "Angle Reference");
+        liveGrapher.GraphData(robotDrive.GetAngle(), "Angle");
+        // liveGrapher.GraphData(elevator.GetHeight(), "Elevator Height");
+        // liveGrapher.GraphData(elevator.GetHeightReference(), "Elevator
+        // Reference");
+
+        liveGrapher.GraphData(robotDrive.GetPosReference(),
+                              "Position Reference");
+        liveGrapher.GraphData(robotDrive.GetPosition(), "Position");
+        liveGrapher.ResetInterval();
+    }
+}
+
+void Robot::HandleEvent(Event event) {
     // Intake Controls
     if (appendageStick.GetRawButtonPressed(2)) {
         climber.Shift();
@@ -188,23 +208,6 @@ void Robot::TeleopPeriodic() {
             server.SetSource(camera1);
         }
     }*/
-}
-
-void Robot::DS_PrintOut() {
-    // robotDrive.Debug();
-    if (liveGrapher.HasIntervalPassed()) {
-        liveGrapher.GraphData(robotDrive.GetAngleReference(),
-                              "Angle Reference");
-        liveGrapher.GraphData(robotDrive.GetAngle(), "Angle");
-        // liveGrapher.GraphData(elevator.GetHeight(), "Elevator Height");
-        // liveGrapher.GraphData(elevator.GetHeightReference(), "Elevator
-        // Reference");
-
-        liveGrapher.GraphData(robotDrive.GetPosReference(),
-                              "Position Reference");
-        liveGrapher.GraphData(robotDrive.GetPosition(), "Position");
-        liveGrapher.ResetInterval();
-    }
 }
 
 START_ROBOT_CLASS(Robot)

@@ -8,7 +8,10 @@
 #include <CtrlSys/RefInput.h>
 #include <CtrlSys/SumNode.h>
 #include <DigitalInput.h>
+#include <DoubleSolenoid.h>
 #include <Notifier.h>
+#include <RobotController.h>
+#include <Solenoid.h>
 #include <ctre/phoenix/MotorControl/CAN/WPI_TalonSRX.h>
 
 #include "Constants.hpp"
@@ -20,10 +23,14 @@ class Elevator : public Service {
 public:
     using WPI_TalonSRX = ctre::phoenix::motorcontrol::can::WPI_TalonSRX;
 
+    enum class State { kPosition, kVelocity, kFailedEncoder };
+
     Elevator();
 
     // Sets the voltage of the motors
     void SetVelocity(double velocity);
+
+    double GetVelocity() const;
 
     // Set encoder distance to 0
     void ResetEncoder();
@@ -47,6 +54,40 @@ public:
     // Gets whether the Hall Effect sensor has triggered
     bool GetBottomHallEffect();
 
+    // Toggles the shifter solenoid between forward and reverse
+    void Shift();
+
+    // Returns the status of the shifting solenoid
+    bool IsLowGear() const;
+
+    // Sets the pawl solenoid to true
+    void EngagePawl();
+
+    // Sets the pawl solenoid to false
+    void LockPawl();
+
+    // Gets the status of the pawl solenoid
+    bool GetPawl() const;
+
+    // Starts the elevator model
+    void StartSimulation();
+
+    // Set simulated position distance to 0
+    void ResetSimulation();
+
+    double GetSimulatedPosition() const;
+
+    double GetSimulatedVelocity() const;
+
+    // Gets simulated acceleration
+    double GetAcceleration(double voltage) const;
+
+    // Returns whether or not the encoders match the simulated estimates
+    bool CheckEncoderSafety(double joystick_value, State state);
+
+    // Sets forward and reverse encoder limits to infinity
+    void DisableSoftLimits();
+
     void HandleEvent(Event event) override;
 
 private:
@@ -55,9 +96,22 @@ private:
     CANTalonGroup m_elevatorGearbox{m_elevatorMasterMotor,
                                     m_elevatorSlaveMotor};
 
+    frc::Solenoid m_pawl{kPawlPort};
+    frc::DoubleSolenoid m_setupSolenoid{kSetupForwardPort, kSetupReversePort};
+
+    State m_state = State::kVelocity;
+
+    static bool m_encoderFailed;
+    bool m_hasBeenZeroed = false;
+    double m_u = 0.0;
+    double m_simulatedVelocity = 0.0;
+    double m_simulatedPosition = 0.0;
+
     Notifier m_notifier;
     // Reference
     frc::RefInput m_heightRef{0.0};
+
+    frc::Timer m_simTimer;
 
     // Sensors
     frc::DigitalInput m_elevatorBottomHall{kElevatorBottomHallPort};

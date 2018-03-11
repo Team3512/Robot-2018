@@ -106,9 +106,9 @@ void DriveTrain::ResetGyro() { m_gyro.Reset(); }
 void DriveTrain::CalibrateGyro() { m_gyro.Calibrate(); }
 
 void DriveTrain::Debug() {
-    std::cout << "Left Pos: " << m_leftGrbx.GetPosition()
+    /*std::cout << "Left Pos: " << m_leftGrbx.GetPosition()
               << " Right Pos: " << m_rightGrbx.GetPosition() << std::endl;
-    m_controller.Debug();
+    m_controller.Debug(); */
 }
 
 void DriveTrain::HandleEvent(Event event) {

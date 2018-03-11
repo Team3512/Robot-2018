@@ -56,6 +56,31 @@ constexpr double kRobotTimeToMaxRotateRate = 1.0;  // sec
 constexpr double kVDrive = 1.0 / 227.2;  // 1 / max velocity
 constexpr double kADrive = 0.005;  // (V - (kV * v + Vmin)) / a, 0.1, .00075
 
+// Elevator Motor Constants
+constexpr double kNumMotors = 2.0;                    // number of motors
+constexpr double kStallTorque = 2.42 * kNumMotors;    // N-m
+constexpr double kStallCurrent = 133.0 * kNumMotors;  // amps
+constexpr double kFreeSpeed = 5310.0;                 // no load rpm
+constexpr double kFreeCurrent = 2.7 * kNumMotors;     // amps
+constexpr double kme =
+    6.80389;  // estimated mass of elevator (carriage) in kg
+constexpr double kmr =
+    108.862;  // robot mass 120.0lb + another robot mass 120.0lb to kg
+constexpr double kR = 12.0 / kStallCurrent;  // resistance of motor
+constexpr double kPi = 3.1415926535897932;
+constexpr double Kv = (kFreeSpeed / 60.0 * 2.0 * kPi) /
+                             (12.0 - kR * kFreeCurrent);    // velocity constant
+constexpr double Kt = kStallTorque / kStallCurrent;  // torque constant
+constexpr double khighG =
+    (42.0 / 12.0) * (40.0 / 14.0);  // high gear-ratio
+constexpr double klowG =
+    (42.0 / 12.0) * (60.0 / 14.0);           // low gear-ratio
+constexpr double kr = 0.02762679089;  // radius of the drum in meters
+constexpr double kInPerSecToMPerSec =
+    0.0254;  // inches per second to meters per second
+constexpr double kMeterToInch = 39.37008;
+constexpr double kMaxVoltage = 12.0;
+
 // DriveTrain angle PID
 constexpr double kAngleP = 0.14;  // .14
 constexpr double kAngleI = 0.00;

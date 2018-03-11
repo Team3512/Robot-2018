@@ -11,7 +11,6 @@ std::unique_ptr<Segment[]> Robot::rightTrajectory;
 DriveTrain Robot::robotDrive;
 Intake Robot::intake;
 Elevator Robot::elevator;
-Climber Robot::climber;
 frc::Joystick Robot::appendageStick{kAppendageStickPort};
 frc::Joystick Robot::driveStick1{kDriveStick1Port};
 frc::Joystick Robot::driveStick2{kDriveStick2Port};
@@ -89,7 +88,7 @@ void Robot::AutonomousInit() {
     robotDrive.ResetGyro();
     elevator.ResetEncoder();
     intake.Deploy();
-    climber.LockPawl();
+    elevator.LockPawl();
 
     dsDisplay.ExecAutonomousInit();
 }
@@ -99,7 +98,7 @@ void Robot::TeleopInit() {
     elevator.StopClosedLoop();
     intake.Deploy();
     intake.Close();
-    climber.LockPawl();
+    elevator.LockPawl();
 }
 
 void Robot::TestInit() {}
@@ -108,6 +107,8 @@ void Robot::RobotPeriodic() {
     DS_PrintOut();
 
     if (!elevator.GetBottomHallEffect()) {
+        elevator.ResetSimulation();
+        elevator.StartSimulation();
         elevator.ResetEncoder();
     }
 
@@ -115,14 +116,12 @@ void Robot::RobotPeriodic() {
         if (appendageStick.GetRawButtonPressed(i)) {
             Event event{EventType::kButtonPressed, i};
             Robot::PostEvent(event);
-            climber.PostEvent(event);
             elevator.PostEvent(event);
             intake.PostEvent(event);
         }
         if (appendageStick.GetRawButtonReleased(i)) {
             Event event{EventType::kButtonReleased, i};
             Robot::PostEvent(event);
-            climber.PostEvent(event);
             elevator.PostEvent(event);
             intake.PostEvent(event);
         }
@@ -136,7 +135,6 @@ void Robot::AutonomousPeriodic() { dsDisplay.ExecAutonomousPeriodic(); }
 void Robot::TeleopPeriodic() {
     robotDrive.PostEvent(EventType::kTimeout);
     elevator.PostEvent(EventType::kTimeout);
-    climber.PostEvent(EventType::kTimeout);
 }
 
 void Robot::HandleEvent(Event event) {

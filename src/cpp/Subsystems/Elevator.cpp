@@ -2,6 +2,8 @@
 
 #include "Subsystems/Elevator.hpp"
 
+#include <cmath>
+#include <iostream>
 #include <limits>
 
 #include "Robot.hpp"
@@ -13,9 +15,12 @@ Elevator::Elevator() : m_notifier([&] { Robot::elevator.PostEvent({}); }) {
     m_elevatorGearbox.EnableSoftLimits(std::numeric_limits<double>::infinity(),
                                        kClimbHeight);
     m_elevatorGearbox.SetHardLimitPressedState(false);
+    m_simTimer.Start();
 }
 
 void Elevator::SetVelocity(double velocity) { m_elevatorGearbox.Set(velocity); }
+
+double Elevator::GetVelocity() const { return m_elevatorGearbox.GetSpeed(); }
 
 void Elevator::ResetEncoder() { m_elevatorGearbox.ResetEncoder(); }
 
@@ -32,6 +37,54 @@ double Elevator::GetHeightReference() const { return m_heightRef.GetOutput(); }
 bool Elevator::HeightAtReference() const { return m_errorSum.InTolerance(); }
 
 bool Elevator::GetBottomHallEffect() { return m_elevatorBottomHall.Get(); }
+
+void Elevator::Shift() {
+    if (m_setupSolenoid.Get() == DoubleSolenoid::kForward) {
+        m_setupSolenoid.Set(DoubleSolenoid::kReverse);  // Low gear
+    } else {
+        m_setupSolenoid.Set(DoubleSolenoid::kForward);  // High gear
+    }
+}
+
+void Elevator::StartSimulation() { m_hasBeenZeroed = true; }
+
+void Elevator::ResetSimulation() { m_simulatedPosition = 0.0; }
+
+double Elevator::GetAcceleration(double voltage) const {
+    if (m_setupSolenoid.Get() == DoubleSolenoid::kReverse) {
+        return (khighG * Kt) / (kR * kr * kmr) *
+               ((voltage - (klowG * m_simulatedVelocity) / (kr * Kv)));
+    } else {
+        return (khighG * Kt) / (kR * kr * kme) *
+               ((voltage - (khighG * m_simulatedVelocity) / (kr * Kv)));
+    }
+}
+
+bool Elevator::CheckEncoderSafety(double joystick_value, ElevatorMode mode) {
+    if (m_hasBeenZeroed) {
+        if (mode == ElevatorMode::kPosition) {
+            m_u = m_pid.GetOutput() * RobotController::GetInputVoltage();
+        } else if (mode == ElevatorMode::kVelocity) {
+            m_u = joystick_value * RobotController::GetInputVoltage();
+        }
+
+        m_simulatedPosition += m_simulatedVelocity * m_simTimer.Get();
+        m_simulatedVelocity += GetAcceleration(m_u) * m_simTimer.Get();
+        m_simTimer.Reset();
+
+        double actualPosition = m_elevatorGearbox.GetPosition();
+
+        return std::abs(actualPosition - m_simulatedPosition) <
+               kClimbHeight;  // TODO: measure an appropriate tolerance
+    } else {
+        return true;
+    }
+}
+
+void Elevator::DisableSoftLimits() {
+    m_elevatorGearbox.EnableSoftLimits(std::numeric_limits<double>::infinity(),
+                                       std::numeric_limits<double>::infinity());
+}
 
 void Elevator::HandleEvent(Event event) {
     enum State {

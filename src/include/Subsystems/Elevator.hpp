@@ -9,6 +9,7 @@
 #include <CtrlSys/SumNode.h>
 #include <DigitalInput.h>
 #include <Notifier.h>
+#include <RobotController.h>
 #include <ctre/phoenix/MotorControl/CAN/WPI_TalonSRX.h>
 
 #include "Constants.hpp"
@@ -43,6 +44,10 @@ public:
     // Returns encoder PID loop references
     double GetHeightReference() const;
 
+    double GetAcceleration(double voltage) const;
+
+    void CheckEncoderSafety(double joystick_value);
+
     // Returns whether or not elevator has reached reference
     bool HeightAtReference() const;
 
@@ -56,10 +61,13 @@ private:
     WPI_TalonSRX m_elevatorSlaveMotor{kElevatorSlaveID};
     CANTalonGroup m_elevatorGearbox{m_elevatorMasterMotor,
                                     m_elevatorSlaveMotor};
+    double m_simulatedVelocity = 0.0;
 
     Notifier m_notifier;
     // Reference
     frc::RefInput m_heightRef{0.0};
+
+    Timer m_timer;
 
     // Sensors
     frc::DigitalInput m_elevatorBottomHall{kElevatorBottomHallPort};

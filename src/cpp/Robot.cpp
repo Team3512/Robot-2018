@@ -140,6 +140,7 @@ void Robot::TeleopPeriodic() {
             break;
         case ElevatorMode::kVelocity:
             elevator.SetVelocity(appendageStick.GetY());
+            elevator.CheckEncoderSafety(appendageStick.GetY()); // TODO: once this returns a bool, have it do _______
             break;
     }
 }

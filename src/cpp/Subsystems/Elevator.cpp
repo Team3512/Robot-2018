@@ -3,6 +3,8 @@
 #include "Subsystems/Elevator.hpp"
 
 #include <limits>
+#include <cmath>
+#include <iostream>
 
 #include "Robot.hpp"
 
@@ -13,6 +15,7 @@ Elevator::Elevator() : m_notifier([&] { Robot::elevator.PostEvent({}); }) {
     m_elevatorGearbox.EnableSoftLimits(std::numeric_limits<double>::infinity(),
                                        kClimbHeight);
     m_elevatorGearbox.SetHardLimitPressedState(false);
+    m_timer.Start();
 }
 
 void Elevator::SetVelocity(double velocity) { m_elevatorGearbox.Set(velocity); }
@@ -28,6 +31,25 @@ void Elevator::StopClosedLoop() { m_output.Disable(); }
 void Elevator::SetHeightReference(double height) { m_heightRef.Set(height); }
 
 double Elevator::GetHeightReference() const { return m_heightRef.GetOutput(); }
+
+double Elevator::GetAcceleration(double voltage) const {
+	// std::cout << "C1: " << (khighG*Kt)/(kR*kr*km) << " C2: " << (voltage-(khighG*m_simulatedVelocity)/kr*Kv) << std::endl;
+    return (khighG*Kt)/(kR*kr*km) * (voltage-(khighG*m_simulatedVelocity)/kr*Kv);
+}
+
+void Elevator::CheckEncoderSafety(double joystick_value) { // TODO: make this return a bool; check for high/low gear; if low gear, change km to robot's mass and change high gearing constant to low gearing ratio
+	double voltage = joystick_value * RobotController::GetInputVoltage();
+	m_simulatedVelocity += GetAcceleration(voltage) * m_timer.Get();
+	double m_actualVelocity = m_elevatorGearbox.GetSpeed() * kInPerSecToMPerSec;
+	std::cout << "Voltage: " << voltage << " Simulated Velocity: " << m_simulatedVelocity << /* " Actual Velocity: " << m_actualVelocity <<*/ std::endl;
+	/*double m_velocityError = std::abs(m_estimatedVelocity - m_actualVelocity);
+	if (m_velocityError > #){
+		return false;
+	} else {
+		return true;
+	}*/
+	m_timer.Reset();
+}
 
 bool Elevator::HeightAtReference() const { return m_errorSum.InTolerance(); }
 

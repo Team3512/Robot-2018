@@ -2,9 +2,13 @@
 
 #include "Subsystems/Elevator.hpp"
 
+#include <cmath>
+#include <iostream>
 #include <limits>
 
 #include "Robot.hpp"
+
+bool Elevator::m_encoderFailed = false;
 
 Elevator::Elevator() : m_notifier([&] { Robot::elevator.PostEvent({}); }) {
     m_elevatorGearbox.Set(0.0);
@@ -13,9 +17,14 @@ Elevator::Elevator() : m_notifier([&] { Robot::elevator.PostEvent({}); }) {
     m_elevatorGearbox.EnableSoftLimits(std::numeric_limits<double>::infinity(),
                                        kClimbHeight);
     m_elevatorGearbox.SetHardLimitPressedState(false);
+    m_simTimer.Start();
+    m_hasBeenZeroed = false;
 }
 
-void Elevator::SetVelocity(double velocity) { m_elevatorGearbox.Set(velocity); }
+void Elevator::SetVelocity(double velocity) { m_elevatorGearbox.Set(velocity);
+}
+
+double Elevator::GetVelocity() const { return m_elevatorGearbox.GetSpeed(); }
 
 void Elevator::ResetEncoder() { m_elevatorGearbox.ResetEncoder(); }
 
@@ -33,12 +42,85 @@ bool Elevator::HeightAtReference() const { return m_errorSum.InTolerance(); }
 
 bool Elevator::GetBottomHallEffect() { return m_elevatorBottomHall.Get(); }
 
+void Elevator::Shift() {
+    if (m_setupSolenoid.Get() == DoubleSolenoid::kForward) {
+        m_setupSolenoid.Set(DoubleSolenoid::kReverse);  // Low gear
+    } else {
+        m_setupSolenoid.Set(DoubleSolenoid::kForward);  // High gear
+    }
+}
+
+bool Elevator::IsLowGear() const {
+	if (m_setupSolenoid.Get() == DoubleSolenoid::kReverse){
+		return true;
+	} else {
+		return false;
+	}
+}
+
+void Elevator::EngagePawl() { m_pawl.Set(true); }
+
+void Elevator::LockPawl() { m_pawl.Set(false); }
+
+bool Elevator::GetPawl() const { return m_pawl.Get(); }
+
+void Elevator::StartSimulation() { m_hasBeenZeroed = true; }
+
+void Elevator::ResetSimulation() { m_simulatedPosition = 0.0;
+m_simulatedVelocity = 0.0;}
+
+double Elevator::GetAcceleration(double voltage) const {
+	if (IsLowGear() && GetPawl()){
+		return (khighG * Kt) / (kR * kr * kmr) *
+		               ((voltage - (klowG * m_simulatedVelocity) / (kr * Kv)));
+	} else if (GetPawl()) {
+        return (khighG * Kt) / (kR * kr * kme) *
+               ((voltage - (klowG * m_simulatedVelocity) / (kr * Kv)));
+    } else {
+        return (khighG * Kt) / (kR * kr * kme) *
+               ((voltage - (khighG * m_simulatedVelocity) / (kr * Kv)));
+    }
+}
+
+bool Elevator::CheckEncoderSafety(double joystick_value, State state) {
+    if (m_hasBeenZeroed) {
+        if (state == State::kPosition) {
+            m_u = m_pid.GetOutput() * RobotController::GetInputVoltage();
+        } else if (state == State::kVelocity) {
+            m_u = joystick_value * RobotController::GetInputVoltage();
+        }
+        std::cout << "Voltage: " << m_u << std::endl;
+
+        m_simulatedVelocity += GetAcceleration(m_u) * m_simTimer.Get();
+        m_simulatedPosition += m_simulatedVelocity * m_simTimer.Get();
+        m_simTimer.Reset();
+
+        double actualPosition = m_elevatorGearbox.GetPosition();
+
+        return std::abs(actualPosition - (-1*m_simulatedPosition * 39.3701)) <
+               kClimbHeight;  // TODO: measure an appropriate tolerance
+    } else {
+        return true;
+    }
+}
+
+double Elevator::GetSimulatedPosition() const {
+	return m_simulatedPosition;
+}
+
+double Elevator::GetSimulatedVelocity() const {
+	return m_simulatedVelocity;
+}
+
+void Elevator::DisableSoftLimits() {
+    m_elevatorGearbox.EnableSoftLimits(std::numeric_limits<double>::infinity(),
+                                       -std::numeric_limits<double>::infinity());
+}
+
 void Elevator::HandleEvent(Event event) {
-    enum State { kPosition, kVelocity };
-    static State state = State::kVelocity;
     bool makeTransition = false;
     State nextState;
-    switch (state) {
+    switch (m_state) {
         case State::kPosition:
             if (event.type == EventType::kEntry) {
                 StartClosedLoop();
@@ -62,6 +144,13 @@ void Elevator::HandleEvent(Event event) {
                 nextState = State::kVelocity;
                 makeTransition = true;
             }
+            if (!CheckEncoderSafety(Robot::appendageStick.GetY(), m_state) && !m_encoderFailed) {
+            	m_encoderFailed = true;
+                StopClosedLoop();
+                DisableSoftLimits();
+                nextState = State::kFailedEncoder;
+                makeTransition = true;
+            }
             if (event.type == EventType::kExit) {
                 SetHeightReference(GetHeight());
                 StopClosedLoop();
@@ -69,16 +158,34 @@ void Elevator::HandleEvent(Event event) {
             break;
         case State::kVelocity:
             SetVelocity(Robot::appendageStick.GetY());
+            if (!CheckEncoderSafety(Robot::appendageStick.GetY(), m_state) && !m_encoderFailed) {
+            	m_encoderFailed = true;
+                DisableSoftLimits();
+                nextState = State::kFailedEncoder;
+                makeTransition = true;
+            }
             if (event == Event{kButtonPressed, 12}) {
                 SetHeightReference(GetHeight());
                 nextState = State::kPosition;
                 makeTransition = true;
             }
             break;
+        case State::kFailedEncoder:
+            SetVelocity(Robot::appendageStick.GetY());
+            CheckEncoderSafety(Robot::appendageStick.GetY(), State::kVelocity);
+    }
+
+    if (Robot::driveStick2.GetRawButton(7) &&
+        event == Event{kButtonPressed, 2}) {
+        Shift();
+    }
+    if (Robot::driveStick2.GetRawButton(10) &&
+        event == Event{kButtonPressed, 10}) {
+        EngagePawl();
     }
     if (makeTransition) {
         HandleEvent(EventType::kExit);
-        state = nextState;
+        m_state = nextState;
         HandleEvent(EventType::kEntry);
     }
 }

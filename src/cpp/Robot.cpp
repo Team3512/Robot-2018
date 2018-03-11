@@ -122,6 +122,11 @@ void Robot::TeleopPeriodic() {
     // Elevator Controls
     switch (elevatorMode) {
         case ElevatorMode::kPosition:
+            if (!elevator.GetBottomHallEffect()) {
+                elevator.ResetEncoder();
+                elevator.ResetSimulation();
+                elevator.StartSimulation();
+            }
             if (appendageStick.GetRawButton(7)) {
                 elevator.SetHeightReference(kFloorHeight);
             }
@@ -137,17 +142,31 @@ void Robot::TeleopPeriodic() {
             if (appendageStick.GetRawButton(11)) {
                 elevator.SetHeightReference(kClimbHeight);
             }
+            if (!elevator.CheckEncoderSafety(appendageStick.GetY(),
+                                             elevatorMode)) {
+                elevator.StopClosedLoop();
+                elevator.DisableSoftLimits();
+                elevatorMode = ElevatorMode::kFailedEncoder;
+            }
             break;
         case ElevatorMode::kVelocity:
             elevator.SetVelocity(appendageStick.GetY());
+            if (!elevator.CheckEncoderSafety(appendageStick.GetY(),
+                                             elevatorMode)) {
+                elevator.DisableSoftLimits();
+                elevatorMode = ElevatorMode::kFailedEncoder;
+            }
             break;
+        case ElevatorMode::kFailedEncoder:  // TODO: implement some kind of
+                                            // warning to the drivers visually
+            elevator.SetVelocity(appendageStick.GetY());
     }
 }
 
 void Robot::HandleEvent(Event event) {
     // Intake Controls
     if (event == Event{kButtonPressed, 2}) {
-        climber.Shift();
+        elevator.Shift();
     }
 
     if (event == Event{kButtonPressed, 3}) {
@@ -189,18 +208,22 @@ void Robot::HandleEvent(Event event) {
             if (event == Event{kButtonPressed, 12}) {
                 elevator.SetHeightReference(elevator.GetHeight());
                 elevator.StopClosedLoop();
+                elevator.StartSimulation();
                 elevatorMode = ElevatorMode::kVelocity;
             }
             break;
         case ElevatorMode::kVelocity:
             if (!elevator.GetBottomHallEffect()) {
                 elevator.ResetEncoder();
+                elevator.ResetSimulation();
             }
             if (event == Event{kButtonPressed, 12}) {
                 elevator.SetHeightReference(elevator.GetHeight());
                 elevator.StartClosedLoop();
                 elevatorMode = ElevatorMode::kPosition;
             }
+            break;
+        case ElevatorMode::kFailedEncoder:
             break;
     }
 

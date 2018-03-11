@@ -6,14 +6,6 @@
 
 enum class State { kInit, kSetup, kWaiting, kClimb, kIdle };
 
-void Climber::Shift() {
-    if (m_setupSolenoid.Get() == DoubleSolenoid::kForward) {
-        m_setupSolenoid.Set(DoubleSolenoid::kReverse);  // Low gear
-    } else {
-        m_setupSolenoid.Set(DoubleSolenoid::kForward);  // High gear
-    }
-}
-
 void Climber::HandleEvent(Event event) {
     static State state = State::kInit;
 
@@ -34,8 +26,6 @@ void Climber::HandleEvent(Event event) {
             } else if (event.type == EventType::kAtSetHeight) {
                 nextState = State::kWaiting;
                 makeTransition = true;
-            } else if (event.type == EventType::kExit) {
-                m_setupSolenoid.Set(DoubleSolenoid::kForward);
             }
             break;
         case State::kWaiting:

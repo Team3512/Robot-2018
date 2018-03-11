@@ -29,7 +29,7 @@ void Robot::AutoRightScalePeriodic() {
 
             if (platePosition[kScale] == 'R') {
                 robotDrive.SetPositionGoal(
-                    260.0 -
+                    324.0 -
                     kRobotLength /
                         2.0);  // Back bumper to middle of robot (ESTIMATE)
             } else {
@@ -73,7 +73,7 @@ void Robot::AutoRightScalePeriodic() {
             if (robotDrive.AtAngleGoal() && autoTimer.HasPeriodPassed(1.0)) {
                 robotDrive.ResetEncoders();
                 if (platePosition[kScale] == 'R') {
-                    robotDrive.SetPositionGoal(20.0);  // ESTIMATE
+                    robotDrive.SetPositionGoal(24.0 - kRobotLength / 2.0);  // ESTIMATE
                 } else {
                     robotDrive.SetPositionGoal(50.0);  // ESTIMATE
                 }                                      // Estimate

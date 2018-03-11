@@ -34,6 +34,7 @@ void Robot::AutoRightSwitchPeriodic() {
             } else {
                 robotDrive.SetPositionGoal(228.0 - kRobotLength / 2.0);
             }
+            robotDrive.SetAngleGoal(0.0);
             robotDrive.StartClosedLoop();
 
             elevator.SetHeightReference(kSwitchHeight);
@@ -44,12 +45,13 @@ void Robot::AutoRightSwitchPeriodic() {
 
         case State::kInitialForward:
             if (robotDrive.AtPositionGoal() && autoTimer.HasPeriodPassed(1.0)) {
-                if (platePosition[kFriendlySwitch] == 'L') {
+                if (platePosition[kFriendlySwitch] == 'R') {
+                    robotDrive.SetAngleGoal(-90.0);
                     state = State::kFinalRotate;
                 } else {
                     robotDrive.ResetGyro();
-                    robotDrive.SetAngleGoal(90.0);
-                    state = State::kRightForward;
+                    robotDrive.SetAngleGoal(-90.0);
+                    state = State::kRightRotate;
                 }
             }
             break;
@@ -65,7 +67,7 @@ void Robot::AutoRightSwitchPeriodic() {
                 robotDrive.ResetEncoders();  // For Simplicity
 
                 robotDrive.ResetGyro();
-                robotDrive.SetAngleGoal(90.0);
+                robotDrive.SetAngleGoal(-90.0);
 
                 state = State::kFinalRotate;
             }

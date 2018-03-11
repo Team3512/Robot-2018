@@ -11,7 +11,6 @@ std::unique_ptr<Segment[]> Robot::rightTrajectory;
 DriveTrain Robot::robotDrive;
 Intake Robot::intake;
 Elevator Robot::elevator;
-Climber Robot::climber;
 frc::Joystick Robot::appendageStick{kAppendageStickPort};
 frc::Joystick Robot::driveStick1{kDriveStick1Port};
 frc::Joystick Robot::driveStick2{kDriveStick2Port};
@@ -89,7 +88,7 @@ void Robot::AutonomousInit() {
     robotDrive.ResetGyro();
     elevator.ResetEncoder();
     intake.Deploy();
-    climber.LockPawl();
+    elevator.LockPawl();
 
     dsDisplay.ExecAutonomousInit();
 }
@@ -99,7 +98,8 @@ void Robot::TeleopInit() {
     elevator.StopClosedLoop();
     intake.Deploy();
     intake.Close();
-    climber.LockPawl();
+    elevator.LockPawl();
+    compressor.Stop();
 }
 
 void Robot::TestInit() {}
@@ -108,6 +108,8 @@ void Robot::RobotPeriodic() {
     DS_PrintOut();
 
     if (!elevator.GetBottomHallEffect()) {
+        elevator.StartSimulation();
+        elevator.ResetSimulation();
         elevator.ResetEncoder();
     }
 
@@ -115,14 +117,12 @@ void Robot::RobotPeriodic() {
         if (appendageStick.GetRawButtonPressed(i)) {
             Event event{EventType::kButtonPressed, i};
             Robot::PostEvent(event);
-            climber.PostEvent(event);
             elevator.PostEvent(event);
             intake.PostEvent(event);
         }
         if (appendageStick.GetRawButtonReleased(i)) {
             Event event{EventType::kButtonReleased, i};
             Robot::PostEvent(event);
-            climber.PostEvent(event);
             elevator.PostEvent(event);
             intake.PostEvent(event);
         }
@@ -136,7 +136,6 @@ void Robot::AutonomousPeriodic() { dsDisplay.ExecAutonomousPeriodic(); }
 void Robot::TeleopPeriodic() {
     robotDrive.PostEvent(EventType::kTimeout);
     elevator.PostEvent(EventType::kTimeout);
-    climber.PostEvent(EventType::kTimeout);
 }
 
 void Robot::HandleEvent(Event event) {
@@ -159,18 +158,16 @@ std::string Robot::GetFileCreationTime(std::string filePath) {
 }
 
 void Robot::DS_PrintOut() {
-    /*if (liveGrapher.HasIntervalPassed()) {
-        liveGrapher.GraphData(
-            (robotDrive.GetLeftRate() + robotDrive.GetRightRate()) / 2,
-            "Average Velocity");
-        liveGrapher.GraphData(robotDrive.GetAngularRate(), "Angle Rate");
-        static double prevVel = 0.0;
-        static double curVel = 0.0;
-        curVel = robotDrive.GetAngularRate();
-        liveGrapher.GraphData((curVel - prevVel) / .005, "Angle Accel");
-        prevVel = curVel;
+    if (liveGrapher.HasIntervalPassed()) {
+        liveGrapher.GraphData(elevator.GetHeight(), "Actual Height");
+        liveGrapher.GraphData(elevator.GetSimulatedPosition(), "Simulated Height");
+        // static double prevVel = 0.0;
+        // static double curVel = 0.0;
+        // curVel = robotDrive.GetAngularRate();
+        // liveGrapher.GraphData((curVel - prevVel) / .005, "Angle Accel");
+        // prevVel = curVel;
         liveGrapher.ResetInterval();
-        */
+    }
     // robotDrive.Debug();
     // std::cout << robotDrive.GetLeftDisplacement() << "Left, Right" <<
     // robotDrive.GetRightDisplacement() << std::endl;
@@ -184,9 +181,9 @@ void Robot::DS_PrintOut() {
     dsDisplay.AddData("ENCODER_RIGHT", robotDrive.GetRightDisplacement());
     dsDisplay.AddData("GYRO_VAL", robotDrive.GetAngle());
     dsDisplay.AddData("PAWL_ENGAGED",
-                      climber.GetPawl());  // todo: add the function
+                      elevator.GetPawl());  // todo: add the function
     dsDisplay.AddData("LOW_GEAR",
-                      climber.IsLowGear());  // todo: add the function
+                      elevator.IsLowGear());  // todo: add the function
     dsDisplay.AddData("VERSION", version);
 
     dsDisplay.SendToDS();

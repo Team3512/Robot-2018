@@ -32,7 +32,6 @@
 #include "ES/Service.hpp"
 #include "LiveGrapher/LiveGrapher.hpp"
 #include "Subsystems/CANTalonGroup.hpp"
-#include "Subsystems/Climber.hpp"
 #include "Subsystems/DriveTrain.hpp"
 #include "Subsystems/Elevator.hpp"
 #include "Subsystems/Intake.hpp"
@@ -71,7 +70,6 @@ public:
     static DriveTrain robotDrive;
     static Intake intake;
     static Elevator elevator;
-    static Climber climber;
     static frc::Joystick appendageStick;
     static frc::Joystick driveStick1;
     static frc::Joystick driveStick2;

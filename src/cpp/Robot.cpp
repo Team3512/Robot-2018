@@ -100,6 +100,8 @@ void Robot::RobotPeriodic() {
     DS_PrintOut();
 
     if (!elevator.GetBottomHallEffect()) {
+        elevator.ResetSimulation();
+        elevator.StartSimulation();
         elevator.ResetEncoder();
     }
 

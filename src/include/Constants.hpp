@@ -36,12 +36,12 @@ constexpr int kRightDriveMasterID = 3;
 constexpr int kRightDriveSlaveID = 4;
 
 // Distance per Pulse
-constexpr double kLeftDpP = 108.0 / 8142.66;
-constexpr double kRightDpP = 108.0 / 8187.66;
+constexpr double kLeftDpP = 139.0 / 8567.5;
+constexpr double kRightDpP = 139.0 / 10708;
 
 // DriveTrain position PID
-constexpr double kPosP = 0.06;  // .055
-constexpr double kPosI = 0.002;
+constexpr double kPosP = 0.07;  // .06
+constexpr double kPosI = 0.00;
 constexpr double kPosD = 0.024;  // .024
 
 // Drive trapezoid profile constants
@@ -51,13 +51,17 @@ constexpr double kRobotMaxRotateRate = 180.0;      // deg/sec
 constexpr double kRobotTimeToMaxRotateRate = 1.0;  // sec
 
 // Drive motor feedforwards
-constexpr double kV = 1.0 / 227.2;  // 1 / max velocity
-constexpr double kA = 0.005;        // (V - (kV * v + Vmin)) / a, 0.1, .00075
+constexpr double kVDrive = 1.0 / 227.2;  // 1 / max velocity
+constexpr double kADrive = 0.005;        // (V - (kV * v + Vmin)) / a, 0.1, .00075
 
 // DriveTrain angle PID
-constexpr double kAngleP = 0.14;  // .13
+constexpr double kAngleP = 0.00;  // .14
 constexpr double kAngleI = 0.00;
-constexpr double kAngleD = 0.09;  // .10
+constexpr double kAngleD = 0.00;  // .9
+
+// Drive angle feedforwards
+constexpr double kVAngle = 1.0 / 27.0;
+constexpr double kAAngle = 0.02;
 
 // Physical Robot Constants
 constexpr int kRobotLength = 31.5;

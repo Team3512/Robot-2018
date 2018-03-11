@@ -98,4 +98,5 @@ void DiffDriveController::Debug() {
                                  "Velocity Reference");
     Robot::liveGrapher.GraphData(m_angleRef.GetVelocityNode().GetOutput(),
                                  "Angle Rate Reference");
+    Robot::liveGrapher.GraphData(m_angleFeedForward.GetOutput(), "Angle FeedForward");
 }

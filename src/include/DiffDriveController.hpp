@@ -83,13 +83,13 @@ private:
     PIDOutput& m_rightMotor;
 
     FuncNode m_positionFeedForward{[&] {
-        return kV * m_positionRef.GetVelocityNode().GetOutput() +
-               kA * m_positionRef.GetAccelerationNode().GetOutput();
+        return kVDrive * m_positionRef.GetVelocityNode().GetOutput() +
+               kADrive * m_positionRef.GetAccelerationNode().GetOutput();
     }};
     FuncNode m_angleFeedForward{[&] {
-        return kV * m_angleRef.GetVelocityNode().GetOutput() *
+        return kVAngle * m_angleRef.GetVelocityNode().GetOutput() *
                    kDegreesToRadians * kWheelbaseWidth / 2.0 +
-               kA * m_angleRef.GetAccelerationNode().GetOutput() *
+               kAAngle * m_angleRef.GetAccelerationNode().GetOutput() *
                    kDegreesToRadians * kWheelbaseWidth / 2.0;
     }};
 

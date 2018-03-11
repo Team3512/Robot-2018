@@ -77,7 +77,9 @@ void Robot::AutonomousInit() {
 }
 
 void Robot::TeleopInit() {
-    robotDrive.StopClosedLoop();
+	robotDrive.SetAngleGoal(-180);
+	robotDrive.SetPositionGoal(0);
+    robotDrive.StartClosedLoop();
     elevator.StartClosedLoop();
     intake.Deploy();
 }
@@ -111,13 +113,13 @@ void Robot::AutonomousPeriodic() { dsDisplay.ExecAutonomousPeriodic(); }
 
 void Robot::TeleopPeriodic() {
     // Drive Stick Controls
-    if (driveStick1.GetRawButton(1)) {
+    /*if (driveStick1.GetRawButton(1)) {
         robotDrive.Drive(driveStick1.GetY() * 0.5, driveStick2.GetX() * 0.5,
                          driveStick2.GetRawButton(2));
     } else {
         robotDrive.Drive(driveStick1.GetY(), driveStick2.GetX(),
                          driveStick2.GetRawButton(2));
-    }
+    }*/
 
     // Elevator Controls
     switch (elevatorMode) {

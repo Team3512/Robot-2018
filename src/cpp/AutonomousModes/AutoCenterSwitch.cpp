@@ -59,7 +59,8 @@ void Robot::AutoCenterSwitchPeriodic() {
                 robotDrive.ResetEncoders();
                 autoTimer.Reset();
                 if (platePosition[kFriendlySwitch] == 'R') {
-                    robotDrive.SetPositionGoal(60.0);  // Estimate
+                    robotDrive.SetPositionGoal(60.0 -
+                                               kExchangeOffset);  // Estimate
                 } else {
                     robotDrive.SetPositionGoal(60.0 +
                                                kExchangeOffset);  // Estimate

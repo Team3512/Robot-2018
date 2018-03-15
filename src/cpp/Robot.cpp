@@ -85,9 +85,10 @@ void Robot::AutonomousInit() {
 
 void Robot::TeleopInit() {
     robotDrive.StopClosedLoop();
-    elevator.StartClosedLoop();
+    elevator.StopClosedLoop();
     intake.Deploy();
     intake.Close();
+    elevatorMode = ElevatorMode::kVelocity;
 }
 
 void Robot::TestInit() {}
@@ -95,7 +96,11 @@ void Robot::TestInit() {}
 void Robot::RobotPeriodic() {
     DS_PrintOut();
 
-    for (int i = 1; i <= 12; i++) {
+    if (!elevator.GetBottomHallEffect()) {
+        elevator.ResetEncoder();
+    }
+
+    for (int i = 2; i <= 12; i++) {
         if (appendageStick.GetRawButtonPressed(i)) {
             Event event{EventType::kButtonPressed, i};
             Robot::PostEvent(event);
@@ -154,10 +159,6 @@ void Robot::TeleopPeriodic() {
 
 void Robot::HandleEvent(Event event) {
     // Intake Controls
-    if (event == Event{kButtonPressed, 2}) {
-        climber.Shift();
-    }
-
     if (event == Event{kButtonPressed, 3}) {
         if (intake.IsOpen()) {
             intake.Close();
@@ -202,15 +203,16 @@ void Robot::HandleEvent(Event event) {
             }
             break;
         case ElevatorMode::kVelocity:
-            if (!elevator.GetBottomHallEffect()) {
-                elevator.ResetEncoder();
-            }
             if (event == Event{kButtonPressed, 12}) {
                 elevator.SetHeightReference(elevator.GetHeight());
                 elevator.StartClosedLoop();
                 elevatorMode = ElevatorMode::kPosition;
             }
             break;
+    }
+
+    if (driveStick2.GetRawButton(7) && event == Event{kButtonPressed, 2}) {
+        climber.Shift();
     }
 
     /*if (event == Event{kButtonPressed, 11}) {

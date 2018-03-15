@@ -36,8 +36,10 @@ constexpr int kRightDriveMasterID = 3;
 constexpr int kRightDriveSlaveID = 4;
 
 // Distance per Pulse
-constexpr double kLeftDpP = 139.0 / 6934.33;
-constexpr double kRightDpP = 139.0 / 10748.33;
+// constexpr double kLeftDpP = 139.0 / 6934.33; Proto
+// constexpr double kRightDpP = 139.0 / 10748.33; Proto
+constexpr double kLeftDpP = 99.0 / ((7319.0 + 7306.0 + 7305.0) / 3.0);
+constexpr double kRightDpP = 99.0 / ((7440.0 + 7338.0 + 7400) / 3.0);
 
 // DriveTrain position PID
 constexpr double kPosP = 0.07;  // .06
@@ -66,8 +68,8 @@ constexpr double kAAngle = 0.005;        // .003
 // Physical Robot Constants
 constexpr double kWheelbaseWidth = 24.0;
 constexpr double kDegreesToRadians = 3.1415926535897932 / 180.0;
-constexpr int kRobotLength = 36;  // Approximate
-constexpr int kRobotWidth = 30;   // Approximate
+constexpr double kRobotLength = 37.0;  // Approximate
+constexpr double kRobotWidth = 32.0;   // Approximate
 constexpr double kMaxControlVoltage = 12;
 
 // CheesyDrive constants
@@ -101,16 +103,17 @@ constexpr int kElevatorSlaveID = 8;
 constexpr int kElevatorBottomHallPort = 1;
 
 // Distance per Pulse
-constexpr double kElevatorDpP = 0.00142230843;  // Protobot
-// constexpr double kElevatorDpP = 29.41667/19261.33;  // Compbot
+// constexpr double kElevatorDpP = 0.00142230843;  // Protobot
+constexpr double kElevatorDpP = 30.33 / 22589.66;  // Compbot
+// 28 in: -21036; 32 in: -24517; -31 in :22216
 
 // Elevator PID
-constexpr double kElevatorP = 0.09;   // Protobot
-constexpr double kElevatorI = 0.004;  // Protobot
-constexpr double kElevatorD = 0.0;    // Protobot
-// constexpr double kElevatorP = 0.27;   // Compbot
-// constexpr double kElevatorI = 0.001;  // Compbot
-// constexpr double kElevatorD = 0.0;    // Compbot
+// constexpr double kElevatorP = 0.09;   // Protobot
+// constexpr double kElevatorI = 0.004;  // Protobot
+// constexpr double kElevatorD = 0.0;    // Protobot
+constexpr double kElevatorP = 0.27;   // Compbot
+constexpr double kElevatorI = 0.001;  // Compbot
+constexpr double kElevatorD = 0.0;    // Compbot
 constexpr double kElevatorControllerPeriod = 0.02;
 constexpr double kGravityFeedForward = -0.01;
 
@@ -119,7 +122,7 @@ constexpr double kFloorHeight = 73.0;  // Makes sure it hits bottom
 constexpr double kSecondBlockHeight = -10.0;
 constexpr double kSwitchHeight = -36.0;
 constexpr double kScaleHeight = -60.0;
-constexpr double kClimbHeight = -75.0;
+constexpr double kClimbHeight = -72.0;
 
 /*
  * Climber

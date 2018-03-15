@@ -85,7 +85,7 @@ void Robot::AutonomousInit() {
 
 void Robot::TeleopInit() {
     robotDrive.StopClosedLoop();
-    elevator.StartClosedLoop();
+    elevator.StopClosedLoop();
     intake.Deploy();
     intake.Close();
 }
@@ -95,7 +95,7 @@ void Robot::TestInit() {}
 void Robot::RobotPeriodic() {
     DS_PrintOut();
 
-    for (int i = 1; i <= 12; i++) {
+    for (int i = 2; i <= 12; i++) {
         if (appendageStick.GetRawButtonPressed(i)) {
             Event event{EventType::kButtonPressed, i};
             Robot::PostEvent(event);
@@ -105,6 +105,13 @@ void Robot::RobotPeriodic() {
         }
         if (appendageStick.GetRawButtonReleased(i)) {
             Event event{EventType::kButtonReleased, i};
+            Robot::PostEvent(event);
+            climber.PostEvent(event);
+            elevator.PostEvent(event);
+            intake.PostEvent(event);
+        }
+        if (driveStick1.GetRawButton(i)) {
+            Event event{EventType::kButton, i};
             Robot::PostEvent(event);
             climber.PostEvent(event);
             elevator.PostEvent(event);
@@ -154,7 +161,7 @@ void Robot::TeleopPeriodic() {
 
 void Robot::HandleEvent(Event event) {
     // Intake Controls
-    if (event == Event{kButtonPressed, 2}) {
+    if (event == Event{kButtonPressed, 2} && event == Event{kButton, 7}) {
         climber.Shift();
     }
 

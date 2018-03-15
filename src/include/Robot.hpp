@@ -96,7 +96,7 @@ public:
     static LiveGrapher liveGrapher;
 
 private:
-    ElevatorMode elevatorMode = ElevatorMode::kPosition;
+    ElevatorMode elevatorMode = ElevatorMode::kVelocity;
 
     DriveTrain robotDrive;
 

@@ -29,9 +29,9 @@ void Robot::AutoRightScalePeriodic() {
                 frc::DriverStation::GetInstance().GetGameSpecificMessage();
 
             if (platePosition[kScale] == 'R') {
-                robotDrive.SetPositionGoal(324.0 - kRobotLength / 2.0);
+                robotDrive.SetPositionGoal(328.0 - kRobotLength / 2.0);
             } else {
-                robotDrive.SetPositionGoal(236.5 - kRobotLength / 2.0);
+                robotDrive.SetPositionGoal(238.0 - kRobotLength / 2.0);
             }
             robotDrive.SetAngleGoal(0.0);
             robotDrive.StartClosedLoop();
@@ -60,7 +60,7 @@ void Robot::AutoRightScalePeriodic() {
             if (robotDrive.AtAngleGoal() ||
                 autoTimer.Get() > robotDrive.AngleProfileTimeTotal() + 1.0) {
                 robotDrive.ResetEncoders();
-                robotDrive.SetPositionGoal(199.0);
+                robotDrive.SetPositionGoal(200.0 + kRobotWidth / 2.0);
                 autoTimer.Reset();
 
                 state = State::kLeftForward;
@@ -84,7 +84,8 @@ void Robot::AutoRightScalePeriodic() {
                 if (platePosition[kScale] == 'R') {
                     robotDrive.SetPositionGoal(24.0 - kRobotLength / 2.0);
                 } else {
-                    robotDrive.SetPositionGoal(56.0 - kRobotLength / 2.0);
+                    robotDrive.SetPositionGoal(40.0 - kRobotWidth / 2.0 -
+                                               kRobotLength / 2.0);
                 }
 
                 state = State::kFinalForward;
@@ -93,7 +94,11 @@ void Robot::AutoRightScalePeriodic() {
         case State::kFinalForward:
             if (robotDrive.AtPositionGoal() ||
                 autoTimer.Get() > robotDrive.PositionProfileTimeTotal() + 1.0) {
-                intake.Open();
+                if (platePosition[kScale] == 'R') {
+                    intake.Open();
+                } else {
+                    intake.SetMotors(MotorState::kOuttake);
+                }
 
                 robotDrive.StopClosedLoop();
                 elevator.StopClosedLoop();

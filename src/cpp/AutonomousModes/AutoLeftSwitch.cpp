@@ -39,6 +39,8 @@ void Robot::AutoLeftSwitchPeriodic() {
             elevator.SetHeightReference(kSwitchHeight);
             elevator.StartClosedLoop();
 
+            autoTimer.Reset();
+
             state = State::kInitialForward;
             break;
 
@@ -47,6 +49,7 @@ void Robot::AutoLeftSwitchPeriodic() {
                 autoTimer.Get() > robotDrive.PositionProfileTimeTotal() + 1.0) {
                 robotDrive.ResetGyro();
                 robotDrive.SetAngleGoal(90.0);
+                autoTimer.Reset();
                 if (platePosition[kFriendlySwitch] == 'L') {
                     state = State::kFinalRotate;
                 } else {
@@ -58,7 +61,9 @@ void Robot::AutoLeftSwitchPeriodic() {
             if (robotDrive.AtAngleGoal() ||
                 autoTimer.Get() > robotDrive.AngleProfileTimeTotal() + 1.0) {
                 robotDrive.ResetEncoders();
-                robotDrive.SetPositionGoal(236.5 - kRobotWidth / 2.0);
+                robotDrive.SetPositionGoal(190.0);
+                autoTimer.Reset();
+
                 state = State::kLeftForward;
             }
             break;
@@ -67,6 +72,7 @@ void Robot::AutoLeftSwitchPeriodic() {
                 autoTimer.Get() > robotDrive.PositionProfileTimeTotal() + 1.0) {
                 robotDrive.ResetGyro();
                 robotDrive.SetAngleGoal(90.0);
+                autoTimer.Reset();
 
                 state = State::kFinalRotate;
             }
@@ -75,7 +81,9 @@ void Robot::AutoLeftSwitchPeriodic() {
             if (robotDrive.AtAngleGoal() ||
                 autoTimer.Get() > robotDrive.AngleProfileTimeTotal() + 1.0) {
                 robotDrive.ResetEncoders();
-                robotDrive.SetPositionGoal(55 - kRobotLength / 2.0);
+                robotDrive.SetPositionGoal(55.0 - kRobotLength / 2.0);
+                autoTimer.Reset();
+
                 state = State::kFinalForward;
             }
             break;
@@ -87,9 +95,9 @@ void Robot::AutoLeftSwitchPeriodic() {
                 } else {
                     intake.SetMotors(MotorState::kOuttake);
                 }
-
                 robotDrive.StopClosedLoop();
                 elevator.StopClosedLoop();
+
                 state = State::kIdle;
             }
             break;

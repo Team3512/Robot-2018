@@ -83,6 +83,7 @@ void Robot::AutonomousInit() {
     robotDrive.ResetGyro();
     elevator.ResetEncoder();
     intake.Deploy();
+    climber.LockPawl();
 
     dsDisplay.ExecAutonomousInit();
 }
@@ -92,6 +93,7 @@ void Robot::TeleopInit() {
     elevator.StopClosedLoop();
     intake.Deploy();
     intake.Close();
+    climber.LockPawl();
 }
 
 void Robot::TestInit() {}

@@ -18,6 +18,7 @@ enum EventType {
     kElevatorSetSwitch,
     kElevatorSetScale,
     kElevatorSetClimb,
+	kTimeout
 };
 
 struct Event {

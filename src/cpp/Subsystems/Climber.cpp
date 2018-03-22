@@ -18,6 +18,10 @@ void Climber::Shift() {
     }
 }
 
+bool Climber::IsLowGear() const {
+    return m_setupSolenoid.Get() == DoubleSolenoid::kForward;
+}
+
 void Climber::HandleEvent(Event event) {
     if (Robot::driveStick2.GetRawButton(7) &&
         event == Event{kButtonPressed, 2}) {

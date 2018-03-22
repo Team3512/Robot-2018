@@ -9,6 +9,9 @@
 #include <memory>
 #include <string>
 #include <tuple>
+#include <ctime>
+#include <sys/stat.h>
+#include <string>
 
 #include <CameraServer.h>
 #include <Joystick.h>
@@ -55,6 +58,8 @@ public:
 
     void DS_PrintOut();
 
+    static std::string GetFileCreationTime(std::string filePath);
+
     /**
      * Uses waypoints to generate a trajectory
      *
@@ -96,6 +101,8 @@ private:
     // Camera
     cs::UsbCamera camera1{"Camera 1", 0};
     // cs::UsbCamera camera2{"Camera 2", 1};
+    cs::CvSink camera1Sink;
+    // cs::CvSink camera2Sink;
 
     cs::MjpegServer server{"Server", kMjpegServerPort};
 };

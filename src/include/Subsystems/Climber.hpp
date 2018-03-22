@@ -17,6 +17,7 @@ public:
     void EngagePawl();
     void LockPawl();
     void Shift();
+    bool IsLowGear() const;
     void HandleEvent(Event event) override;
 
 private:

@@ -14,6 +14,10 @@ void Climber::Shift() {
     }
 }
 
+bool Climber::IsLowGear() {
+    return m_setupSolenoid.Get() == DoubleSolenoid::kForward;
+}
+
 void Climber::HandleEvent(Event event) {
     static State state = State::kInit;
 

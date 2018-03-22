@@ -18,6 +18,15 @@
 #include <XboxController.h>
 #include <cscore.h>
 
+#include "AutonomousModes/AutoAutoLine.hpp"
+#include "AutonomousModes/AutoCenterScale.hpp"
+#include "AutonomousModes/AutoCenterSwitch.hpp"
+#include "AutonomousModes/AutoLeftDouble.hpp"
+#include "AutonomousModes/AutoLeftScale.hpp"
+#include "AutonomousModes/AutoLeftSwitch.hpp"
+#include "AutonomousModes/AutoRightDouble.hpp"
+#include "AutonomousModes/AutoRightScale.hpp"
+#include "AutonomousModes/AutoRightSwitch.hpp"
 #include "Constants.hpp"
 #include "DSDisplay/DSDisplay.hpp"
 #include "ES/Service.hpp"
@@ -44,36 +53,6 @@ public:
 
     void HandleEvent(Event event) override;
 
-    void AutoAutoLineInit();
-    void AutoAutoLinePeriodic();
-
-    void AutoAutoLineTimedInit();
-    void AutoAutoLineTimedPeriodic();
-
-    void AutoLeftSwitchInit();
-    void AutoLeftSwitchPeriodic();
-
-    void AutoCenterSwitchInit();
-    void AutoCenterSwitchPeriodic();
-
-    void AutoRightSwitchInit();
-    void AutoRightSwitchPeriodic();
-
-    void AutoLeftScaleInit();
-    void AutoLeftScalePeriodic();
-
-    void AutoCenterScaleInit();
-    void AutoCenterScalePeriodic();
-
-    void AutoRightScaleInit();
-    void AutoRightScalePeriodic();
-
-    void AutoLeftDoubleInit();
-    void AutoLeftDoublePeriodic();
-
-    void AutoRightDoubleInit();
-    void AutoRightDoublePeriodic();
-
     void DS_PrintOut();
 
     /**
@@ -93,19 +72,27 @@ public:
     static Elevator elevator;
     static Climber climber;
 
+    static DriveTrain robotDrive;
+
     // LiveGrapher host
     static LiveGrapher liveGrapher;
 
 private:
     ElevatorMode elevatorMode = ElevatorMode::kVelocity;
 
-    DriveTrain robotDrive;
-
     frc::Joystick driveStick1{kDriveStick1Port};
     frc::Joystick driveStick2{kDriveStick2Port};
     frc::Joystick appendageStick{kAppendageStickPort};
 
-    frc::Timer autoTimer;
+    AutoAutoLine autoLine;
+    AutoCenterScale centerScale;
+    AutoCenterSwitch centerSwitch;
+    AutoLeftDouble leftDouble;
+    AutoLeftScale leftScale;
+    AutoLeftSwitch leftSwitch;
+    AutoRightDouble rightDouble;
+    AutoRightScale rightScale;
+    AutoRightSwitch rightSwitch;
 
     // Used for sending data to the Driver Station
     DSDisplay dsDisplay{kDsPort};

@@ -52,7 +52,13 @@ Robot::Robot() {
         "Right Position Double",
         std::bind(&AutoRightDouble::Reset, &rightDouble),
         std::bind(&AutoRightDouble::PostEvent, &rightDouble, kTimeout));
-    server.SetSource(camera1);
+    dsDisplay.AddData("ENCODER_LEFT", robotDrive.GetLeftDisplacement());
+    dsDisplay.AddData("ENCODER_RIGHT", robotDrive.GetRightDisplacement());
+    dsDisplay.AddData("GYRO_VAL", robotDrive.GetAngle());
+    dsDisplay.AddData("PAWL_ENGAGED",
+                      climber.IsLowGear());  // todo: add the function
+    dsDisplay.AddData("LOW_GEAR",
+                      climber.IsLowGear());  // todo: add the function
 
     std::array<Waypoint, 3> waypoints;
     waypoints[0] = {-4, -1, d2r(45)};
@@ -67,6 +73,11 @@ Robot::Robot() {
 
     // camera2.SetResolution(640, 480);
     // camera2.SetFPS(30);
+
+    // camera1Sink.SetSource(camera1);
+    // camera2Sink.SetSource(camera2);
+
+    server.SetSource(camera1);
 }
 
 void Robot::DisabledInit() {
@@ -131,13 +142,14 @@ void Robot::TeleopPeriodic() {
 }
 
 void Robot::HandleEvent(Event event) {
-    /*if (event == Event{kButtonPressed, 11}) {
+    // Camera Switching
+    /* if (event == Event{kButtonPressed, 11}) {
         if (server.GetSource() == camera1) {
             server.SetSource(camera2);
         } else {
             server.SetSource(camera1);
         }
-    }*/
+    } */
 }
 
 void Robot::DS_PrintOut() {

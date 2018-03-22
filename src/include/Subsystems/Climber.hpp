@@ -15,6 +15,7 @@
 class Climber : public Service {
 public:
     void Shift();
+    bool IsLowGear() const;
     void HandleEvent(Event event) override;
 
 private:

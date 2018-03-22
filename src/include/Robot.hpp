@@ -92,18 +92,16 @@ public:
     static Intake intake;
     static Elevator elevator;
     static Climber climber;
+    static frc::Joystick appendageStick{kAppendageStickPort};
 
     // LiveGrapher host
     static LiveGrapher liveGrapher;
 
 private:
-    ElevatorMode elevatorMode = ElevatorMode::kVelocity;
-
     DriveTrain robotDrive;
 
     frc::Joystick driveStick1{kDriveStick1Port};
     frc::Joystick driveStick2{kDriveStick2Port};
-    frc::Joystick appendageStick{kAppendageStickPort};
 
     frc::Timer autoTimer;
 

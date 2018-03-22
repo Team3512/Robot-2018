@@ -35,69 +35,51 @@ bool Elevator::GetBottomHallEffect() { return m_elevatorBottomHall.Get(); }
 
 void Elevator::HandleEvent(Event event) {
     enum State {
-        kIdle,
-        kElevatorClimb,
-        kElevatorScale,
-        kElevatorSwitch,
+        kPosition,
+		kVelocity
     };
-    static State state = State::kIdle;
+    static State state = State::kVelocity;
     bool makeTransition = false;
     State nextState;
     switch (state) {
-        case State::kIdle:
-            if (event.type == EventType::kElevatorSetSwitch) {
-                nextState = State::kElevatorSwitch;
-                makeTransition = true;
-            } else if (event.type == EventType::kElevatorSetScale) {
-                nextState = State::kElevatorScale;
-                makeTransition = true;
-            } else if (event.type == EventType::kElevatorSetClimb) {
-                nextState = State::kElevatorClimb;
-                makeTransition = true;
-            } else if (event.type == EventType::kExit) {
-                m_notifier.StartPeriodic(0.05);
+        case State::kPosition:
+        	if (event.type == EventType::kEntry){
+        		StartClosedLoop();
+        	}
+            if (event == Event{kButtonPressed, 7}) {
+            	SetHeightReference(kFloorHeight);
+            }
+            if (event == Event{kButtonPressed, 8}) {
+            	SetHeightReference(kSwitchHeight);
+            }
+            if (event == Event{kButtonPressed, 9}) {
+            	SetHeightReference(kSecondBlockHeight);
+            }
+            if (event == Event{kButtonPressed, 10}) {
+            	SetHeightReference(kScaleHeight);
+            }
+            if (event == Event{kButtonPressed, 11}) {
+            	SetHeightReference(kClimbHeight);
+            }
+             if (event == Event{kButtonPressed, 12}) {
+                 nextState = State::kVelocity;
+             }
+             if (event.type == EventType::kExit) {
+                 SetHeightReference(GetHeight());
+                 StopClosedLoop();
+             }
+             break;
+        case State::kVelocity:
+            SetVelocity(Robot::appendageStick.GetY());
+            if (event == Event{kButtonPressed, 12}) {
+                SetHeightReference(GetHeight());
+                nextState = State::kPosition;
             }
             break;
-        case State::kElevatorSwitch:
-            if (event.type == EventType::kEntry) {
-                StartClosedLoop();
-                SetHeightReference(kSwitchHeight);
-            } else if (HeightAtReference()) {
-                nextState = State::kIdle;
-                makeTransition = true;
-            } else if (event.type == EventType::kExit) {
-                m_notifier.Stop();
-                Robot::climber.PostEvent(EventType::kAtSetHeight);
-            }
-            break;
-        case State::kElevatorScale:
-            if (event.type == EventType::kEntry) {
-                StartClosedLoop();
-                SetHeightReference(kScaleHeight);
-            } else if (HeightAtReference()) {
-                nextState = State::kIdle;
-                makeTransition = true;
-            } else if (event.type == EventType::kExit) {
-                m_notifier.Stop();
-                Robot::climber.PostEvent(EventType::kAtSetHeight);
-            }
-            break;
-        case State::kElevatorClimb:
-            if (event.type == EventType::kEntry) {
-                StartClosedLoop();
-                SetHeightReference(kClimbHeight);
-            } else if (HeightAtReference()) {
-                nextState = State::kIdle;
-                makeTransition = true;
-            } else if (event.type == EventType::kExit) {
-                m_notifier.Stop();
-                Robot::climber.PostEvent(EventType::kAtSetHeight);
-            }
-            break;
-            if (makeTransition) {
-                PostEvent(EventType::kExit);
-                state = nextState;
-                PostEvent(EventType::kEntry);
-            }
+    }
+    if (makeTransition) {
+        HandleEvent(EventType::kExit);
+        state = nextState;
+        HandleEvent(EventType::kEntry);
     }
 }

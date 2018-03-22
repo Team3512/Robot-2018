@@ -8,6 +8,7 @@
  * Event names to be polled and handled
  */
 enum EventType {
+	kTimeout,
     kNoEvent,
     kExit,
     kEntry,

@@ -35,7 +35,29 @@ void Intake::AutoOuttake() {
 }
 
 void Intake::HandleEvent(Event event) {
-    if (event.type == EventType::kElevatorSetClimb) {
-        m_intakeArm.Set(false);
-    }
+	if (event == Event{kButtonPressed, 3}) {
+	        if (IsOpen()) {
+	            Close();
+	        } else if (IsDeployed()) {
+	            Open();
+	        }
+	    }
+	    if (event == Event{kButtonPressed, 5} && !Robot::elevator.GetBottomHallEffect()) {
+	        if (IsDeployed()) {
+	            Stow();
+	            Close();
+	        } else {
+	            Deploy();
+	        }
+	    }
+	    if (event == Event{kButtonPressed, 4}) {
+	        SetMotors(MotorState::kIntake);
+	    }
+	    if (event == Event{kButtonPressed, 6}) {
+	        SetMotors(MotorState::kOuttake);
+	    }
+	    if (event == Event{kButtonReleased, 4} ||
+	        event == Event{kButtonReleased, 6}) {
+	        SetMotors(MotorState::kIdle);
+	    }
 }

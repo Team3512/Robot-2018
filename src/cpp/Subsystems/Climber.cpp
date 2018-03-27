@@ -25,6 +25,10 @@ void Climber::HandleEvent(Event event) {
     }
     if (Robot::driveStick2.GetRawButton(10) &&
         event == Event{kButtonPressed, 10}) {
-        EngagePawl();
+        if (m_pawl.Get()){
+            LockPawl();
+        } else {
+            EngagePawl();
+        }
     }
 }

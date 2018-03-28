@@ -33,10 +33,10 @@ model {
                 // This is where our source files are located (src/cpp for C++ files, src/include for headers)
                 source {
                     srcDirs = ['src/cpp']
-                    include '**/*.cpp'
+                    include '**/*.cpp', '**/*.cc'
                 }
                 exportedHeaders{
-                    srcDirs = ['src/cpp', 'src/include', 'src/include/WPILib']
+                    srcDirs = ['src/cpp', 'src/include', 'src/include/WPILib', 'src/include/googletest']
                     include '**/*.hpp', '**/*.h'
                 }
 

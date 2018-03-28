@@ -32,10 +32,10 @@ model {
             sources.cpp {
                 source {
                     srcDirs = ['src/cpp']
-                    include '**/*.cpp'
+                    include '**/*.cpp', '**/*.cc'
                 }
                 exportedHeaders {
-                    srcDirs = ['src/cpp', 'src/include', 'src/include/WPILib']
+                    srcDirs = ['src/cpp', 'src/include', 'src/include/WPILib', 'src/include/googletest']
                     include '**/*.hpp', '**/*.h'
                 }
             }

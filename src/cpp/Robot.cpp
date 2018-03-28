@@ -7,6 +7,8 @@
 
 #include <DriverStation.h>
 
+#include "gtest/gtest.h"
+
 DriveTrain Robot::robotDrive;
 Intake Robot::intake;
 Elevator Robot::elevator;
@@ -198,4 +200,13 @@ void Robot::DS_PrintOut() {
     // successful(butchered) upload
 }
 
+#define TEST
+
+#ifdef TEST
+int main(int argc, char** argv) {
+    testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
+}
+#else
 START_ROBOT_CLASS(Robot)
+#endif

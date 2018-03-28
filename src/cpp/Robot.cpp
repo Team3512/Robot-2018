@@ -4,6 +4,8 @@
 
 #include <iostream>
 
+#include "gtest/gtest.h"
+
 std::unique_ptr<Segment[]> Robot::trajectory;
 std::unique_ptr<Segment[]> Robot::leftTrajectory;
 std::unique_ptr<Segment[]> Robot::rightTrajectory;
@@ -165,4 +167,13 @@ void Robot::DS_PrintOut() {
     // successful(butchered) upload
 }
 
+#define TEST
+
+#ifdef TEST
+int main(int argc, char** argv) {
+    testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
+}
+#else
 START_ROBOT_CLASS(Robot)
+#endif

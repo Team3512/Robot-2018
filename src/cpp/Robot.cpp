@@ -8,52 +8,46 @@ std::unique_ptr<Segment[]> Robot::trajectory;
 std::unique_ptr<Segment[]> Robot::leftTrajectory;
 std::unique_ptr<Segment[]> Robot::rightTrajectory;
 
-DriveTrain Robot::robotDrive;
 Intake Robot::intake;
 Elevator Robot::elevator;
 Climber Robot::climber;
-frc::Joystick Robot::appendageStick{kAppendageStickPort};
-frc::Joystick Robot::driveStick1{kDriveStick1Port};
-frc::Joystick Robot::driveStick2{kDriveStick2Port};
 
 LiveGrapher Robot::liveGrapher{kLiveGrapherPort};
 
 Robot::Robot() {
     // Auton: does nothing
     dsDisplay.AddAutoMethod("No-op", [] {}, [] {});
-    dsDisplay.AddAutoMethod(
-        "Autoline", std::bind(&AutoAutoLine::Reset, &autoLine),
-        std::bind(&AutoAutoLine::PostEvent, &autoLine, kTimeout));
-    dsDisplay.AddAutoMethod(
-        "Left Position Switch", std::bind(&AutoLeftSwitch::Reset, &leftSwitch),
-        std::bind(&AutoLeftSwitch::PostEvent, &leftSwitch, kTimeout));
-    dsDisplay.AddAutoMethod(
-        "Center Position Switch",
-        std::bind(&AutoCenterSwitch::Reset, &centerSwitch),
-        std::bind(&AutoCenterSwitch::PostEvent, &centerSwitch, kTimeout));
-    dsDisplay.AddAutoMethod(
-        "Right Position Switch",
-        std::bind(&AutoRightSwitch::Reset, &rightSwitch),
-        std::bind(&AutoRightSwitch::PostEvent, &rightSwitch, kTimeout));
-    dsDisplay.AddAutoMethod(
-        "Left Position Scale", std::bind(&AutoLeftScale::Reset, &leftScale),
-        std::bind(&AutoLeftScale::PostEvent, &leftScale, kTimeout));
-    dsDisplay.AddAutoMethod(
-        "Center Position Scale",
-        std::bind(&AutoCenterScale::Reset, &centerScale),
-        std::bind(&AutoCenterScale::PostEvent, &centerScale, kTimeout));
-    dsDisplay.AddAutoMethod(
-        "Right Position Scale", std::bind(&AutoRightScale::Reset, &rightScale),
-        std::bind(&AutoRightScale::PostEvent, &rightScale, kTimeout));
-    dsDisplay.AddAutoMethod(
-        "Left Position Double", std::bind(&AutoLeftDouble::Reset, &leftDouble),
-        std::bind(&AutoLeftDouble::PostEvent, &leftDouble, kTimeout));
-    dsDisplay.AddAutoMethod(
-        "Right Position Double",
-        std::bind(&AutoRightDouble::Reset, &rightDouble),
-        std::bind(&AutoRightDouble::PostEvent, &rightDouble, kTimeout));
-
-    version = GetFileCreationTime("/home/lvuser/FRCUserProgram");
+    dsDisplay.AddAutoMethod("Autoline Timed",
+                            std::bind(&Robot::AutoAutoLineTimedInit, this),
+                            std::bind(&Robot::AutoAutoLineTimedPeriodic, this));
+    dsDisplay.AddAutoMethod("Autoline",
+                            std::bind(&Robot::AutoAutoLineInit, this),
+                            std::bind(&Robot::AutoAutoLinePeriodic, this));
+    dsDisplay.AddAutoMethod("Left Position Switch",
+                            std::bind(&Robot::AutoLeftSwitchInit, this),
+                            std::bind(&Robot::AutoLeftSwitchPeriodic, this));
+    dsDisplay.AddAutoMethod("Center Position Switch",
+                            std::bind(&Robot::AutoCenterSwitchInit, this),
+                            std::bind(&Robot::AutoCenterSwitchPeriodic, this));
+    dsDisplay.AddAutoMethod("Right Position Switch",
+                            std::bind(&Robot::AutoRightSwitchInit, this),
+                            std::bind(&Robot::AutoRightSwitchPeriodic, this));
+    dsDisplay.AddAutoMethod("Left Position Scale",
+                            std::bind(&Robot::AutoLeftScaleInit, this),
+                            std::bind(&Robot::AutoLeftScalePeriodic, this));
+    dsDisplay.AddAutoMethod("Center Position Scale",
+                            std::bind(&Robot::AutoCenterScaleInit, this),
+                            std::bind(&Robot::AutoCenterScalePeriodic, this));
+    dsDisplay.AddAutoMethod("Right Position Scale",
+                            std::bind(&Robot::AutoRightScaleInit, this),
+                            std::bind(&Robot::AutoRightScalePeriodic, this));
+    dsDisplay.AddAutoMethod("Left Position Double",
+                            std::bind(&Robot::AutoLeftDoubleInit, this),
+                            std::bind(&Robot::AutoLeftDoublePeriodic, this));
+    dsDisplay.AddAutoMethod("Right Position Double",
+                            std::bind(&Robot::AutoRightDoubleInit, this),
+                            std::bind(&Robot::AutoRightDoublePeriodic, this));
+    server.SetSource(camera1);
 
     std::array<Waypoint, 3> waypoints;
     waypoints[0] = {-4, -1, d2r(45)};
@@ -68,11 +62,6 @@ Robot::Robot() {
 
     // camera2.SetResolution(640, 480);
     // camera2.SetFPS(30);
-
-    // camera1Sink.SetSource(camera1);
-    // camera2Sink.SetSource(camera2);
-
-    server.SetSource(camera1);
 }
 
 void Robot::DisabledInit() {
@@ -82,14 +71,16 @@ void Robot::DisabledInit() {
     intake.SetMotors(MotorState::kIdle);
     elevator.StopClosedLoop();
     elevator.SetHeightReference(elevator.GetHeight());
+    elevatorMode = ElevatorMode::kPosition;
 }
 
 void Robot::AutonomousInit() {
+    autoTimer.Reset();
+    autoTimer.Start();
     robotDrive.ResetEncoders();
     robotDrive.ResetGyro();
     elevator.ResetEncoder();
     intake.Deploy();
-    climber.LockPawl();
 
     dsDisplay.ExecAutonomousInit();
 }
@@ -99,7 +90,7 @@ void Robot::TeleopInit() {
     elevator.StopClosedLoop();
     intake.Deploy();
     intake.Close();
-    climber.LockPawl();
+    elevatorMode = ElevatorMode::kVelocity;
 }
 
 void Robot::TestInit() {}
@@ -134,28 +125,108 @@ void Robot::DisabledPeriodic() {}
 void Robot::AutonomousPeriodic() { dsDisplay.ExecAutonomousPeriodic(); }
 
 void Robot::TeleopPeriodic() {
-    robotDrive.PostEvent(EventType::kTimeout);
-    elevator.PostEvent(EventType::kTimeout);
-    climber.PostEvent(EventType::kTimeout);
+    // Drive Stick Controls
+    if (driveStick1.GetRawButton(1)) {
+        robotDrive.Drive(driveStick1.GetY() * 0.5, driveStick2.GetX() * 0.5,
+                         driveStick2.GetRawButton(2));
+    } else {
+        robotDrive.Drive(driveStick1.GetY(), driveStick2.GetX(),
+                         driveStick2.GetRawButton(2));
+    }
+
+    // Elevator Controls
+    switch (elevatorMode) {
+        /*case ElevatorMode::kPosition:
+            if (appendageStick.GetRawButton(7)) {
+                elevator.SetHeightReference(kFloorHeight);
+            }
+            if (appendageStick.GetRawButton(9)) {
+                elevator.SetHeightReference(kSecondBlockHeight);
+            }
+            if (appendageStick.GetRawButton(8)) {
+                elevator.SetHeightReference(kSwitchHeight);
+            }
+            if (appendageStick.GetRawButton(10)) {
+                elevator.SetHeightReference(kScaleHeight);
+            }
+            if (appendageStick.GetRawButton(11)) {
+                elevator.SetHeightReference(kClimbHeight);
+            }
+            break;*/
+        case ElevatorMode::kVelocity:
+            elevator.SetVelocity(appendageStick.GetY());
+            break;
+    }
 }
 
 void Robot::HandleEvent(Event event) {
-    // Camera Switching
-    /* if (event == Event{kButtonPressed, 11}) {
+    // Intake Controls
+    if (event == Event{kButtonPressed, 3}) {
+        if (intake.IsOpen()) {
+            intake.Close();
+        } else if (intake.IsDeployed()) {
+            intake.Open();
+        }
+    }
+    if (event == Event{kButtonPressed, 5} && !elevator.GetBottomHallEffect()) {
+        if (intake.IsDeployed()) {
+            intake.Stow();
+            intake.Close();
+        } else {
+            intake.Deploy();
+        }
+    }
+    if (event == Event{kButtonPressed, 4}) {
+        intake.SetMotors(MotorState::kIntake);
+    }
+    if (event == Event{kButtonPressed, 6}) {
+        intake.SetMotors(MotorState::kOuttake);
+    }
+    if (event == Event{kButtonReleased, 4} ||
+        event == Event{kButtonReleased, 6}) {
+        intake.SetMotors(MotorState::kIdle);
+    }
+
+    // Elevator Controls
+    /* switch (elevatorMode) {
+        case ElevatorMode::kPosition:
+            if (event == Event{kButtonPressed, 5} &&
+                !elevator.GetBottomHallEffect()) {
+                if (intake.IsDeployed()) {
+                    intake.Stow();
+                } else {
+                    intake.Deploy();
+                }
+            }
+            if (event == Event{kButtonPressed, 12}) {
+                elevator.SetHeightReference(elevator.GetHeight());
+                elevator.StopClosedLoop();
+                elevatorMode = ElevatorMode::kVelocity;
+            }
+            break;
+        case ElevatorMode::kVelocity:
+            if (event == Event{kButtonPressed, 12}) {
+                elevator.SetHeightReference(elevator.GetHeight());
+                elevator.StartClosedLoop();
+                elevatorMode = ElevatorMode::kPosition;
+            }
+            break;
+    }*/
+
+    if (driveStick2.GetRawButton(7) && event == Event{kButtonPressed, 2}) {
+        climber.Shift();
+    }
+    if (driveStick2.GetRawButton(10) && event == Event{kButtonPressed, 10}) {
+        climber.GearShift();
+    }
+
+    /*if (event == Event{kButtonPressed, 11}) {
         if (server.GetSource() == camera1) {
             server.SetSource(camera2);
         } else {
             server.SetSource(camera1);
         }
-    } */
-}
-
-std::string Robot::GetFileCreationTime(std::string filePath) {
-    struct stat attrib;
-    stat(filePath.c_str(), &attrib);
-    std::string ret(21, '\0');
-    std::strftime(&ret[0], 21, "%F %R:%S", std::localtime(&(attrib.st_ctime)));
-    return ret;
+    }*/
 }
 
 void Robot::DS_PrintOut() {
@@ -171,25 +242,13 @@ void Robot::DS_PrintOut() {
         prevVel = curVel;
         liveGrapher.ResetInterval();
         */
-    // robotDrive.Debug();
+    robotDrive.Debug();
     // std::cout << robotDrive.GetLeftDisplacement() << "Left, Right" <<
     // robotDrive.GetRightDisplacement() << std::endl;
-    // std::cout << robotDrive.GetAngle() << std::endl;
-    // std::cout << elevator.GetHeight() << std::endl;
+    std::cout << robotDrive.GetAngle() << std::endl;
+    std::cout << elevator.GetHeight() << std::endl;
     // std::cout << "Version 1.5" << std::endl; // To ensure a
     // successful(butchered) upload
-    dsDisplay.Clear();
-
-    dsDisplay.AddData("ENCODER_LEFT", robotDrive.GetLeftDisplacement());
-    dsDisplay.AddData("ENCODER_RIGHT", robotDrive.GetRightDisplacement());
-    dsDisplay.AddData("GYRO_VAL", robotDrive.GetAngle());
-    dsDisplay.AddData("PAWL_ENGAGED",
-                      climber.GetPawl());  // todo: add the function
-    dsDisplay.AddData("LOW_GEAR",
-                      climber.IsLowGear());  // todo: add the function
-    dsDisplay.AddData("VERSION", version);
-
-    dsDisplay.SendToDS();
 }
 
 START_ROBOT_CLASS(Robot)

@@ -3,10 +3,8 @@
 #pragma once
 
 #include <pathfinder.h>
-#include <sys/stat.h>
 
 #include <array>
-#include <ctime>
 #include <iostream>
 #include <memory>
 #include <string>
@@ -20,15 +18,6 @@
 #include <XboxController.h>
 #include <cscore.h>
 
-#include "AutonomousModes/AutoAutoLine.hpp"
-#include "AutonomousModes/AutoCenterScale.hpp"
-#include "AutonomousModes/AutoCenterSwitch.hpp"
-#include "AutonomousModes/AutoLeftDouble.hpp"
-#include "AutonomousModes/AutoLeftScale.hpp"
-#include "AutonomousModes/AutoLeftSwitch.hpp"
-#include "AutonomousModes/AutoRightDouble.hpp"
-#include "AutonomousModes/AutoRightScale.hpp"
-#include "AutonomousModes/AutoRightSwitch.hpp"
 #include "Constants.hpp"
 #include "DSDisplay/DSDisplay.hpp"
 #include "ES/Service.hpp"
@@ -55,11 +44,37 @@ public:
 
     void HandleEvent(Event event) override;
 
-    static std::string GetFileCreationTime(std::string filePath);
+    void AutoAutoLineInit();
+    void AutoAutoLinePeriodic();
+
+    void AutoAutoLineTimedInit();
+    void AutoAutoLineTimedPeriodic();
+
+    void AutoLeftSwitchInit();
+    void AutoLeftSwitchPeriodic();
+
+    void AutoCenterSwitchInit();
+    void AutoCenterSwitchPeriodic();
+
+    void AutoRightSwitchInit();
+    void AutoRightSwitchPeriodic();
+
+    void AutoLeftScaleInit();
+    void AutoLeftScalePeriodic();
+
+    void AutoCenterScaleInit();
+    void AutoCenterScalePeriodic();
+
+    void AutoRightScaleInit();
+    void AutoRightScalePeriodic();
+
+    void AutoLeftDoubleInit();
+    void AutoLeftDoublePeriodic();
+
+    void AutoRightDoubleInit();
+    void AutoRightDoublePeriodic();
 
     void DS_PrintOut();
-
-    std::string version;
 
     /**
      * Uses waypoints to generate a trajectory
@@ -74,27 +89,23 @@ public:
     static std::unique_ptr<Segment[]> leftTrajectory;
     static std::unique_ptr<Segment[]> rightTrajectory;
 
-    static DriveTrain robotDrive;
     static Intake intake;
     static Elevator elevator;
     static Climber climber;
-    static frc::Joystick appendageStick;
-    static frc::Joystick driveStick1;
-    static frc::Joystick driveStick2;
 
     // LiveGrapher host
     static LiveGrapher liveGrapher;
 
 private:
-    AutoAutoLine autoLine;
-    AutoCenterScale centerScale;
-    AutoCenterSwitch centerSwitch;
-    AutoLeftDouble leftDouble;
-    AutoLeftScale leftScale;
-    AutoLeftSwitch leftSwitch;
-    AutoRightDouble rightDouble;
-    AutoRightScale rightScale;
-    AutoRightSwitch rightSwitch;
+    ElevatorMode elevatorMode = ElevatorMode::kVelocity;
+
+    DriveTrain robotDrive;
+
+    frc::Joystick driveStick1{kDriveStick1Port};
+    frc::Joystick driveStick2{kDriveStick2Port};
+    frc::Joystick appendageStick{kAppendageStickPort};
+
+    frc::Timer autoTimer;
 
     // Used for sending data to the Driver Station
     DSDisplay dsDisplay{kDsPort};
@@ -102,8 +113,6 @@ private:
     // Camera
     cs::UsbCamera camera1{"Camera 1", 0};
     // cs::UsbCamera camera2{"Camera 2", 1};
-    cs::CvSink camera1Sink;
-    // cs::CvSink camera2Sink;
 
     cs::MjpegServer server{"Server", kMjpegServerPort};
 };

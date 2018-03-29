@@ -85,7 +85,7 @@ void Robot::AutoLeftSwitchPeriodic() {
                     robotDrive.SetPositionGoal(65.0 - kRobotLength / 2.0 -
                                                kRobotWidth / 2.0);
                 } else {
-                    robotDrive.SetPositionGoal(36.0 -
+                    robotDrive.SetPositionGoal(42.0 -
                                                kRobotLength / 2.0);  // 28.0
                 }
                 autoTimer.Reset();

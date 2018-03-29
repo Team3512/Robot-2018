@@ -216,6 +216,9 @@ void Robot::HandleEvent(Event event) {
     if (driveStick2.GetRawButton(7) && event == Event{kButtonPressed, 2}) {
         climber.Shift();
     }
+    if (driveStick2.GetRawButton(10) && event == Event{kButtonPressed, 10}) {
+           climber.GearShift();
+    }
 
     /*if (event == Event{kButtonPressed, 11}) {
         if (server.GetSource() == camera1) {

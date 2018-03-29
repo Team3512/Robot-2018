@@ -14,6 +14,10 @@ void Climber::Shift() {
     }
 }
 
+void Climber::GearShift() {
+    m_gearShift.Set(!m_gearShift.Get());
+}
+
 void Climber::HandleEvent(Event event) {
     static State state = State::kInit;
 

@@ -6,12 +6,23 @@
 
 enum class State { kInit, kSetup, kWaiting, kClimb, kIdle };
 
+bool Climber::GetPawl() const {
+	return m_setupSolenoid.Get();
+}
 void Climber::Shift() {
     if (m_setupSolenoid.Get() == DoubleSolenoid::kForward) {
         m_setupSolenoid.Set(DoubleSolenoid::kReverse);  // Low gear
     } else {
         m_setupSolenoid.Set(DoubleSolenoid::kForward);  // High gear
     }
+}
+
+void Climber::GearShift() {
+    m_gearShift.Set(!m_gearShift.Get());
+}
+
+bool Climber::IsLowGear() const {
+    return m_setupSolenoid.Get() == DoubleSolenoid::kForward;
 }
 
 void Climber::HandleEvent(Event event) {

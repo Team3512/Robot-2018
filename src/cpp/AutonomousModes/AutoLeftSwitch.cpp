@@ -61,7 +61,7 @@ void Robot::AutoLeftSwitchPeriodic() {
             if (robotDrive.AtAngleGoal() ||
                 autoTimer.Get() > robotDrive.AngleProfileTimeTotal() + 1.0) {
                 robotDrive.ResetEncoders();
-                robotDrive.SetPositionGoal(190.0);
+                robotDrive.SetPositionGoal(190.0 - 20.0);
                 autoTimer.Reset();
 
                 state = State::kLeftForward;
@@ -71,7 +71,7 @@ void Robot::AutoLeftSwitchPeriodic() {
             if (robotDrive.AtPositionGoal() ||
                 autoTimer.Get() > robotDrive.PositionProfileTimeTotal() + 1.0) {
                 robotDrive.ResetGyro();
-                robotDrive.SetAngleGoal(90.0);
+                robotDrive.SetAngleGoal(90.0 - 20.0);
                 autoTimer.Reset();
 
                 state = State::kFinalRotate;
@@ -85,8 +85,8 @@ void Robot::AutoLeftSwitchPeriodic() {
                     robotDrive.SetPositionGoal(65.0 - kRobotLength / 2.0 -
                                                kRobotWidth / 2.0);
                 } else {
-                    robotDrive.SetPositionGoal(36.0 -
-                                               kRobotLength / 2.0);  // 28.0
+                    robotDrive.SetPositionGoal(42.0 -
+                                               kRobotLength / 2.0 - + 20.0);  // 28.0
                 }
                 autoTimer.Reset();
 

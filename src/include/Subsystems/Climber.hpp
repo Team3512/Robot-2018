@@ -14,11 +14,15 @@
 
 class Climber : public Service {
 public:
+    bool GetPawl() const;
     void Shift();
+    void GearShift();
+    bool IsLowGear() const;
     void HandleEvent(Event event) override;
 
 private:
     frc::DoubleSolenoid m_setupSolenoid{kSetupForwardPort, kSetupReversePort};
+    frc::Solenoid m_gearShift{kGearShiftPort};
 
     Timer timer;
 };

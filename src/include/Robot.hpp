@@ -3,8 +3,10 @@
 #pragma once
 
 #include <pathfinder.h>
+#include <sys/stat.h>
 
 #include <array>
+#include <ctime>
 #include <iostream>
 #include <memory>
 #include <string>
@@ -74,7 +76,11 @@ public:
     void AutoRightDoubleInit();
     void AutoRightDoublePeriodic();
 
+    static std::string GetFileCreationTime(std::string filePath);
+
     void DS_PrintOut();
+
+    std::string version;
 
     /**
      * Uses waypoints to generate a trajectory
@@ -113,6 +119,8 @@ private:
     // Camera
     cs::UsbCamera camera1{"Camera 1", 0};
     // cs::UsbCamera camera2{"Camera 2", 1};
+    cs::CvSink camera1Sink;
+    // cs::CvSink camera2Sink;
 
     cs::MjpegServer server{"Server", kMjpegServerPort};
 };

@@ -1,7 +1,7 @@
 // Copyright (c) 2016-2018 FRC Team 3512. All Rights Reserved.
 
-#include <string>
 #include <iostream>
+#include <string>
 
 #include <DriverStation.h>
 
@@ -28,7 +28,7 @@ void Robot::AutoRightScalePeriodic() {
 
     switch (state) {
         case State::kInit:
-		std::cout << "Init" << std::endl;
+            std::cout << "Init" << std::endl;
             platePosition =
                 frc::DriverStation::GetInstance().GetGameSpecificMessage();
 
@@ -53,7 +53,7 @@ void Robot::AutoRightScalePeriodic() {
             break;
 
         case State::kInitialForward:
-	    std::cout << "Init Forward" << std::endl;
+            std::cout << "Init Forward" << std::endl;
             if (robotDrive.AtPositionGoal() ||
                 autoTimer.Get() > robotDrive.PositionProfileTimeTotal() + 1.0) {
                 autoTimer.Reset();
@@ -69,7 +69,7 @@ void Robot::AutoRightScalePeriodic() {
             }
             break;
         case State::kLeftRotate:
-	    std::cout << "Left Rotate" << std::endl;
+            std::cout << "Left Rotate" << std::endl;
             if (robotDrive.AtAngleGoal() ||
                 autoTimer.Get() > robotDrive.AngleProfileTimeTotal() + 1.0) {
                 robotDrive.ResetEncoders();
@@ -80,7 +80,7 @@ void Robot::AutoRightScalePeriodic() {
             }
             break;
         case State::kLeftForward:
-	    std::cout << "Left Forward" << std::endl;
+            std::cout << "Left Forward" << std::endl;
             if (robotDrive.AtPositionGoal() ||
                 autoTimer.Get() > robotDrive.PositionProfileTimeTotal() + 1.0) {
                 robotDrive.ResetGyro();
@@ -91,7 +91,7 @@ void Robot::AutoRightScalePeriodic() {
             }
             break;
         case State::kSecondLeftRotate:
-	    std::cout << "Second Left Rotate" << std::endl;
+            std::cout << "Second Left Rotate" << std::endl;
             if (robotDrive.AtAngleGoal() ||
                 autoTimer.Get() > robotDrive.AngleProfileTimeTotal() + 1.0) {
                 robotDrive.ResetEncoders();
@@ -102,7 +102,7 @@ void Robot::AutoRightScalePeriodic() {
             }
             break;
         case State::kSecondLeftForward:
-	    std::cout << "Second Left Forward" << std::endl;
+            std::cout << "Second Left Forward" << std::endl;
             if (robotDrive.AtPositionGoal() ||
                 autoTimer.Get() > robotDrive.PositionProfileTimeTotal() + 1.0) {
                 robotDrive.ResetGyro();
@@ -113,7 +113,7 @@ void Robot::AutoRightScalePeriodic() {
             }
             break;
         case State::kFinalRotate:
-	    std::cout << "Final Rotate" << std::endl;
+            std::cout << "Final Rotate" << std::endl;
             if (robotDrive.AtAngleGoal() ||
                 autoTimer.Get() > robotDrive.AngleProfileTimeTotal() + 1.0) {
                 robotDrive.ResetEncoders();
@@ -129,7 +129,7 @@ void Robot::AutoRightScalePeriodic() {
             }
             break;
         case State::kFinalForward:
-	    std::cout << "Final Forward" << std::endl;
+            std::cout << "Final Forward" << std::endl;
             if (robotDrive.AtPositionGoal() ||
                 autoTimer.Get() > robotDrive.PositionProfileTimeTotal() + 1.0) {
                 intake.AutoOuttake();
@@ -139,7 +139,7 @@ void Robot::AutoRightScalePeriodic() {
             }
             break;
         case State::kIdle:
-	    std::cout << "Idle" << std::endl;
+            std::cout << "Idle" << std::endl;
             break;
     }
 }

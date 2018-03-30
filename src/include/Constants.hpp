@@ -38,8 +38,8 @@ constexpr int kRightDriveSlaveID = 4;
 // Distance per Pulse
 // constexpr double kLeftDpP = 139.0 / 6934.33; Proto
 // constexpr double kRightDpP = 139.0 / 10748.33; Proto
-constexpr double kLeftDpP = 99.0 / ((7319.0 + 7306.0 + 7305.0) / 3.0);
-constexpr double kRightDpP = 99.0 / ((7440.0 + 7338.0 + 7400.0) / 3.0);
+constexpr double kLeftDpP = 102.0 / ((7710.0 + 7680.0 + 7735.0) / 3.0);
+constexpr double kRightDpP = 102.0 / ((7668.0 + 7594.0 + 7548.0) / 3.0);
 
 // DriveTrain position PID
 constexpr double kPosP = 0.07;  // .06
@@ -122,17 +122,17 @@ constexpr double kFloorHeight = 73.0;  // Makes sure it hits bottom
 constexpr double kSecondBlockHeight = -10.0;
 constexpr double kSwitchHeight = -36.0;
 constexpr double kScaleHeight = -67.0;
-constexpr double kClimbHeight = -70.0;  // 74.0
+constexpr double kClimbHeight = -72.0;  // 74.0
 
 /*
  * Climber
  */
 
 // Climber Solenoid ports
-constexpr int kPawlPort = 3;
 constexpr int kSetupForwardPort = 4;
 constexpr int kSetupReversePort = 5;
 
+constexpr int kGearShiftPort = 3;
 /*
  * Miscellaneous
  */

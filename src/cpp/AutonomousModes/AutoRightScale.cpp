@@ -1,103 +1,145 @@
 // Copyright (c) 2016-2018 FRC Team 3512. All Rights Reserved.
 
-#include "AutonomousModes/AutoRightScale.hpp"
+#include <iostream>
+#include <string>
 
 #include <DriverStation.h>
 
 #include "Robot.hpp"
 
-AutoRightScale::AutoRightScale() { autoTimer.Start(); }
+enum class State {
+    kInit,
+    kInitialForward,
+    kLeftRotate,
+    kLeftForward,
+    kSecondLeftRotate,
+    kSecondLeftForward,
+    kFinalRotate,
+    kFinalForward,
+    kIdle
+};
 
-void AutoRightScale::Reset() { state = State::kInit; }
+static State state;
 
-void AutoRightScale::HandleEvent(Event event) {
+void Robot::AutoRightScaleInit() { state = State::kInit; }
+
+void Robot::AutoRightScalePeriodic() {
     static std::string platePosition;
 
     switch (state) {
         case State::kInit:
+            std::cout << "Init" << std::endl;
             platePosition =
                 frc::DriverStation::GetInstance().GetGameSpecificMessage();
 
             if (platePosition[kScale] == 'R') {
-                Robot::robotDrive.SetPositionGoal(324.0 - kRobotLength / 2.0);
-            } else {
-                Robot::robotDrive.SetPositionGoal(236.5 - kRobotLength / 2.0);
-            }
-            Robot::robotDrive.SetAngleGoal(0.0);
-            Robot::robotDrive.StartClosedLoop();
+                robotDrive.SetPositionGoal(328.0 - kRobotLength / 2.0);
+                elevator.SetHeightReference(kScaleHeight);
 
-            Robot::elevator.SetHeightReference(kScaleHeight);
-            Robot::elevator.StartClosedLoop();
+                state = State::kInitialForward;
+            } else {
+                robotDrive.SetPositionGoal(252.0 - kRobotLength / 2.0);
+                elevator.SetHeightReference(kScaleHeight);
+
+                state = State::kLeftForward;
+            }
+
+            robotDrive.SetAngleGoal(0.0);
+            robotDrive.StartClosedLoop();
+
+            elevator.StartClosedLoop();
 
             autoTimer.Reset();
-
-            state = State::kInitialForward;
             break;
 
         case State::kInitialForward:
-            if (Robot::robotDrive.AtPositionGoal() ||
-                autoTimer.Get() >
-                    Robot::robotDrive.PositionProfileTimeTotal() + 1.0) {
-                Robot::robotDrive.SetAngleGoal(-90.0);
+            std::cout << "Init Forward" << std::endl;
+            if (robotDrive.AtPositionGoal() ||
+                autoTimer.Get() > robotDrive.PositionProfileTimeTotal() + 1.0) {
                 autoTimer.Reset();
                 if (platePosition[kScale] == 'R') {
+                    robotDrive.SetAngleGoal(-90.0);
+
                     state = State::kFinalRotate;
                 } else {
+                    robotDrive.SetAngleGoal(90.0);
+
                     state = State::kLeftRotate;
                 }
             }
             break;
         case State::kLeftRotate:
-            if (Robot::robotDrive.AtAngleGoal() ||
-                autoTimer.Get() >
-                    Robot::robotDrive.AngleProfileTimeTotal() + 1.0) {
-                Robot::robotDrive.ResetEncoders();
-                Robot::robotDrive.SetPositionGoal(199.0);
+            std::cout << "Left Rotate" << std::endl;
+            if (robotDrive.AtAngleGoal() ||
+                autoTimer.Get() > robotDrive.AngleProfileTimeTotal() + 1.0) {
+                robotDrive.ResetEncoders();
+                robotDrive.SetPositionGoal(250.0 + kRobotWidth / 2.0);
                 autoTimer.Reset();
 
                 state = State::kLeftForward;
             }
             break;
         case State::kLeftForward:
-            if (Robot::robotDrive.AtPositionGoal() ||
-                autoTimer.Get() >
-                    Robot::robotDrive.PositionProfileTimeTotal() + 1.0) {
-                Robot::robotDrive.ResetGyro();
-                Robot::robotDrive.SetAngleGoal(90.0);
+            std::cout << "Left Forward" << std::endl;
+            if (robotDrive.AtPositionGoal() ||
+                autoTimer.Get() > robotDrive.PositionProfileTimeTotal() + 1.0) {
+                robotDrive.ResetGyro();
+                robotDrive.SetAngleGoal(90.0);
+                autoTimer.Reset();
+
+                state = State::kSecondLeftRotate;
+            }
+            break;
+        case State::kSecondLeftRotate:
+            std::cout << "Second Left Rotate" << std::endl;
+            if (robotDrive.AtAngleGoal() ||
+                autoTimer.Get() > robotDrive.AngleProfileTimeTotal() + 1.0) {
+                robotDrive.ResetEncoders();
+                robotDrive.SetPositionGoal(60.0 + kRobotWidth / 2.0);
+                autoTimer.Reset();
+
+                state = State::kSecondLeftForward;
+            }
+            break;
+        case State::kSecondLeftForward:
+            std::cout << "Second Left Forward" << std::endl;
+            if (robotDrive.AtPositionGoal() ||
+                autoTimer.Get() > robotDrive.PositionProfileTimeTotal() + 1.0) {
+                robotDrive.ResetGyro();
+                robotDrive.SetAngleGoal(90.0);
                 autoTimer.Reset();
 
                 state = State::kFinalRotate;
             }
             break;
         case State::kFinalRotate:
-            if (Robot::robotDrive.AtAngleGoal() ||
-                autoTimer.Get() >
-                    Robot::robotDrive.AngleProfileTimeTotal() + 1.0) {
-                Robot::robotDrive.ResetEncoders();
+            std::cout << "Final Rotate" << std::endl;
+            if (robotDrive.AtAngleGoal() ||
+                autoTimer.Get() > robotDrive.AngleProfileTimeTotal() + 1.0) {
+                robotDrive.ResetEncoders();
                 autoTimer.Reset();
                 if (platePosition[kScale] == 'R') {
-                    Robot::robotDrive.SetPositionGoal(24.0 -
-                                                      kRobotLength / 2.0);
+                    robotDrive.SetPositionGoal(24.0 + 6.0 - kRobotLength / 2.0);
                 } else {
-                    Robot::robotDrive.SetPositionGoal(56.0 -
-                                                      kRobotLength / 2.0);
+                    robotDrive.SetPositionGoal(40.0 - kRobotWidth / 2.0 -
+                                               kRobotLength / 2.0);
                 }
 
                 state = State::kFinalForward;
             }
             break;
         case State::kFinalForward:
-            if (Robot::robotDrive.AtPositionGoal() ||
-                autoTimer.Get() >
-                    Robot::robotDrive.PositionProfileTimeTotal() + 1.0) {
-                Robot::intake.Open();
-
-                Robot::robotDrive.StopClosedLoop();
-                Robot::elevator.StopClosedLoop();
+            std::cout << "Final Forward" << std::endl;
+            if (robotDrive.AtPositionGoal() ||
+                autoTimer.Get() > robotDrive.PositionProfileTimeTotal() + 1.0) {
+                intake.AutoOuttake();
+                robotDrive.StopClosedLoop();
+                elevator.StopClosedLoop();
                 state = State::kIdle;
             }
             break;
         case State::kIdle:
+            std::cout << "Idle" << std::endl;
             break;
     }
 }

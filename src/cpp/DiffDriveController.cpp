@@ -36,11 +36,11 @@ DiffDriveController::DiffDriveController(
       m_leftMotorInput(m_positionPID, false, m_anglePID, !m_clockwise,
                        m_positionFeedForward, false, m_angleFeedForward,
                        !m_clockwise),
-      m_leftOutput(m_leftMotorInput, m_leftMotor),
+      m_leftOutput(m_leftConstraint, m_leftMotor),
       m_rightMotorInput(m_positionPID, true, m_anglePID, !m_clockwise,
                         m_positionFeedForward, true, m_angleFeedForward,
                         !m_clockwise),
-      m_rightOutput(m_rightMotorInput, m_rightMotor),
+      m_rightOutput(m_rightConstraint, m_rightMotor),
       m_outputs(m_leftOutput, m_rightOutput),
       m_period(period) {}
 

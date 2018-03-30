@@ -2,6 +2,9 @@
 
 #pragma once
 
+#include <algorithm>
+#include <cmath>
+
 #include <CtrlSys/FuncNode.h>
 #include <CtrlSys/INode.h>
 #include <CtrlSys/MotionProfile.h>
@@ -109,12 +112,38 @@ private:
                          false};
     PIDNode m_anglePID{0.0, 0.0, 0.0, m_angleError};
 
-    // Combine outputs for left motor
     SumNode m_leftMotorInput;
-    Output m_leftOutput;
-
-    // Combine outputs for right motor
     SumNode m_rightMotorInput;
+
+    FuncNode m_leftConstraint {[&] {
+      double leftInput = m_leftMotorInput.GetOutput();
+      double rightInput = m_rightMotorInput.GetOutput();
+      double leftDiff;
+      double maxInput = std::max(std::abs(leftInput), std::abs(rightInput);
+      if (maxInput > 1) {
+        if (std::abs(leftInput) > std::abs(rightInput)) {
+          if (leftInput > 0) {
+            leftDiff = leftInput - 1;
+          } else if (leftInput < 0) {
+            leftDiff = leftInput + 1;
+          }
+        } else {
+          if (rightInput > 0) {
+            leftDiff = rightInput - 1;
+          } else {
+            leftDiff = rightInput + 1;
+          }
+        }
+      }
+      leftInput = leftInput - leftDiff;
+      return leftInput;
+    }
+    FuncNode m_rightConstraint {[&] {
+      double rightInput = m_rightMotorInput.GetOutput();
+      double leftInput = m_leftMotorInput.GetOutput();
+    }
+    
+    Output m_leftOutput;
     Output m_rightOutput;
 
     OutputGroup m_outputs;

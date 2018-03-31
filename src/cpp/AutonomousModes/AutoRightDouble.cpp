@@ -155,4 +155,9 @@ void Robot::AutoRightDoublePeriodic() {
         case State::kIdle:
             break;
     }
+    if (robotDrive.GetPosition() > 20) {
+        state = State::kIdle;
+        robotDrive.StopClosedLoop();
+        elevator.StopClosedLoop();
+    }
 }

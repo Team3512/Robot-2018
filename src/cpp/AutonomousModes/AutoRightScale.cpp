@@ -142,4 +142,9 @@ void Robot::AutoRightScalePeriodic() {
             std::cout << "Idle" << std::endl;
             break;
     }
+    if (robotDrive.PositionError() > 20) {
+        state = State::kIdle;
+        robotDrive.StopClosedLoop();
+        elevator.StopClosedLoop();
+    }
 }

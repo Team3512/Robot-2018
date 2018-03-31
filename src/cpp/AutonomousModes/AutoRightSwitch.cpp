@@ -2,6 +2,7 @@
 
 #include "AutonomousModes/AutoRightSwitch.hpp"
 
+#include <cmath>
 #include <iostream>
 
 #include <DriverStation.h>
@@ -105,5 +106,11 @@ void AutoRightSwitch::HandleEvent(Event event) {
             break;
         case State::kIdle:
             break;
+    }
+
+    if (std::abs(Robot::robotDrive.PositionError()) > 20) {
+        state = State::kIdle;
+        Robot::robotDrive.StopClosedLoop();
+        Robot::elevator.StopClosedLoop();
     }
 }

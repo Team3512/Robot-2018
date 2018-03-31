@@ -125,4 +125,9 @@ void AutoLeftDouble::HandleEvent(Event event) {
         case State::kIdle:
             break;
     }
+    if (robotDrive.PositionError() > 20) {
+        state = State::kIdle;
+        robotDrive.StopClosedLoop();
+        elevator.StopClosedLoop();
+    }
 }

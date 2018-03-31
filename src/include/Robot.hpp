@@ -27,6 +27,7 @@
 #include "AutonomousModes/AutoRightDouble.hpp"
 #include "AutonomousModes/AutoRightScale.hpp"
 #include "AutonomousModes/AutoRightSwitch.hpp"
+#include "AutonomousModes/AutoTimedSwitch.hpp"
 #include "Constants.hpp"
 #include "DSDisplay/DSDisplay.hpp"
 #include "ES/Service.hpp"
@@ -89,6 +90,7 @@ private:
     AutoRightDouble rightDouble;
     AutoRightScale rightScale;
     AutoRightSwitch rightSwitch;
+    AutoTimedSwitch timedSwitch;
 
     // Used for sending data to the Driver Station
     DSDisplay dsDisplay{kDsPort};

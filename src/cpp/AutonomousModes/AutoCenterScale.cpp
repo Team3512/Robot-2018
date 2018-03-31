@@ -2,6 +2,8 @@
 
 #include "AutonomousModes/AutoCenterScale.hpp"
 
+#include <cmath>
+
 #include <DriverStation.h>
 
 #include "Robot.hpp"
@@ -128,5 +130,11 @@ void AutoCenterScale::HandleEvent(Event event) {
             break;
         case State::kIdle:
             break;
+    }
+
+    if (std::abs(Robot::robotDrive.PositionError()) > 20) {
+        state = State::kIdle;
+        Robot::robotDrive.StopClosedLoop();
+        Robot::elevator.StopClosedLoop();
     }
 }

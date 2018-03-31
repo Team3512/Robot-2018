@@ -42,7 +42,7 @@ void Robot::AutoCenterSwitchPeriodic() {
 
         case State::kInitialForward:
             if (robotDrive.AtPositionGoal() ||
-                autoTimer.Get() > robotDrive.PositionProfileTimeTotal() + 1.0) {
+                autoTimer.Get() > robotDrive.PositionProfileTimeTotal() + 0.5) {
                 autoTimer.Reset();
                 if (platePosition[kFriendlySwitch] == 'R') {
                     robotDrive.SetAngleGoal(90.0);
@@ -55,7 +55,7 @@ void Robot::AutoCenterSwitchPeriodic() {
             break;
         case State::kInitialRotate:
             if (robotDrive.AtAngleGoal() ||
-                autoTimer.Get() > robotDrive.AngleProfileTimeTotal() + 1.0) {
+                autoTimer.Get() > robotDrive.AngleProfileTimeTotal() + 0.5) {
                 robotDrive.ResetEncoders();
                 autoTimer.Reset();
                 if (platePosition[kFriendlySwitch] == 'R') {
@@ -71,7 +71,7 @@ void Robot::AutoCenterSwitchPeriodic() {
             break;
         case State::kSecondForward:
             if (robotDrive.AtPositionGoal() ||
-                autoTimer.Get() > robotDrive.PositionProfileTimeTotal() + 1.0) {
+                autoTimer.Get() > robotDrive.PositionProfileTimeTotal() + 0.5) {
                 autoTimer.Reset();
                 if (platePosition[kFriendlySwitch] == 'R') {
                     robotDrive.ResetGyro();
@@ -86,17 +86,19 @@ void Robot::AutoCenterSwitchPeriodic() {
             break;
         case State::kFinalRotate:
             if (robotDrive.AtAngleGoal() ||
-                autoTimer.Get() > robotDrive.AngleProfileTimeTotal() + 1.0) {
+                autoTimer.Get() > robotDrive.AngleProfileTimeTotal() + 0.5) {
                 robotDrive.ResetEncoders();
                 robotDrive.SetPositionGoal(79.0 - kRobotLength / 2.0);  // 73.0
                 autoTimer.Reset();
-
+                if (platePosition[kFriendlySwitch] == 'R') {
+                  robotDrive.SetPositionGoal(82.0 - kRobotLength / 2.0);
+                }
                 state = State::kFinalForward;
             }
             break;
         case State::kFinalForward:
             if (robotDrive.AtPositionGoal() ||
-                autoTimer.Get() > robotDrive.PositionProfileTimeTotal() + 1.0) {
+                autoTimer.Get() > robotDrive.PositionProfileTimeTotal() + 0.5) {
                 intake.SetMotors(MotorState::kOuttake);
                 robotDrive.StopClosedLoop();
                 elevator.StopClosedLoop();

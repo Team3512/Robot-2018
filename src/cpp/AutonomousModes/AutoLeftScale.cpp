@@ -71,7 +71,7 @@ void Robot::AutoLeftScalePeriodic() {
             break;
         case State::kLeftRotate:
             if (robotDrive.AtAngleGoal() ||
-                autoTimer.Get() > robotDrive.AngleProfileTimeTotal() + 1.0) {
+                autoTimer.Get() > robotDrive.AngleProfileTimeTotal() + 0.5) {
                 robotDrive.ResetEncoders();
                 robotDrive.SetPositionGoal(200.0 + kRobotWidth / 2.0);
                 autoTimer.Reset();
@@ -81,7 +81,7 @@ void Robot::AutoLeftScalePeriodic() {
             break;
         case State::kLeftForward:
             if (robotDrive.AtPositionGoal() ||
-                autoTimer.Get() > robotDrive.PositionProfileTimeTotal() + 1.0) {
+                autoTimer.Get() > robotDrive.PositionProfileTimeTotal() + 0.5) {
                 robotDrive.ResetGyro();
                 robotDrive.SetAngleGoal(-90.0);
                 autoTimer.Reset();
@@ -91,7 +91,7 @@ void Robot::AutoLeftScalePeriodic() {
             break;
         case State::kFinalRotate:
             if (robotDrive.AtAngleGoal() ||
-                autoTimer.Get() > robotDrive.AngleProfileTimeTotal() + 1.0) {
+                autoTimer.Get() > robotDrive.AngleProfileTimeTotal() + 0.5) {
                 robotDrive.ResetEncoders();
                 autoTimer.Reset();
                 if (platePosition[kScale] == 'L') {
@@ -107,7 +107,7 @@ void Robot::AutoLeftScalePeriodic() {
             break;
         case State::kFinalForward:
             if (robotDrive.AtPositionGoal() ||
-                autoTimer.Get() > robotDrive.PositionProfileTimeTotal() + 1.0) {
+                autoTimer.Get() > robotDrive.PositionProfileTimeTotal() + 0.5) {
                 intake.AutoOuttake();
                 robotDrive.StopClosedLoop();
                 elevator.StopClosedLoop();
@@ -118,7 +118,7 @@ void Robot::AutoLeftScalePeriodic() {
             break;
         case State::kAutoLine:
             if (robotDrive.AtPositionGoal() ||
-                autoTimer.Get() > robotDrive.PositionProfileTimeTotal() + 1.0) {
+                autoTimer.Get() > robotDrive.PositionProfileTimeTotal() + 0.5) {
                 robotDrive.StopClosedLoop();
                 elevator.StopClosedLoop();
                 autoTimer.Reset();
@@ -128,7 +128,7 @@ void Robot::AutoLeftScalePeriodic() {
             break;
         case State::kAutoSwitch:
             if (robotDrive.AtPositionGoal() ||
-                autoTimer.Get() > robotDrive.PositionProfileTimeTotal() + 1.0) {
+                autoTimer.Get() > robotDrive.PositionProfileTimeTotal() + 0.5) {
                 robotDrive.ResetGyro();
                 robotDrive.SetAngleGoal(90.0);
                 autoTimer.Reset();
@@ -138,7 +138,7 @@ void Robot::AutoLeftScalePeriodic() {
             break;
         case State::kAutoSwitchRotate:
             if (robotDrive.AtAngleGoal() ||
-                autoTimer.Get() > robotDrive.AngleProfileTimeTotal() + 1.0) {
+                autoTimer.Get() > robotDrive.AngleProfileTimeTotal() + 0.5) {
                 robotDrive.ResetEncoders();
                 robotDrive.SetPositionGoal(65.0 - kRobotLength / 2.0 -
                                            kRobotWidth / 2.0);
@@ -149,7 +149,7 @@ void Robot::AutoLeftScalePeriodic() {
             break;
         case State::kAutoSwitchForward:
             if (robotDrive.AtPositionGoal() ||
-                autoTimer.Get() > robotDrive.PositionProfileTimeTotal() + 1.0) {
+                autoTimer.Get() > robotDrive.PositionProfileTimeTotal() + 0.5) {
                 intake.AutoOuttake();
 
                 autoTimer.Reset();

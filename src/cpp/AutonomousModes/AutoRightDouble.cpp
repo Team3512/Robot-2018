@@ -45,7 +45,7 @@ void Robot::AutoRightDoublePeriodic() {
 
         case State::kInitialForward:
             if (robotDrive.AtPositionGoal() ||
-                autoTimer.Get() > robotDrive.PositionProfileTimeTotal() + 1.0) {
+                autoTimer.Get() > robotDrive.PositionProfileTimeTotal() + 0.5) {
                 robotDrive.SetAngleGoal(-90.0);
                 autoTimer.Reset();
 
@@ -54,7 +54,7 @@ void Robot::AutoRightDoublePeriodic() {
             break;
         case State::kRightRotate:
             if (robotDrive.AtAngleGoal() ||
-                autoTimer.Get() > robotDrive.AngleProfileTimeTotal() + 1.0) {
+                autoTimer.Get() > robotDrive.AngleProfileTimeTotal() + 0.5) {
                 robotDrive.ResetEncoders();
                 autoTimer.Reset();
                 if (platePosition[kFriendlySwitch] == 'R' &&
@@ -73,7 +73,7 @@ void Robot::AutoRightDoublePeriodic() {
             break;
         case State::kFirstForward:
             if (robotDrive.AtPositionGoal() ||
-                autoTimer.Get() > robotDrive.PositionProfileTimeTotal() + 1.0) {
+                autoTimer.Get() > robotDrive.PositionProfileTimeTotal() + 0.5) {
                 robotDrive.ResetGyro();
                 autoTimer.Reset();
                 if (platePosition[kFriendlySwitch] == 'R' &&
@@ -88,7 +88,7 @@ void Robot::AutoRightDoublePeriodic() {
             break;
         case State::kFinalRotate:
             if (robotDrive.AtAngleGoal() ||
-                autoTimer.Get() > robotDrive.AngleProfileTimeTotal() + 1.0) {
+                autoTimer.Get() > robotDrive.AngleProfileTimeTotal() + 0.5) {
                 robotDrive.ResetEncoders();
                 robotDrive.SetPositionGoal(40.0 -
                                            kRobotLength / 2.0);  // ESTIMATE
@@ -99,7 +99,7 @@ void Robot::AutoRightDoublePeriodic() {
             break;
         case State::kFinalForward:
             if (robotDrive.AtPositionGoal() ||
-                autoTimer.Get() > robotDrive.PositionProfileTimeTotal() + 1.0) {
+                autoTimer.Get() > robotDrive.PositionProfileTimeTotal() + 0.5) {
                 intake.SetMotors(MotorState::kOuttake);
                 robotDrive.ResetGyro();
                 autoTimer.Reset();
@@ -116,7 +116,7 @@ void Robot::AutoRightDoublePeriodic() {
             break;
         case State::kDoubleRotate:
             if (robotDrive.AtAngleGoal() ||
-                autoTimer.Get() > robotDrive.AngleProfileTimeTotal() + 1.0) {
+                autoTimer.Get() > robotDrive.AngleProfileTimeTotal() + 0.5) {
                 intake.SetMotors(MotorState::kIdle);
                 intake.Open();
                 elevator.SetHeightReference(kFloorHeight);
@@ -134,7 +134,7 @@ void Robot::AutoRightDoublePeriodic() {
             break;
         case State::kDoubleForward:
             if (robotDrive.AtPositionGoal() ||
-                autoTimer.Get() > robotDrive.PositionProfileTimeTotal() + 1.0) {
+                autoTimer.Get() > robotDrive.PositionProfileTimeTotal() + 0.5) {
                 intake.Close();
                 elevator.SetHeightReference(kSwitchHeight);
 

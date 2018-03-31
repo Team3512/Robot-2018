@@ -23,7 +23,7 @@ void Robot::AutoAutoLinePeriodic() {
             break;
         case State::kMoveForward:
             if (robotDrive.AtPositionGoal() ||
-                autoTimer.Get() > robotDrive.PositionProfileTimeTotal() + 1.0) {
+                autoTimer.Get() > robotDrive.PositionProfileTimeTotal() + 0.5) {
                 robotDrive.StopClosedLoop();
 
                 state = State::kIdle;

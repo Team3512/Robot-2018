@@ -107,6 +107,11 @@ void DriveTrain::ResetGyro() { m_gyro.Reset(); }
 
 void DriveTrain::CalibrateGyro() { m_gyro.Calibrate(); }
 
+double DriveTrain::PositionError() {
+    return GetPosReference() -
+           (GetLeftDisplacement() + GetRightDisplacement()) / 2;
+}
+
 void DriveTrain::Debug() {
     Robot::logger.Log(LogEvent(
         "Left Pos: " + std::to_string(m_leftEncoder.GetDistance()) +

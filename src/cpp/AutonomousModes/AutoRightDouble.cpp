@@ -2,6 +2,8 @@
 
 #include "AutonomousModes/AutoRightDouble.hpp"
 
+#include <cmath>
+
 #include <DriverStation.h>
 
 #include "Robot.hpp"
@@ -151,5 +153,22 @@ void AutoRightDouble::HandleEvent(Event event) {
             break;
         case State::kIdle:
             break;
+    }
+
+    if (std::abs(Robot::robotDrive.GetPosition()) > 20) {
+        state = State::kIdle;
+        Robot::logger.Log(LogEvent(
+            "Autonomous stopped because the encoder values had too much "
+            "deviation. This is the average encoder value: " +
+                std::to_string((Robot::robotDrive.GetLeftDisplacement() +
+                                Robot::robotDrive.GetRightDisplacement()) /
+                               2) +
+                " Left Encoder: " +
+                std::to_string(Robot::robotDrive.GetLeftDisplacement()) +
+                " Right Encoder: " +
+                std::to_string(Robot::robotDrive.GetRightDisplacement()),
+            LogEvent::VERBOSE_DEBUG));
+        Robot::robotDrive.StopClosedLoop();
+        Robot::elevator.StopClosedLoop();
     }
 }

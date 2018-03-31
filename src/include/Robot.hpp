@@ -44,6 +44,9 @@ public:
 
     void HandleEvent(Event event) override;
 
+    void AutoTimedSwitchInit();
+    void AutoTimedSwitchPeriodic();
+
     void AutoAutoLineInit();
     void AutoAutoLinePeriodic();
 

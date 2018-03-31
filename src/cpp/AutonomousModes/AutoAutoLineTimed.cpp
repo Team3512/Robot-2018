@@ -8,7 +8,7 @@ void Robot::AutoAutoLineTimedInit() {}
 // past the autoline
 void Robot::AutoAutoLineTimedPeriodic() {
     if (autoTimer.Get() < 6.0) {  // Estimate
-        robotDrive.Drive(0.5, 0.0, false);
+        robotDrive.Drive(-0.5, 0.0, false);
     } else {
         robotDrive.Drive(0.0, 0.0, false);
     }

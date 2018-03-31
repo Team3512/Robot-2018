@@ -17,6 +17,8 @@ LiveGrapher Robot::liveGrapher{kLiveGrapherPort};
 Robot::Robot() {
     // Auton: does nothing
     dsDisplay.AddAutoMethod("No-op", [] {}, [] {});
+    dsDisplay.AddAutoMethod("Timed Switch", std::bind(&Robot::AutoTimedSwitchInit, this), std::bind(&Robot::AutoTimedSwitchPeriodic, this));
+
     dsDisplay.AddAutoMethod("Autoline Timed",
                             std::bind(&Robot::AutoAutoLineTimedInit, this),
                             std::bind(&Robot::AutoAutoLineTimedPeriodic, this));

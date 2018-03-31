@@ -33,4 +33,9 @@ void AutoAutoLine::HandleEvent(Event event) {
         case State::kIdle:
             break;
     }
+    if (std::abs(Robot::robotDrive.PositionError() > 20)) {
+        state = State::kIdle;
+        Robot::robotDrive.StopClosedLoop();
+        Robot::elevator.StopClosedLoop();
+    }
 }

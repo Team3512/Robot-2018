@@ -87,6 +87,8 @@ public:
     // Calibrates gyro
     void CalibrateGyro();
 
+    double PositionError();
+
     // Sends print statements for debugging purposes
     void Debug();
 

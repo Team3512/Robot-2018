@@ -152,4 +152,9 @@ void AutoRightDouble::HandleEvent(Event event) {
         case State::kIdle:
             break;
     }
+    if (std::abs(Robot::robotDrive.GetPosition()) > 20) {
+        state = State::kIdle;
+        Robot::robotDrive.StopClosedLoop();
+        Robot::elevator.StopClosedLoop();
+    }
 }

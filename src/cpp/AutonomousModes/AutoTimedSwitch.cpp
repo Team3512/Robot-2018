@@ -15,7 +15,7 @@ void Robot::AutoTimedSwitchPeriodic() {
   platePosition = frc::DriverStation::GetInstance().GetGameSpecificMessage();
   switch (state) {
     case State::kInit:
-      robotDrive.Drive(-0.2, 0, false);
+      robotDrive.Drive(-0.15, 0, false);
       state = State::kForward;
       break;
     case State::kForward:

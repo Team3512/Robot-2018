@@ -101,7 +101,6 @@ void Robot::AutonomousInit() {
     robotDrive.ResetGyro();
     elevator.ResetEncoder();
     intake.Deploy();
-    climber.LockPawl();
 
     dsDisplay.ExecAutonomousInit();
     logger.Log(
@@ -115,7 +114,6 @@ void Robot::TeleopInit() {
     elevator.StopClosedLoop();
     intake.Deploy();
     intake.Close();
-    climber.LockPawl();
     logger.Log(LogEvent("TELEOP INITIALIZED", LogEvent::VERBOSE_INFO));
 }
 

@@ -91,7 +91,7 @@ void Robot::AutoCenterSwitchPeriodic() {
                 robotDrive.SetPositionGoal(79.0 - kRobotLength / 2.0);  // 73.0
                 autoTimer.Reset();
                 if (platePosition[kFriendlySwitch] == 'R') {
-                  robotDrive.SetPositionGoal(82.0 - kRobotLength / 2.0);
+                    robotDrive.SetPositionGoal(82.0 - kRobotLength / 2.0);
                 }
                 state = State::kFinalForward;
             }

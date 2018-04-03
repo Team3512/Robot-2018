@@ -14,14 +14,21 @@
 
 class Climber : public Service {
 public:
-    void EngagePawl();
-    void LockPawl();
-    void Shift();
+    /**
+     * Toggles whether or not the pawl and ramps can engage (or disengage)
+     */
+    void ToggleSetup();
+
+    /**
+     * Toggles between high and low gear of the elevator
+     */
+    void GearShift();
+
     void HandleEvent(Event event) override;
 
 private:
-    frc::Solenoid m_pawl{kPawlPort};
     frc::DoubleSolenoid m_setupSolenoid{kSetupForwardPort, kSetupReversePort};
+    frc::Solenoid m_gearShiftSolenoid{kGearShiftPort};
 
     Timer timer;
 };

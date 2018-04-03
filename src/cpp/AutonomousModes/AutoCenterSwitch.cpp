@@ -86,7 +86,6 @@ void AutoCenterSwitch::HandleEvent(Event event) {
                 Robot::robotDrive.SetPositionGoal(79.0 -
                                                   kRobotLength / 2.0);  // 73.0
                 autoTimer.Reset();
-
                 state = State::kFinalForward;
             }
             break;

@@ -15,12 +15,12 @@
 class Climber : public Service {
 public:
     void Shift();
-    void GearShift();
+    void Setup();
     void HandleEvent(Event event) override;
 
 private:
     frc::DoubleSolenoid m_setupSolenoid{kSetupForwardPort, kSetupReversePort};
-    frc::Solenoid m_gearShift{kGearShiftPort};
+    frc::Solenoid m_Setup{kGearShiftPort};
 
     Timer timer;
 };

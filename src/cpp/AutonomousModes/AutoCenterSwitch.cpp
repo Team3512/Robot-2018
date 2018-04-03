@@ -101,7 +101,6 @@ void AutoCenterSwitch::HandleEvent(Event event) {
                 Robot::robotDrive.ResetEncoders();
                 Robot::robotDrive.SetPositionGoal(kRobotWidth / 2 - 3);
                 autoTimer.Reset();
-
                 state = State::kFinalForward;
             }
             break;

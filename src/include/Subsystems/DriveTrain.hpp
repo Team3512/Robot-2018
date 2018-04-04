@@ -12,6 +12,9 @@
 #include "Constants.hpp"
 #include "DiffDriveController.hpp"
 #include "ES/Service.hpp"
+#include "Logging/LogConsoleSink.hpp"
+#include "Logging/LogFileSink.hpp"
+#include "Logging/Logger.hpp"
 #include "Subsystems/CANTalonGroup.hpp"
 
 class CANTalonGroup;
@@ -125,4 +128,9 @@ private:
     frc::DiffDriveController m_controller{
         m_posRef,      m_angleRef, m_leftDistance, m_rightDistance,
         m_angleSensor, true,       m_leftGrbx,     m_rightGrbx};
+
+    // Logging
+    Logger m_logger;
+    LogFileSink m_fileSink{"/home/lvuser/DriveTrain.log"};
+    LogConsoleSink m_consoleSink;
 };

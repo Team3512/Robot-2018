@@ -5,6 +5,7 @@
 #include <cmath>
 #include <iostream>
 #include <limits>
+#include <string>
 
 #include "Robot.hpp"
 
@@ -25,6 +26,11 @@ DriveTrain::DriveTrain() {
 
     m_controller.SetPositionTolerance(1.5, 0.5);
     m_controller.SetAngleTolerance(1.0, 1.75);
+
+    m_fileSink.SetVerbosityLevels(LogEvent::VERBOSE_DEBUG);
+    m_consoleSink.SetVerbosityLevels(LogEvent::VERBOSE_DEBUG);
+    m_logger.AddLogSink(m_fileSink);
+    m_logger.AddLogSink(m_consoleSink);
 }
 
 int32_t DriveTrain::GetLeftRaw() const { return m_leftEncoder.GetRaw(); }
@@ -107,8 +113,11 @@ void DriveTrain::ResetGyro() { m_gyro.Reset(); }
 void DriveTrain::CalibrateGyro() { m_gyro.Calibrate(); }
 
 void DriveTrain::Debug() {
-    std::cout << "Left Pos: " << m_leftEncoder.GetDistance()
-              << " Right Pos: " << m_rightEncoder.GetDistance() << std::endl;
+    m_logger.Log(LogEvent(
+        std::string(
+            "Left Pos: " + std::to_string(m_leftEncoder.GetDistance()) +
+            " Right Pos: " + std::to_string(m_rightEncoder.GetDistance())),
+        LogEvent::VERBOSE_DEBUG));
     m_controller.Debug();
 }
 

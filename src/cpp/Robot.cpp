@@ -3,6 +3,9 @@
 #include "Robot.hpp"
 
 #include <iostream>
+#include <string>
+
+#include <DriverStation.h>
 
 std::unique_ptr<Segment[]> Robot::trajectory;
 std::unique_ptr<Segment[]> Robot::leftTrajectory;
@@ -73,6 +76,11 @@ Robot::Robot() {
     // camera2Sink.SetSource(camera2);
 
     server.SetSource(camera1);
+
+    fileSink.SetVerbosityLevels(LogEvent::VERBOSE_DEBUG);
+    consoleSink.SetVerbosityLevels(LogEvent::VERBOSE_ALL);
+    logger.AddLogSink(fileSink);
+    logger.AddLogSink(consoleSink);
 }
 
 void Robot::DisabledInit() {
@@ -92,6 +100,11 @@ void Robot::AutonomousInit() {
     climber.LockPawl();
 
     dsDisplay.ExecAutonomousInit();
+    logger.Log(LogEvent(
+        std::string("AUTON INITIALIZED: " + dsDisplay.GetAutonomousMode() +
+                    " " +
+                    frc::DriverStation::GetInstance().GetGameSpecificMessage()),
+        LogEvent::VERBOSE_DEBUG));
 }
 
 void Robot::TeleopInit() {
@@ -100,6 +113,7 @@ void Robot::TeleopInit() {
     intake.Deploy();
     intake.Close();
     climber.LockPawl();
+    logger.Log(LogEvent("TELEOP INITIALIZED", LogEvent::VERBOSE_DEBUG));
 }
 
 void Robot::TestInit() {}

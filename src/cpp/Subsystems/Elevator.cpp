@@ -7,31 +7,35 @@
 #include "Robot.hpp"
 
 Elevator::Elevator() : m_notifier([&] { Robot::elevator.PostEvent({}); }) {
-    m_elevatorGearbox.Set(0.0);
-    m_elevatorGearbox.SetDistancePerPulse(kElevatorDpP);
-    m_elevatorGearbox.EnableHardLimits(&m_elevatorBottomHall, nullptr);
-    m_elevatorGearbox.EnableSoftLimits(std::numeric_limits<double>::infinity(),
-                                       kClimbHeight);
-    m_elevatorGearbox.SetHardLimitPressedState(false);
+    m_gearbox.Set(0.0);
+    m_gearbox.SetDistancePerPulse(kElevatorDpP);
+    m_gearbox.EnableHardLimits(&m_bottomHall, nullptr);
+    m_gearbox.EnableSoftLimits(std::numeric_limits<double>::infinity(),
+                               kClimbHeight);
+    m_gearbox.SetHardLimitPressedState(false);
 }
 
-void Elevator::SetVelocity(double velocity) { m_elevatorGearbox.Set(velocity); }
+void Elevator::SetVelocity(double velocity) { m_gearbox.Set(velocity); }
 
-void Elevator::ResetEncoder() { m_elevatorGearbox.ResetEncoder(); }
+void Elevator::ResetEncoder() { m_gearbox.ResetEncoder(); }
 
-double Elevator::GetHeight() { return m_elevatorGearbox.GetPosition(); }
+double Elevator::GetHeight() { return m_gearbox.GetPosition(); }
 
-void Elevator::StartClosedLoop() { m_output.Enable(); }
+void Elevator::StartClosedLoop() { m_controller.Enable(); }
 
-void Elevator::StopClosedLoop() { m_output.Disable(); }
+void Elevator::StopClosedLoop() { m_controller.Disable(); }
 
-void Elevator::SetHeightReference(double height) { m_heightRef.Set(height); }
+void Elevator::SetHeightReference(double height) {
+    m_controller.SetSetpoint(height);
+}
 
-double Elevator::GetHeightReference() const { return m_heightRef.GetOutput(); }
+double Elevator::GetHeightReference() const {
+    return m_controller.GetSetpoint();
+}
 
-bool Elevator::HeightAtReference() const { return m_errorSum.InTolerance(); }
+bool Elevator::HeightAtReference() const { return m_controller.OnTarget(); }
 
-bool Elevator::GetBottomHallEffect() { return m_elevatorBottomHall.Get(); }
+bool Elevator::GetBottomHallEffect() { return m_bottomHall.Get(); }
 
 void Elevator::HandleEvent(Event event) {
     enum State { kPosition, kVelocity };

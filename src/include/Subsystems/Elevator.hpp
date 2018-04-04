@@ -2,11 +2,6 @@
 
 #pragma once
 
-#include <CtrlSys/FuncNode.h>
-#include <CtrlSys/Output.h>
-#include <CtrlSys/PIDNode.h>
-#include <CtrlSys/RefInput.h>
-#include <CtrlSys/SumNode.h>
 #include <DigitalInput.h>
 #include <Notifier.h>
 #include <ctre/phoenix/MotorControl/CAN/WPI_TalonSRX.h>
@@ -14,6 +9,8 @@
 #include "Constants.hpp"
 #include "DriveTrain.hpp"
 #include "ES/Service.hpp"
+#include "OffsetPIDController.h"
+#include "PIDSourceWrapper.h"
 #include "Subsystems/CANTalonGroup.hpp"
 
 class Elevator : public Service {
@@ -50,23 +47,19 @@ public:
     void HandleEvent(Event event) override;
 
 private:
-    WPI_TalonSRX m_elevatorMasterMotor{kElevatorMasterID};
-    WPI_TalonSRX m_elevatorSlaveMotor{kElevatorSlaveID};
-    CANTalonGroup m_elevatorGearbox{m_elevatorMasterMotor,
-                                    m_elevatorSlaveMotor};
+    WPI_TalonSRX m_masterMotor{kElevatorMasterID};
+    WPI_TalonSRX m_slaveMotor{kElevatorSlaveID};
+    CANTalonGroup m_gearbox{m_masterMotor, m_slaveMotor};
 
     Notifier m_notifier;
-    // Reference
-    frc::RefInput m_heightRef{0.0};
 
-    // Sensors
-    frc::DigitalInput m_elevatorBottomHall{kElevatorBottomHallPort};
-    frc::FuncNode m_elevatorEncoder{
-        [this] { return m_elevatorGearbox.GetPosition(); }};
-
-    frc::RefInput m_feedForward{kGravityFeedForward};
-    frc::SumNode m_errorSum{m_heightRef, true, m_elevatorEncoder, false};
-    frc::PIDNode m_pid{kElevatorP,    kElevatorI, kElevatorD,
-                       m_feedForward, m_errorSum, kElevatorControllerPeriod};
-    frc::Output m_output{m_pid, m_elevatorGearbox, kElevatorControllerPeriod};
+    frc::DigitalInput m_bottomHall{kElevatorBottomHallPort};
+    frc::PIDSourceWrapper m_encoder{[this] { return m_gearbox.GetPosition(); }};
+    frc::OffsetPIDController m_controller{kElevatorP,
+                                          kElevatorI,
+                                          kElevatorD,
+                                          kGravityFeedForward,
+                                          m_encoder,
+                                          m_gearbox,
+                                          kElevatorControllerPeriod};
 };

@@ -171,7 +171,7 @@ void Robot::DS_PrintOut() {
         prevVel = curVel;
         liveGrapher.ResetInterval();
         */
-    // robotDrive.Debug();
+    robotDrive.Debug();
     // std::cout << robotDrive.GetLeftDisplacement() << "Left, Right" <<
     // robotDrive.GetRightDisplacement() << std::endl;
     // std::cout << robotDrive.GetAngle() << std::endl;

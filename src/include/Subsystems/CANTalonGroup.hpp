@@ -7,7 +7,6 @@
 #include <memory>
 #include <vector>
 
-#include <CtrlSys/INode.h>
 #include <DigitalInput.h>
 #include <SpeedController.h>
 #include <ctre/phoenix/MotorControl/CAN/WPI_TalonSRX.h>
@@ -15,7 +14,7 @@
 /**
  * Represents a gear box with an arbitrary number of motors and an encoder.
  */
-class CANTalonGroup : public frc::SpeedController, public frc::INode {
+class CANTalonGroup : public frc::SpeedController {
 public:
     using ControlMode = ctre::phoenix::motorcontrol::ControlMode;
     using WPI_TalonSRX = ctre::phoenix::motorcontrol::can::WPI_TalonSRX;
@@ -63,9 +62,6 @@ public:
 
     // Reverses gearbox encoder direction
     void SetSensorDirection(bool reverse);
-
-    // INode interface
-    double GetOutput() override;
 
 private:
     // Conversion factor for setpoints with respect to encoder readings

@@ -1,24 +1,29 @@
 /*----------------------------------------------------------------------------*/
-/* Copyright (c) 2017-2018 FIRST. All Rights Reserved.                        */
+/* Copyright (c) 2018 FIRST. All Rights Reserved.                             */
 /* Open Source Software - may be modified and shared by FRC teams. The code   */
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#include "CtrlSys/SCurveProfile.h"
+#include "SCurveProfile.h"
 
 #include <cmath>
 
 using namespace frc;
 
 /**
- * Constructs SCurveProfile.
+ * Constructs an SCurveProfile.
  *
- * @param maxV       maximum velocity
- * @param maxA       maximum acceleration
- * @param timeToMaxA time to maximum acceleration from no acceleration
+ * @param output     The output to update.
+ * @param maxV       Maximum velocity.
+ * @param maxA       Maximum acceleration.
+ * @param timeToMaxA Time to maximum acceleration from no acceleration.
+ * @param period     The period after which to update the output. The default is
+ *                   50ms.
  */
-SCurveProfile::SCurveProfile(double maxV, double maxA, double timeToMaxA) {
+SCurveProfile::SCurveProfile(PIDOutput& output, double maxV, double maxA,
+                             double timeToMaxA, double period)
+    : MotionProfile(output, period) {
   SetMaxVelocity(maxV);
   SetMaxAcceleration(maxA);
   SetTimeToMaxA(timeToMaxA);
@@ -27,8 +32,8 @@ SCurveProfile::SCurveProfile(double maxV, double maxA, double timeToMaxA) {
 /**
  * Sets goal state of profile.
  *
- * @param goal a distance to which to travel
- * @param currentSource the current position
+ * @param goal          A distance to which to travel.
+ * @param currentSource The current position.
  */
 void SCurveProfile::SetGoal(double goal, double currentSource) {
   std::lock_guard<std::mutex> lock(m_mutex);
@@ -70,7 +75,7 @@ void SCurveProfile::SetGoal(double goal, double currentSource) {
   m_t5 = m_t4 + m_timeToMaxA;
   m_t6 = m_t4 + m_t2;
   m_t7 = m_t6 + m_timeToMaxA;
-  m_timeTotal = m_t7;
+  m_totalTime = m_t7;
 
   // Restore desired goal
   m_goal = goal;
@@ -118,7 +123,7 @@ void SCurveProfile::SetTimeToMaxA(double timeToMaxA) {
   m_jerk = m_acceleration / m_timeToMaxA;
 }
 
-MotionProfile::State SCurveProfile::UpdateSetpoint(double currentTime) {
+MotionProfile::State SCurveProfile::UpdateReference(double currentTime) {
   if (currentTime < m_timeToMaxA) {
     // Ramp up acceleration
     std::get<2>(m_ref) = m_jerk * currentTime;

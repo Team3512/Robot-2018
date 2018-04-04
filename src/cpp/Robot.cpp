@@ -73,6 +73,11 @@ Robot::Robot() {
     // camera2Sink.SetSource(camera2);
 
     server.SetSource(camera1);
+
+    fileSink.SetVerbosityLevels(LogEvent::VERBOSE_ALL);
+    consoleSink.SetVerbosityLevels(LogEvent::VERBOSE_ALL);
+    logger.AddLogSink(fileSink);
+    logger.AddLogSink(consoleSink);
 }
 
 void Robot::DisabledInit() {

@@ -1,17 +1,28 @@
 /*----------------------------------------------------------------------------*/
-/* Copyright (c) 2017-2018 FIRST. All Rights Reserved.                        */
+/* Copyright (c) 2018 FIRST. All Rights Reserved.                             */
 /* Open Source Software - may be modified and shared by FRC teams. The code   */
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#include "CtrlSys/TrapezoidProfile.h"
+#include "TrapezoidProfile.h"
 
 #include <cmath>
 
 using namespace frc;
 
-TrapezoidProfile::TrapezoidProfile(double maxV, double timeToMaxV) {
+/**
+ * Constructs a TrapezoidProfile.
+ *
+ * @param output     The output to update.
+ * @param maxV       Maximum velocity.
+ * @param timeToMaxV Time to maximum velocity from a stop.
+ * @param period     The period after which to update the output. The default is
+ *                   50ms.
+ */
+TrapezoidProfile::TrapezoidProfile(PIDOutput& output, double maxV,
+                                   double timeToMaxV, double period)
+    : MotionProfile(output, period) {
   SetMaxVelocity(maxV);
   SetTimeToMaxV(timeToMaxV);
 }
@@ -76,11 +87,11 @@ void TrapezoidProfile::SetGoal(double goal, double currentSource) {
      */
     m_timeToMaxVelocity = std::sqrt(m_sign * m_goal / m_acceleration);
     m_timeFromMaxVelocity = m_timeToMaxVelocity;
-    m_timeTotal = 2 * m_timeToMaxVelocity;
+    m_totalTime = 2 * m_timeToMaxVelocity;
     m_profileMaxVelocity = m_acceleration * m_timeToMaxVelocity;
   } else {
     m_timeFromMaxVelocity = m_timeToMaxVelocity + timeAtMaxV;
-    m_timeTotal = m_timeFromMaxVelocity + m_timeToMaxVelocity;
+    m_totalTime = m_timeFromMaxVelocity + m_timeToMaxVelocity;
     m_profileMaxVelocity = m_velocity;
   }
 
@@ -113,7 +124,7 @@ void TrapezoidProfile::SetTimeToMaxV(double timeToMaxV) {
   m_acceleration = m_velocity / timeToMaxV;
 }
 
-MotionProfile::State TrapezoidProfile::UpdateSetpoint(double currentTime) {
+MotionProfile::State TrapezoidProfile::UpdateReference(double currentTime) {
   if (currentTime < m_timeToMaxVelocity) {
     // Accelerate up
     std::get<2>(m_ref) = m_acceleration;
@@ -122,7 +133,7 @@ MotionProfile::State TrapezoidProfile::UpdateSetpoint(double currentTime) {
     // Maintain max velocity
     std::get<2>(m_ref) = 0.0;
     std::get<1>(m_ref) = m_profileMaxVelocity;
-  } else if (currentTime < m_timeTotal) {
+  } else if (currentTime < m_totalTime) {
     // Accelerate down
     double decelTime = currentTime - m_timeFromMaxVelocity;
     std::get<2>(m_ref) = -m_acceleration;
@@ -132,7 +143,7 @@ MotionProfile::State TrapezoidProfile::UpdateSetpoint(double currentTime) {
     std::get<1>(m_ref) = 0.0;
   }
 
-  if (currentTime < m_timeTotal) {
+  if (currentTime < m_totalTime) {
     std::get<0>(m_ref) +=
         m_sign * std::get<1>(m_ref) * (currentTime - m_lastTime);
     m_lastTime = currentTime;

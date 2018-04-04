@@ -20,11 +20,8 @@ DriveTrain::DriveTrain() {
     m_leftEncoder.SetReverseDirection(false);
     m_rightEncoder.SetReverseDirection(true);
 
-    m_controller.GetPositionPID().SetPID(kPosP, kPosI, kPosD);
-    m_controller.GetAnglePID().SetPID(kAngleP, kAngleI, kAngleD);
-
-    m_controller.SetPositionTolerance(1.5, 0.5);
-    m_controller.SetAngleTolerance(1.0, 1.75);
+    m_positionController.SetTolerance(1.5, 0.5);
+    m_angleController.SetTolerance(1.0, 1.75);
 }
 
 int32_t DriveTrain::GetLeftRaw() const { return m_leftEncoder.GetRaw(); }
@@ -56,19 +53,29 @@ double DriveTrain::GetLeftRate() const { return m_leftEncoder.GetRate(); }
 
 double DriveTrain::GetRightRate() const { return m_rightEncoder.GetRate(); }
 
-double DriveTrain::GetPosition() { return m_controller.GetPosition(); }
+double DriveTrain::GetPosition() { return m_positionCalc.PIDGet(); }
 
-double DriveTrain::GetAngle() { return m_controller.GetAngle(); }
+double DriveTrain::GetAngle() { return m_angleSensor.PIDGet(); }
 
 double DriveTrain::GetAngularRate() const { return m_gyro.GetRate(); }
 
 void DriveTrain::StartClosedLoop() {
-    m_controller.Enable();
+    m_positionController.Enable();
+    m_angleController.Enable();
+    m_posRef.Enable();
+    m_angleRef.Enable();
+    m_leftSummer.Enable();
+    m_rightSummer.Enable();
     m_drive.SetSafetyEnabled(false);
 }
 
 void DriveTrain::StopClosedLoop() {
-    m_controller.Disable();
+    m_positionController.Disable();
+    m_angleController.Disable();
+    m_posRef.Disable();
+    m_angleRef.Disable();
+    m_leftSummer.Disable();
+    m_rightSummer.Disable();
     m_drive.SetSafetyEnabled(true);
 }
 
@@ -78,28 +85,26 @@ void DriveTrain::SetPositionGoal(double position) {
 
 void DriveTrain::SetAngleGoal(double angle) { m_angleRef.SetGoal(angle); }
 
-double DriveTrain::GetPosReference() {
-    return m_posRef.GetPositionNode().GetOutput();
-}
+double DriveTrain::GetPosReference() { return m_posRef.GetReference(); }
 
-double DriveTrain::GetAngleReference() {
-    return m_angleRef.GetPositionNode().GetOutput();
-}
+double DriveTrain::GetAngleReference() { return m_angleRef.GetReference(); }
 
 double DriveTrain::GetPositionGoal() const { return m_posRef.GetGoal(); }
 
 double DriveTrain::GetAngleGoal() const { return m_angleRef.GetGoal(); }
 
-bool DriveTrain::AtPositionGoal() const { return m_controller.AtPosition(); }
+bool DriveTrain::AtPositionGoal() const {
+    return m_positionController.OnTarget();
+}
 
-bool DriveTrain::AtAngleGoal() const { return m_controller.AtAngle(); }
+bool DriveTrain::AtAngleGoal() const { return m_angleController.OnTarget(); }
 
 double DriveTrain::PositionProfileTimeTotal() const {
-    return m_posRef.ProfileTimeTotal();
+    return m_posRef.GetTotalTime();
 }
 
 double DriveTrain::AngleProfileTimeTotal() const {
-    return m_angleRef.ProfileTimeTotal();
+    return m_angleRef.GetTotalTime();
 }
 
 void DriveTrain::ResetGyro() { m_gyro.Reset(); }
@@ -107,9 +112,8 @@ void DriveTrain::ResetGyro() { m_gyro.Reset(); }
 void DriveTrain::CalibrateGyro() { m_gyro.Calibrate(); }
 
 void DriveTrain::Debug() {
-    std::cout << "Left Pos: " << m_leftEncoder.GetDistance()
-              << " Right Pos: " << m_rightEncoder.GetDistance() << std::endl;
-    m_controller.Debug();
+    std::cout << "Left Pos: " << m_leftGrbx.GetPosition()
+              << " Right Pos: " << m_rightGrbx.GetPosition() << std::endl;
 }
 
 void DriveTrain::HandleEvent(Event event) {

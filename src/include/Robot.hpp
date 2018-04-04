@@ -33,6 +33,9 @@
 #include "DSDisplay/DSDisplay.hpp"
 #include "ES/Service.hpp"
 #include "LiveGrapher/LiveGrapher.hpp"
+#include "Logging/LogConsoleSink.hpp"
+#include "Logging/LogFileSink.hpp"
+#include "Logging/Logger.hpp"
 #include "Subsystems/CANTalonGroup.hpp"
 #include "Subsystems/Climber.hpp"
 #include "Subsystems/DriveTrain.hpp"
@@ -85,6 +88,9 @@ public:
     // LiveGrapher host
     static LiveGrapher liveGrapher;
 
+    // Logging
+    static Logger logger;
+
 private:
     AutoAutoLine autoLine;
     AutoCenterScale centerScale;
@@ -98,6 +104,10 @@ private:
 
     // Used for sending data to the Driver Station
     DSDisplay dsDisplay{kDsPort};
+
+    // Logging Sinks
+    LogFileSink fileSink{"/home/lvuser/Robot.log"};
+    LogConsoleSink consoleSink;
 
     // Camera
     cs::UsbCamera camera1{"Camera 1", 0};

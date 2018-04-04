@@ -3,6 +3,9 @@
 #include "Robot.hpp"
 
 #include <iostream>
+#include <string>
+
+#include <DriverStation.h>
 
 std::unique_ptr<Segment[]> Robot::trajectory;
 std::unique_ptr<Segment[]> Robot::leftTrajectory;
@@ -17,6 +20,8 @@ frc::Joystick Robot::driveStick1{kDriveStick1Port};
 frc::Joystick Robot::driveStick2{kDriveStick2Port};
 
 LiveGrapher Robot::liveGrapher{kLiveGrapherPort};
+
+Logger Robot::logger;
 
 Robot::Robot() {
     // Auton: does nothing
@@ -73,6 +78,11 @@ Robot::Robot() {
     // camera2Sink.SetSource(camera2);
 
     server.SetSource(camera1);
+
+    fileSink.SetVerbosityLevels(LogEvent::VERBOSE_ALL);
+    consoleSink.SetVerbosityLevels(LogEvent::VERBOSE_WARN);
+    logger.AddLogSink(fileSink);
+    logger.AddLogSink(consoleSink);
 }
 
 void Robot::DisabledInit() {
@@ -92,6 +102,11 @@ void Robot::AutonomousInit() {
     climber.LockPawl();
 
     dsDisplay.ExecAutonomousInit();
+    logger.Log(LogEvent(
+        std::string("AUTON INITIALIZED: " + dsDisplay.GetAutonomousMode() +
+                    " " +
+                    frc::DriverStation::GetInstance().GetGameSpecificMessage()),
+        LogEvent::VERBOSE_INFO));
 }
 
 void Robot::TeleopInit() {
@@ -100,6 +115,7 @@ void Robot::TeleopInit() {
     intake.Deploy();
     intake.Close();
     climber.LockPawl();
+    logger.Log(LogEvent("TELEOP INITIALIZED", LogEvent::VERBOSE_INFO));
 }
 
 void Robot::TestInit() {}
@@ -131,7 +147,20 @@ void Robot::RobotPeriodic() {
 
 void Robot::DisabledPeriodic() {}
 
-void Robot::AutonomousPeriodic() { dsDisplay.ExecAutonomousPeriodic(); }
+void Robot::AutonomousPeriodic() {
+    dsDisplay.ExecAutonomousPeriodic();
+    logger.Log(LogEvent(
+        std::string(
+            "Pos Goal: " + std::to_string(robotDrive.GetPositionGoal()) +
+            " Pos: " + std::to_string(robotDrive.GetPosition()) +
+            "At Goal?: " + std::to_string(robotDrive.AtPositionGoal())),
+        LogEvent::VERBOSE_DEBUG));
+    logger.Log(LogEvent(
+        std::string("Angle Goal: " + std::to_string(robotDrive.GetAngleGoal()) +
+                    " Angle: " + std::to_string(robotDrive.GetAngle()) +
+                    " At Goal?: " + std::to_string(robotDrive.AtAngleGoal())),
+        LogEvent::VERBOSE_DEBUG));
+}
 
 void Robot::TeleopPeriodic() {
     robotDrive.PostEvent(EventType::kTimeout);
@@ -171,7 +200,10 @@ void Robot::DS_PrintOut() {
         prevVel = curVel;
         liveGrapher.ResetInterval();
         */
-    // robotDrive.Debug();
+    logger.Log(
+        LogEvent("Elevator Position: " + std::to_string(elevator.GetHeight()),
+                 LogEvent::VERBOSE_DEBUG));
+    robotDrive.Debug();
     // std::cout << robotDrive.GetLeftDisplacement() << "Left, Right" <<
     // robotDrive.GetRightDisplacement() << std::endl;
     // std::cout << robotDrive.GetAngle() << std::endl;

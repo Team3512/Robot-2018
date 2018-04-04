@@ -3,16 +3,17 @@
 #pragma once
 
 #include <ADXRS450_Gyro.h>
-#include <CtrlSys/FuncNode.h>
-#include <CtrlSys/TrapezoidProfile.h>
 #include <Drive/DifferentialDrive.h>
-#include <Encoder.h>
 #include <ctre/phoenix/MotorControl/CAN/WPI_TalonSRX.h>
 
 #include "Constants.hpp"
-#include "DiffDriveController.hpp"
 #include "ES/Service.hpp"
+#include "PIDController.h"
+#include "PIDOutputBuffer.h"
+#include "PIDOutputSummer.h"
+#include "PIDSourceWrapper.h"
 #include "Subsystems/CANTalonGroup.hpp"
+#include "TrapezoidProfile.h"
 
 class CANTalonGroup;
 
@@ -108,17 +109,38 @@ private:
     // Gyro used for angle PID
     ADXRS450_Gyro m_gyro;
 
+    frc::PIDSourceWrapper m_positionCalc{[&] {
+        return (m_leftGrbx.GetPosition() + m_rightGrbx.GetPosition()) / 2.0;
+    }};
+    frc::PIDSourceWrapper m_angleSensor{[this] { return m_gyro.GetAngle(); }};
+
+    frc::PIDOutputBuffer m_posControllerBuffer;
+    frc::PIDOutputBuffer m_angleControllerBuffer;
+
+    frc::PIDController m_positionController{kPosP,
+                                            kPosI,
+                                            kPosD,
+                                            kVDrive,
+                                            kADrive,
+                                            m_positionCalc,
+                                            m_posControllerBuffer};
+    frc::PIDController m_angleController{
+        kAngleP,
+        kAngleI,
+        kAngleD,
+        kVAngle* kDegreesToRadians* kWheelbaseWidth / 2.0,
+        kAAngle* kDegreesToRadians* kWheelbaseWidth / 2.0,
+        m_angleSensor,
+        m_angleControllerBuffer};
+
+    frc::PIDOutputSummer m_leftSummer{m_leftGrbx, m_posControllerBuffer, false,
+                                      m_angleControllerBuffer, false};
+    frc::PIDOutputSummer m_rightSummer{m_rightGrbx, m_posControllerBuffer, true,
+                                       m_angleControllerBuffer, false};
+
     // Control system references
-    frc::TrapezoidProfile m_posRef{kRobotMaxV, kRobotTimeToMaxV};
-    frc::TrapezoidProfile m_angleRef{kRobotMaxRotateRate,
+    frc::TrapezoidProfile m_posRef{m_positionController, kRobotMaxV,
+                                   kRobotTimeToMaxV};
+    frc::TrapezoidProfile m_angleRef{m_angleController, kRobotMaxRotateRate,
                                      kRobotTimeToMaxRotateRate};
-
-    // Sensor adapters
-    frc::FuncNode m_leftEncoder{[this] { return m_leftGrbx.GetPosition(); }};
-    frc::FuncNode m_rightEncoder{[this] { return m_rightGrbx.GetPosition(); }};
-    frc::FuncNode m_angleSensor{[this] { return m_gyro.GetAngle(); }};
-
-    frc::DiffDriveController m_controller{
-        m_posRef,      m_angleRef, m_leftEncoder, m_rightEncoder,
-        m_angleSensor, true,       m_leftGrbx,    m_rightGrbx};
 };

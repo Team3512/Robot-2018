@@ -9,8 +9,8 @@
 DriveTrain::DriveTrain() {
     m_drive.SetDeadband(kJoystickDeadband);
 
-    m_leftGrbx.SetDistancePerPulse(kLeftDpP);
-    m_rightGrbx.SetDistancePerPulse(kRightDpP);
+    m_leftEncoder.SetDistancePerPulse(kLeftDpP);
+    m_rightEncoder.SetDistancePerPulse(kRightDpP);
 
     m_leftGrbx.Set(0.0);
     m_rightGrbx.Set(0.0);
@@ -42,16 +42,16 @@ void DriveTrain::SetLeftManual(double value) { m_leftGrbx.Set(value); }
 void DriveTrain::SetRightManual(double value) { m_rightGrbx.Set(value); }
 
 double DriveTrain::GetLeftDisplacement() const {
-    return m_leftGrbx.GetPosition();
+    return m_leftEncoder.GetPosition();
 }
 
 double DriveTrain::GetRightDisplacement() const {
-    return m_rightGrbx.GetPosition();
+    return m_rightEncoder.GetPosition();
 }
 
-double DriveTrain::GetLeftRate() const { return m_leftGrbx.GetSpeed(); }
+double DriveTrain::GetLeftRate() const { return m_leftEncoder.GetSpeed(); }
 
-double DriveTrain::GetRightRate() const { return m_rightGrbx.GetSpeed(); }
+double DriveTrain::GetRightRate() const { return m_rightEncoder.GetSpeed(); }
 
 double DriveTrain::GetPosition() { return m_controller.GetPosition(); }
 
@@ -69,6 +69,7 @@ void DriveTrain::StopClosedLoop() {
     m_drive.SetSafetyEnabled(true);
 }
 
+n
 void DriveTrain::SetPositionGoal(double position) {
     m_posRef.SetGoal(position);
 }

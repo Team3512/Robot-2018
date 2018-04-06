@@ -35,6 +35,11 @@ constexpr int kLeftDriveSlaveID = 2;
 constexpr int kRightDriveMasterID = 3;
 constexpr int kRightDriveSlaveID = 4;
 
+constexpr int kLeftEncoderA = 6;
+constexpr int kLeftEncoderB = 5;
+constexpr int kRightEncoderA = 8;
+constexpr int kRightEncoderB = 7;
+
 // Distance per Pulse
 // constexpr double kLeftDpP = 139.0 / 6934.33; Proto
 // constexpr double kRightDpP = 139.0 / 10748.33; Proto

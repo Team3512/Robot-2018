@@ -7,10 +7,13 @@
 
 #include <array>
 #include <ctime>
+#include <fstream>
 #include <iostream>
 #include <memory>
+#include <regex>
 #include <string>
 #include <tuple>
+#include <utility>
 
 #include <CameraServer.h>
 #include <Joystick.h>
@@ -56,6 +59,7 @@ public:
     void HandleEvent(Event event) override;
 
     static std::string GetFileCreationTime(std::string filePath);
+    static std::pair<uint64_t, uint64_t> GetDataUsage();
 
     void DS_PrintOut();
 

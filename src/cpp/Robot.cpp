@@ -158,6 +158,46 @@ std::string Robot::GetFileCreationTime(std::string filePath) {
     return ret;
 }
 
+std::pair<uint64_t, uint64_t> Robot::GetDataUsage() {
+    static int oldTransmittedData = 0;
+    static int oldRecievedData = 0;
+
+    auto oldTime = std::chrono::steady_clock::now();
+
+    auto currentTime = std::chrono::steady_clock::now();
+    std::ifstream in("/proc/net/dev");
+    std::string line;
+    std::getline(in, line);
+
+    std::regex reg2(
+        "eth0:\\s+(\\d+)\\s+(\\d+)\\s+(\\d+)\\s+(\\d+)\\s+(\\d+)\\s+(\\d+)\\s+("
+        "\\d+)\\s+"
+        "(\\d+)\\s+(\\d+)");  // We only need bytes and 9 is all we need to
+                              // bytes transmitted
+    std::smatch match;
+    std::regex_match(line, match, reg2);
+    uint64_t newRecievedData = std::stoi(match[1]);
+    uint64_t newTransmittedData = std::stoi(match[9]);
+
+    int recievedDataRate =
+        (newRecievedData - oldRecievedData) /
+        std::chrono::duration_cast<std::chrono::seconds>(currentTime - oldTime)
+            .count();
+    int transmittedDataRate =
+        (newTransmittedData - oldTransmittedData) /
+        std::chrono::duration_cast<std::chrono::seconds>(currentTime - oldTime)
+            .count();
+
+    oldRecievedData = newRecievedData;
+    oldTransmittedData = newTransmittedData;
+    oldTime = currentTime;
+
+    double recievedData =
+        recievedDataRate / 1000000;  // conversion to mbps rather than bps
+    double transmittedData = transmittedDataRate / 1000000;
+    return std::make_pair(recievedData, transmittedData);
+}
+
 void Robot::DS_PrintOut() {
     /*if (liveGrapher.HasIntervalPassed()) {
         liveGrapher.GraphData(
@@ -178,7 +218,11 @@ void Robot::DS_PrintOut() {
     // std::cout << elevator.GetHeight() << std::endl;
     // std::cout << "Version 1.5" << std::endl; // To ensure a
     // successful(butchered) upload
-    dsDisplay.Clear();
+
+    auto usage = GetDataUsage();
+
+    std::cout << usage.first << ", " << usage.second << std::endl;
+    /*dsDisplay.Clear();
 
     dsDisplay.AddData("ENCODER_LEFT", robotDrive.GetLeftDisplacement());
     dsDisplay.AddData("ENCODER_RIGHT", robotDrive.GetRightDisplacement());
@@ -189,7 +233,7 @@ void Robot::DS_PrintOut() {
                       climber.IsLowGear());  // todo: add the function
     dsDisplay.AddData("VERSION", version);
 
-    dsDisplay.SendToDS();
+    dsDisplay.SendToDS(); */
 }
 
 START_ROBOT_CLASS(Robot)

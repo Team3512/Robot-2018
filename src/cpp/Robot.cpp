@@ -158,6 +158,20 @@ std::string Robot::GetFileCreationTime(std::string filePath) {
     return ret;
 }
 
+std::pair<uint64_t, uint64_t> Robot::GetDataUsage() {
+    std::ifstream in ("/proc/net/dev");
+    std::string line;
+    std::getline (in, line);
+
+    std::regex reg2 ("eth0:  (\\d+) (\\d+) (\\d+) (\\d+) (\\d+) (\\d+) (\\d+) "
+                     "(\\d+) (\\d+)"); // We only need bytes and 9 is all we need to bytes transmitted
+    std::smatch match;
+    std::regex_match (line, match, reg2);
+    uint64_t nonIdleJiffies = std::stoi (match[1]) + std::stoi (match[9]);
+    uint64_t totalJiffies = nonIdleJiffies + std::stoi (match[4]);
+    return std::make_pair (nonIdleJiffies, totalJiffies);
+}
+
 void Robot::DS_PrintOut() {
     /*if (liveGrapher.HasIntervalPassed()) {
         liveGrapher.GraphData(

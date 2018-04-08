@@ -24,7 +24,7 @@ void AutoAutoLine::HandleEvent(Event event) {
         case State::kMoveForward:
             if (Robot::robotDrive.AtPositionGoal() ||
                 autoTimer.Get() >
-                    Robot::robotDrive.PositionProfileTimeTotal() + 1.0) {
+                    Robot::robotDrive.PositionProfileTimeTotal() + 0.5) {
                 Robot::robotDrive.StopClosedLoop();
 
                 state = State::kIdle;

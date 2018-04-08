@@ -37,7 +37,7 @@ void AutoRightScale::HandleEvent(Event event) {
         case State::kInitialForward:
             if (Robot::robotDrive.AtPositionGoal() ||
                 autoTimer.Get() >
-                    Robot::robotDrive.PositionProfileTimeTotal() + 1.0) {
+                    Robot::robotDrive.PositionProfileTimeTotal() + 0.5) {
                 Robot::robotDrive.SetAngleGoal(-90.0);
                 autoTimer.Reset();
                 if (platePosition[kScale] == 'R') {
@@ -50,7 +50,7 @@ void AutoRightScale::HandleEvent(Event event) {
         case State::kLeftRotate:
             if (Robot::robotDrive.AtAngleGoal() ||
                 autoTimer.Get() >
-                    Robot::robotDrive.AngleProfileTimeTotal() + 1.0) {
+                    Robot::robotDrive.AngleProfileTimeTotal() + 0.5) {
                 Robot::robotDrive.ResetEncoders();
                 Robot::robotDrive.SetPositionGoal(199.0);
                 autoTimer.Reset();
@@ -61,7 +61,7 @@ void AutoRightScale::HandleEvent(Event event) {
         case State::kLeftForward:
             if (Robot::robotDrive.AtPositionGoal() ||
                 autoTimer.Get() >
-                    Robot::robotDrive.PositionProfileTimeTotal() + 1.0) {
+                    Robot::robotDrive.PositionProfileTimeTotal() + 0.5) {
                 Robot::robotDrive.ResetGyro();
                 Robot::robotDrive.SetAngleGoal(90.0);
                 autoTimer.Reset();
@@ -72,7 +72,7 @@ void AutoRightScale::HandleEvent(Event event) {
         case State::kFinalRotate:
             if (Robot::robotDrive.AtAngleGoal() ||
                 autoTimer.Get() >
-                    Robot::robotDrive.AngleProfileTimeTotal() + 1.0) {
+                    Robot::robotDrive.AngleProfileTimeTotal() + 0.5) {
                 Robot::robotDrive.ResetEncoders();
                 if (platePosition[kScale] == 'R') {
                     Robot::robotDrive.SetPositionGoal(24.0 + 6.0 -
@@ -89,7 +89,7 @@ void AutoRightScale::HandleEvent(Event event) {
         case State::kFinalForward:
             if (Robot::robotDrive.AtPositionGoal() ||
                 autoTimer.Get() >
-                    Robot::robotDrive.PositionProfileTimeTotal() + 1.0) {
+                    Robot::robotDrive.PositionProfileTimeTotal() + 0.5) {
                 Robot::intake.Open();
 
                 Robot::robotDrive.StopClosedLoop();

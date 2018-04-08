@@ -33,7 +33,7 @@ void AutoRightDouble::HandleEvent(Event event) {
         case State::kInitialForward:
             if (Robot::robotDrive.AtPositionGoal() ||
                 autoTimer.Get() >
-                    Robot::robotDrive.PositionProfileTimeTotal() + 1.0) {
+                    Robot::robotDrive.PositionProfileTimeTotal() + 0.5) {
                 Robot::robotDrive.SetAngleGoal(-90.0);
                 autoTimer.Reset();
 
@@ -43,7 +43,7 @@ void AutoRightDouble::HandleEvent(Event event) {
         case State::kRightRotate:
             if (Robot::robotDrive.AtAngleGoal() ||
                 autoTimer.Get() >
-                    Robot::robotDrive.AngleProfileTimeTotal() + 1.0) {
+                    Robot::robotDrive.AngleProfileTimeTotal() + 0.5) {
                 Robot::robotDrive.ResetEncoders();
                 autoTimer.Reset();
                 if (platePosition[kFriendlySwitch] == 'R' &&
@@ -66,7 +66,7 @@ void AutoRightDouble::HandleEvent(Event event) {
         case State::kFirstForward:
             if (Robot::robotDrive.AtPositionGoal() ||
                 autoTimer.Get() >
-                    Robot::robotDrive.PositionProfileTimeTotal() + 1.0) {
+                    Robot::robotDrive.PositionProfileTimeTotal() + 0.5) {
                 Robot::robotDrive.ResetGyro();
                 autoTimer.Reset();
                 if (platePosition[kFriendlySwitch] == 'R' &&
@@ -82,7 +82,7 @@ void AutoRightDouble::HandleEvent(Event event) {
         case State::kFinalRotate:
             if (Robot::robotDrive.AtAngleGoal() ||
                 autoTimer.Get() >
-                    Robot::robotDrive.AngleProfileTimeTotal() + 1.0) {
+                    Robot::robotDrive.AngleProfileTimeTotal() + 0.5) {
                 Robot::robotDrive.ResetEncoders();
                 Robot::robotDrive.SetPositionGoal(40.0 - kRobotLength /
                                                              2.0);  // ESTIMATE
@@ -94,7 +94,7 @@ void AutoRightDouble::HandleEvent(Event event) {
         case State::kFinalForward:
             if (Robot::robotDrive.AtPositionGoal() ||
                 autoTimer.Get() >
-                    Robot::robotDrive.PositionProfileTimeTotal() + 1.0) {
+                    Robot::robotDrive.PositionProfileTimeTotal() + 0.5) {
                 Robot::intake.SetMotors(MotorState::kOuttake);
                 Robot::robotDrive.ResetGyro();
                 autoTimer.Reset();
@@ -112,7 +112,7 @@ void AutoRightDouble::HandleEvent(Event event) {
         case State::kDoubleRotate:
             if (Robot::robotDrive.AtAngleGoal() ||
                 autoTimer.Get() >
-                    Robot::robotDrive.AngleProfileTimeTotal() + 1.0) {
+                    Robot::robotDrive.AngleProfileTimeTotal() + 0.5) {
                 Robot::intake.SetMotors(MotorState::kIdle);
                 Robot::intake.Open();
                 Robot::elevator.SetHeightReference(kFloorHeight);
@@ -131,7 +131,7 @@ void AutoRightDouble::HandleEvent(Event event) {
         case State::kDoubleForward:
             if (Robot::robotDrive.AtPositionGoal() ||
                 autoTimer.Get() >
-                    Robot::robotDrive.PositionProfileTimeTotal() + 1.0) {
+                    Robot::robotDrive.PositionProfileTimeTotal() + 0.5) {
                 Robot::intake.Close();
                 Robot::elevator.SetHeightReference(kSwitchHeight);
 

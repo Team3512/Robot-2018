@@ -21,4 +21,5 @@ includeOtherLibs {
   CtrlSys/
   cscore\.h$
   ctre/
+  llvm/
 }

@@ -6,6 +6,7 @@
 #include <string>
 
 #include <DriverStation.h>
+#include <llvm/raw_ostream.h>
 
 DriveTrain Robot::robotDrive;
 Intake Robot::intake;
@@ -161,6 +162,18 @@ void Robot::TeleopPeriodic() {
     // robotDrive.PostEvent(EventType::kTimeout);
     elevator.PostEvent(EventType::kTimeout);
     climber.PostEvent(EventType::kTimeout);
+
+    uint16_t num = pixy.GetBlocks(100);
+    llvm::outs() << "Blocks: " << num << "\n";
+
+    // Prints x, y, width, etc. to console
+    auto& block = pixy.GetBlock(0);
+    block.Print();
+
+    // If Pixy identified object 1
+    if (block.signature == 1) {
+        llvm::outs() << "Found it! Do something with the data in the block\n";
+    }
 }
 
 void Robot::HandleEvent(Event event) {

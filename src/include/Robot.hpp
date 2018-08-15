@@ -24,6 +24,7 @@
 #include "Logging/LogConsoleSink.hpp"
 #include "Logging/LogFileSink.hpp"
 #include "Logging/Logger.hpp"
+#include "Pixy.hpp"
 #include "Subsystems/CANTalonGroup.hpp"
 #include "Subsystems/Climber.hpp"
 #include "Subsystems/DriveTrain.hpp"
@@ -87,4 +88,6 @@ private:
     // cs::UsbCamera camera2{"Camera 2", 1};
 
     // cs::MjpegServer server{"Server", kMjpegServerPort};
+
+    Pixy pixy;
 };

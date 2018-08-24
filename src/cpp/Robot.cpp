@@ -61,7 +61,7 @@ Robot::Robot() {
         "Right Position Double",
         std::bind(&AutoRightDouble::Reset, &rightDouble),
         std::bind(&AutoRightDouble::PostEvent, &rightDouble, kTimeout));
-    // server.SetSource(camera1);
+    server.SetSource(camera1);
 
     // camera1.SetVideoMode(PixelFormat.kYUYV, 320, 240, 30)
     camera1.SetResolution(160, 120);

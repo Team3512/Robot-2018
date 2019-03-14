@@ -16,7 +16,7 @@ a CPU (cube picker upper, these naming conventions are on point). In
 autonomous the main goal was to be able to score in all of the various
 positions as well as in all goals.
 
-## 2018 unique features
+## Unique features
 
 This years robot's unique features include:
 
@@ -36,7 +36,7 @@ This years robot's unique features include:
 |Yes|Full switch autonomous|
 |Yes|Full scale autonomous|
 
-## 2018 roster
+## Roster
 
 Mentors: Tyler Veness, William Ward
 

@@ -1,4 +1,4 @@
-# FRC Team 3512's 2018 Robot
+# FRC team 3512's 2018 robot
 
 Source code for the 2018 comp robot: Diakoptis
 
@@ -16,7 +16,7 @@ a CPU (cube picker upper, these naming conventions are on point). In
 autonomous the main goal was to be able to score in all of the various
 positions as well as in all goals.
 
-## 2018 Unique Features
+## 2018 unique features
 
 This years robot's unique features include:
 
@@ -36,7 +36,7 @@ This years robot's unique features include:
 |Yes|Full switch autonomous|
 |Yes|Full scale autonomous|
 
-## 2018 Roster
+## 2018 roster
 
 Mentors: Tyler Veness, William Ward
 

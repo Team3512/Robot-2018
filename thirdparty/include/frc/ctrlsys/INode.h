@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include <units/units.h>
+
 namespace frc {
 
 class Output;
@@ -32,7 +34,7 @@ public:
     /**
      * The default period used in control loops in seconds.
      */
-    static constexpr double kDefaultPeriod = 0.05;
+    static constexpr units::second_t kDefaultPeriod = 0.05_s;
 };
 
 }  // namespace frc

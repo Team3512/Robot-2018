@@ -1,4 +1,4 @@
-// Copyright (c) 2016-2019 FRC Team 3512. All Rights Reserved.
+// Copyright (c) 2016-2020 FRC Team 3512. All Rights Reserved.
 
 #pragma once
 
@@ -6,9 +6,9 @@
 
 #include "es/Service.hpp"
 
-class AutoLeftSwitch : public Service {
+class AutoRightPriority : public Service {
 public:
-    AutoLeftSwitch();
+    AutoRightPriority();
 
     void Reset();
 
@@ -24,6 +24,10 @@ private:
         kLeftForward,
         kFinalRotate,
         kFinalForward,
+        kAutoLine,
+        kAutoSwitchRotate,
+        kAutoSwitchForward,
+        kAutoSwitch,
         kIdle
     };
 

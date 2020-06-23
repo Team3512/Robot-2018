@@ -1,4 +1,4 @@
-// Copyright (c) 2017-2019 FRC Team 3512. All Rights Reserved.
+// Copyright (c) 2017-2020 FRC Team 3512. All Rights Reserved.
 
 #pragma once
 
@@ -7,17 +7,17 @@
 #include <frc/TimedRobot.h>
 
 #include "Constants.hpp"
-#include "autonomousmodes/AutoAutoLine.hpp"
-#include "autonomousmodes/AutoCenterScale.hpp"
-#include "autonomousmodes/AutoCenterSwitch.hpp"
-#include "autonomousmodes/AutoLeftDouble.hpp"
-#include "autonomousmodes/AutoLeftPriority.hpp"
-#include "autonomousmodes/AutoLeftScale.hpp"
-#include "autonomousmodes/AutoLeftSwitch.hpp"
-#include "autonomousmodes/AutoRightDouble.hpp"
-#include "autonomousmodes/AutoRightPriority.hpp"
-#include "autonomousmodes/AutoRightScale.hpp"
-#include "autonomousmodes/AutoRightSwitch.hpp"
+#include "autonomous/AutoAutoLine.hpp"
+#include "autonomous/AutoCenterScale.hpp"
+#include "autonomous/AutoCenterSwitch.hpp"
+#include "autonomous/AutoLeftDouble.hpp"
+#include "autonomous/AutoLeftPriority.hpp"
+#include "autonomous/AutoLeftScale.hpp"
+#include "autonomous/AutoLeftSwitch.hpp"
+#include "autonomous/AutoRightDouble.hpp"
+#include "autonomous/AutoRightPriority.hpp"
+#include "autonomous/AutoRightScale.hpp"
+#include "autonomous/AutoRightSwitch.hpp"
 #include "dsdisplay/DSDisplay.hpp"
 #include "es/Service.hpp"
 #include "livegrapher/LiveGrapher.hpp"

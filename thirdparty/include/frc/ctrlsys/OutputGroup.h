@@ -5,6 +5,8 @@
 #include <functional>
 #include <vector>
 
+#include <units/units.h>
+
 #include "frc/Notifier.h"
 #include "frc/ctrlsys/Output.h"
 
@@ -19,18 +21,27 @@ namespace frc {
  */
 class OutputGroup {
 public:
+    /**
+     * Appends output to array.
+     *
+     * @param output the Output object to add to the array for round robin
+     * @param outputs the other Output objects
+     */
     template <class... Outputs>
-    explicit OutputGroup(Output& output, Outputs&&... outputs);
+    explicit OutputGroup(Output& output, Outputs&&... outputs)
+      : OutputGroup(outputs...) {
+      m_outputs.emplace_back(output);
+    }
 
     explicit OutputGroup(Output& output);
 
     virtual ~OutputGroup() = default;
 
-    void Enable(double period = INode::kDefaultPeriod);
-    void Disable(void);
+    void Enable(units::second_t period = INode::kDefaultPeriod);
+    void Disable();
 
 protected:
-    virtual void OutputFunc(void);
+    virtual void OutputFunc();
 
 private:
     std::vector<std::reference_wrapper<Output>> m_outputs;
@@ -38,5 +49,3 @@ private:
 };
 
 }  // namespace frc
-
-#include "frc/ctrlsys/OutputGroup.inc"

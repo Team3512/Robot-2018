@@ -11,7 +11,7 @@ using namespace frc;
  * @param input the input node
  * @param period the loop time for doing calculations.
  */
-DerivativeNode::DerivativeNode(double K, INode& input, double period)
+DerivativeNode::DerivativeNode(double K, INode& input, units::second_t period)
     : NodeBase(input) {
     m_gain = K;
     m_period = period;
@@ -22,7 +22,7 @@ double DerivativeNode::GetOutput() {
 
     std::lock_guard<std::mutex> lock(m_mutex);
 
-    double output = m_gain * (input - m_prevInput) / m_period;
+    double output = m_gain * (input - m_prevInput) / m_period.to<double>();
 
     m_prevInput = input;
 

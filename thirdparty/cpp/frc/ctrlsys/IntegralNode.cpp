@@ -7,11 +7,6 @@
 
 using namespace frc;
 
-template <class T>
-constexpr const T& clamp(const T& value, const T& low, const T& high) {
-    return std::max(low, std::min(value, high));
-}
-
 /**
  * Construct an integrator.
  *
@@ -19,7 +14,7 @@ constexpr const T& clamp(const T& value, const T& low, const T& high) {
  * @param input the input node
  * @param period the loop time for doing calculations.
  */
-IntegralNode::IntegralNode(double K, INode& input, double period)
+IntegralNode::IntegralNode(double K, INode& input, units::second_t period)
     : NodeBase(input) {
     m_gain = K;
     m_period = period;
@@ -34,7 +29,8 @@ double IntegralNode::GetOutput() {
         m_total = 0.0;
     } else {
         m_total =
-            clamp(m_total + input * m_period, -1.0 / m_gain, 1.0 / m_gain);
+            std::clamp(m_total + input * m_period.to<double>(), -1.0 / m_gain,
+                       1.0 / m_gain);
     }
 
     return m_gain * m_total;

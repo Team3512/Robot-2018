@@ -1,4 +1,4 @@
-// Copyright (c) 2016-2019 FRC Team 3512. All Rights Reserved.
+// Copyright (c) 2016-2020 FRC Team 3512. All Rights Reserved.
 
 #pragma once
 
@@ -6,9 +6,9 @@
 
 #include "es/Service.hpp"
 
-class AutoRightScale : public Service {
+class AutoLeftPriority : public Service {
 public:
-    AutoRightScale();
+    AutoLeftPriority();
 
     void Reset();
 
@@ -16,15 +16,18 @@ public:
 
 private:
     frc::Timer autoTimer;
+
     enum class State {
         kInit,
         kInitialForward,
-        kLeftRotate,
-        kLeftForward,
+        kRightRotate,
+        kRightForward,
         kFinalRotate,
         kFinalForward,
-        kPrepReverse,
-        kPrepRotate,
+        kAutoLine,
+        kAutoSwitchRotate,
+        kAutoSwitchForward,
+        kAutoSwitch,
         kIdle
     };
 

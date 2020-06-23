@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include <units/units.h>
+
 #include "DerivativeNode.h"
 #include "GainNode.h"
 #include "INode.h"
@@ -21,9 +23,9 @@ namespace frc {
 class PIDNode : public NodeBase {
 public:
     PIDNode(double Kp, double Ki, double Kd, INode& input,
-            double period = kDefaultPeriod);
+            units::second_t period = kDefaultPeriod);
     PIDNode(double Kp, double Ki, double Kd, INode& feedforward, INode& input,
-            double period = kDefaultPeriod);
+            units::second_t period = kDefaultPeriod);
     virtual ~PIDNode() = default;
 
     double GetOutput() override;

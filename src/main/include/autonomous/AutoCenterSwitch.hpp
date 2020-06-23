@@ -1,4 +1,4 @@
-// Copyright (c) 2016-2019 FRC Team 3512. All Rights Reserved.
+// Copyright (c) 2016-2020 FRC Team 3512. All Rights Reserved.
 
 #pragma once
 
@@ -6,9 +6,9 @@
 
 #include "es/Service.hpp"
 
-class AutoRightDouble : public Service {
+class AutoCenterSwitch : public Service {
 public:
-    AutoRightDouble();
+    AutoCenterSwitch();
 
     void Reset();
 
@@ -20,13 +20,10 @@ private:
     enum class State {
         kInit,
         kInitialForward,
-        kRightRotate,
-        kFirstForward,
+        kInitialRotate,
+        kSecondForward,
         kFinalRotate,
         kFinalForward,
-        kDoubleRotate,
-        kDoubleForward,
-        kSpit,
         kIdle
     };
 

@@ -1,4 +1,4 @@
-// Copyright (c) 2017-2019 FRC Team 3512. All Rights Reserved.
+// Copyright (c) 2017-2020 FRC Team 3512. All Rights Reserved.
 
 #include "DiffDriveController.hpp"
 
@@ -24,7 +24,7 @@ using namespace frc;
 DiffDriveController::DiffDriveController(
     MotionProfile& positionRef, MotionProfile& angleRef, INode& leftEncoder,
     INode& rightEncoder, INode& angleSensor, bool clockwise,
-    PIDOutput& leftMotor, PIDOutput& rightMotor, double period)
+    PIDOutput& leftMotor, PIDOutput& rightMotor, units::second_t period)
     : m_positionRef(positionRef),
       m_angleRef(angleRef),
       m_leftEncoder(leftEncoder),

@@ -13,7 +13,7 @@ using namespace frc;
  * @param output the PIDOutput object that is set to the output value
  * @param period the loop time for doing calculations.
  */
-Output::Output(INode& input, PIDOutput& output, double period)
+Output::Output(INode& input, PIDOutput& output, units::second_t period)
     : m_input(input),
       m_output(output),
       m_period(period),

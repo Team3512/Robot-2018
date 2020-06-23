@@ -20,7 +20,7 @@ OutputGroup::OutputGroup(Output& output)
  *
  * @param period the loop time for doing calculations.
  */
-void OutputGroup::Enable(double period) { m_thread.StartPeriodic(period); }
+void OutputGroup::Enable(units::second_t period) { m_thread.StartPeriodic(period); }
 
 /**
  * Stops closed loop control.

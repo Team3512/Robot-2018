@@ -1,4 +1,4 @@
-// Copyright (c) 2016-2019 FRC Team 3512. All Rights Reserved.
+// Copyright (c) 2016-2020 FRC Team 3512. All Rights Reserved.
 
 #include "subsystems/CANTalonGroup.hpp"
 
@@ -19,8 +19,8 @@ void CANTalonGroup::Set(double value) {
             value = 0.0;
         }
     }
-    if (value > 0 && GetPosition() > m_forwardLimit ||
-        value < 0 && GetPosition() < m_reverseLimit) {
+    if ((value > 0 && GetPosition() > m_forwardLimit) ||
+        (value < 0 && GetPosition() < m_reverseLimit)) {
         value = 0.0;
     }
     m_canTalons[0].get().Set(ControlMode::PercentOutput, value);

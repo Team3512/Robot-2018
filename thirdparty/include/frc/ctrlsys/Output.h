@@ -4,7 +4,8 @@
 
 #include <mutex>
 
-#include "frc/Controller.h"
+#include <units/units.h>
+
 #include "frc/Notifier.h"
 #include "frc/PIDOutput.h"
 #include "frc/ctrlsys/INode.h"
@@ -18,14 +19,14 @@ namespace frc {
  * at a regular interval specified in the constructor. This is called in a
  * separate thread.
  */
-class Output : public Controller {
+class Output {
 public:
     Output(INode& input, PIDOutput& output,
-           double period = INode::kDefaultPeriod);
+           units::second_t period = INode::kDefaultPeriod);
     virtual ~Output() = default;
 
-    void Enable() override;
-    void Disable() override;
+    void Enable();
+    void Disable();
 
     void SetRange(double minU, double maxU);
 
@@ -38,7 +39,7 @@ protected:
 private:
     INode& m_input;
     PIDOutput& m_output;
-    double m_period;
+    units::second_t m_period;
 
     Notifier m_thread;
     std::mutex m_mutex;

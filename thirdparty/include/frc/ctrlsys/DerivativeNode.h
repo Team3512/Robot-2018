@@ -4,6 +4,8 @@
 
 #include <mutex>
 
+#include <units/units.h>
+
 #include "frc/ctrlsys/INode.h"
 #include "frc/ctrlsys/NodeBase.h"
 
@@ -14,7 +16,7 @@ namespace frc {
  */
 class DerivativeNode : public NodeBase {
 public:
-    DerivativeNode(double K, INode& input, double period = kDefaultPeriod);
+    DerivativeNode(double K, INode& input, units::second_t period = kDefaultPeriod);
     virtual ~DerivativeNode() = default;
 
     double GetOutput() override;
@@ -26,7 +28,7 @@ public:
 
 private:
     double m_gain;
-    double m_period;
+    units::second_t m_period;
 
     double m_prevInput = 0.0;
 

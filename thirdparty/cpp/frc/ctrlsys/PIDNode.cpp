@@ -14,7 +14,8 @@ using namespace frc;
  * @param period the loop time for doing calculations. This particularly
  *               effects calculations of the integral and differental terms.
  */
-PIDNode::PIDNode(double Kp, double Ki, double Kd, INode& input, double period)
+PIDNode::PIDNode(double Kp, double Ki, double Kd, INode& input,
+                 units::second_t period)
     : NodeBase(input),
       m_P(Kp, input),
       m_I(Ki, input, period),
@@ -33,7 +34,7 @@ PIDNode::PIDNode(double Kp, double Ki, double Kd, INode& input, double period)
  *               effects calculations of the integral and differental terms.
  */
 PIDNode::PIDNode(double Kp, double Ki, double Kd, INode& feedforward,
-                 INode& input, double period)
+                 INode& input, units::second_t period)
     : NodeBase(input),
       m_P(Kp, input),
       m_I(Ki, input, period),

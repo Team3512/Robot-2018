@@ -21,7 +21,7 @@ using namespace frc3512;
  *               effects calculations of the integral and differential terms.
  */
 PIDController::PIDController(double Kp, double Ki, double Kd, frc::INode& input,
-                             frc::PIDOutput& output, double period)
+                             frc::PIDOutput& output, units::second_t period)
     : m_sum(m_refInput, true, input, false),
       m_pid(Kp, Ki, Kd, m_sum, period),
       m_output(m_pid, output, period) {
@@ -44,7 +44,7 @@ PIDController::PIDController(double Kp, double Ki, double Kd, frc::INode& input,
  */
 PIDController::PIDController(double Kp, double Ki, double Kd, double Kff,
                              frc::INode& input, frc::PIDOutput& output,
-                             double period)
+                             units::second_t period)
     : m_sum(m_refInput, true, input, false),
       m_pid(Kp, Ki, Kd, m_feedforward, m_sum, period),
       m_output(m_pid, output, period) {

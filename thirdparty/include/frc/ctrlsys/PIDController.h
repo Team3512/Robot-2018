@@ -4,6 +4,8 @@
 
 #include <limits>
 
+#include <units/units.h>
+
 #include "frc/PIDOutput.h"
 #include "frc/ctrlsys/GainNode.h"
 #include "frc/ctrlsys/INode.h"
@@ -28,10 +30,10 @@ class PIDController {
 public:
     PIDController(double Kp, double Ki, double Kd, frc::INode& input,
                   frc::PIDOutput& output,
-                  double period = frc::INode::kDefaultPeriod);
+                  units::second_t period = frc::INode::kDefaultPeriod);
     PIDController(double Kp, double Ki, double Kd, double Kff,
                   frc::INode& input, frc::PIDOutput& output,
-                  double period = frc::INode::kDefaultPeriod);
+                  units::second_t period = frc::INode::kDefaultPeriod);
 
     PIDController(const PIDController&) = delete;
     PIDController& operator=(const PIDController) = delete;

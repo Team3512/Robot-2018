@@ -1,6 +1,8 @@
-// Copyright (c) 2016-2019 FRC Team 3512. All Rights Reserved.
+// Copyright (c) 2016-2020 FRC Team 3512. All Rights Reserved.
 
 #pragma once
+
+#include <units/units.h>
 
 // Includes definition for Talons and etc that connect to the RoboRIO
 
@@ -139,7 +141,7 @@ constexpr double kElevatorDpP = 30.33 / 22589.66;  // Compbot
 constexpr double kElevatorP = 0.27;   // Compbot
 constexpr double kElevatorI = 0.001;  // Compbot
 constexpr double kElevatorD = 0.0;    // Compbot
-constexpr double kElevatorControllerPeriod = 0.02;
+constexpr units::second_t kElevatorControllerPeriod = 0.02_s;
 constexpr double kGravityFeedForward = -0.01;
 
 // Elevator Setpoints

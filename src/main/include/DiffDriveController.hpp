@@ -1,8 +1,9 @@
-// Copyright (c) 2017-2019 FRC Team 3512. All Rights Reserved.
+// Copyright (c) 2017-2020 FRC Team 3512. All Rights Reserved.
 
 #pragma once
 
-#include <frc/Controller.h>
+#include <units/units.h>
+
 #include <frc/PIDOutput.h>
 #include <frc/RobotController.h>
 #include <frc/ctrlsys/FuncNode.h>
@@ -40,17 +41,17 @@ namespace frc {
  * Set the position and angle PID constants via GetPositionPID()->SetPID() and
  * GetAnglePID()->SetPID() before enabling this controller.
  */
-class DiffDriveController : public Controller {
+class DiffDriveController {
 public:
     DiffDriveController(MotionProfile& positionRef, MotionProfile& angleRef,
                         INode& leftEncoder, INode& rightEncoder,
                         INode& angleSensor, bool clockwise,
                         PIDOutput& leftMotor, PIDOutput& rightMotor,
-                        double period = INode::kDefaultPeriod);
+                        units::second_t period = INode::kDefaultPeriod);
     virtual ~DiffDriveController() = default;
 
-    void Enable() override;
-    void Disable() override;
+    void Enable();
+    void Disable();
 
     PIDNode& GetPositionPID();
     PIDNode& GetAnglePID();
@@ -118,7 +119,7 @@ private:
     Output m_rightOutput;
 
     OutputGroup m_outputs;
-    double m_period;
+    units::second_t m_period;
 };
 
 }  // namespace frc

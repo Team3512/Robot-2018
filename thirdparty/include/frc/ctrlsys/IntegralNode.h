@@ -5,6 +5,8 @@
 #include <limits>
 #include <mutex>
 
+#include <units/units.h>
+
 #include "frc/ctrlsys/INode.h"
 #include "frc/ctrlsys/NodeBase.h"
 
@@ -15,7 +17,7 @@ namespace frc {
  */
 class IntegralNode : public NodeBase {
 public:
-    IntegralNode(double K, INode& input, double period = kDefaultPeriod);
+    IntegralNode(double K, INode& input, units::second_t period = kDefaultPeriod);
     virtual ~IntegralNode() = default;
 
     double GetOutput() override;
@@ -29,7 +31,7 @@ public:
 
 private:
     double m_gain;
-    double m_period;
+    units::second_t m_period;
 
     double m_total = 0.0;
     double m_maxInputMagnitude = std::numeric_limits<double>::infinity();

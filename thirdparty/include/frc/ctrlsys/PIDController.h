@@ -2,11 +2,8 @@
 
 #pragma once
 
-#include <hal/HAL.h>
-
 #include <limits>
 
-#include "frc/PIDInterface.h"
 #include "frc/PIDOutput.h"
 #include "frc/ctrlsys/GainNode.h"
 #include "frc/ctrlsys/INode.h"
@@ -14,9 +11,8 @@
 #include "frc/ctrlsys/PIDNode.h"
 #include "frc/ctrlsys/RefInput.h"
 #include "frc/ctrlsys/SumNode.h"
-#include "frc/smartdashboard/SendableBase.h"
 
-namespace frc {
+namespace frc3512 {
 
 /**
  * Class implements a PID Control Loop.
@@ -28,22 +24,23 @@ namespace frc {
  * in the integral and derivative calculations. Therefore, the sample rate
  * affects the controller's behavior for a given set of PID constants.
  */
-class PIDController : public SendableBase, public PIDInterface {
+class PIDController {
 public:
-    PIDController(double Kp, double Ki, double Kd, INode& input,
-                  PIDOutput& output, double period = INode::kDefaultPeriod);
-    PIDController(double Kp, double Ki, double Kd, double Kff, INode& input,
-                  PIDOutput& output, double period = INode::kDefaultPeriod);
-    virtual ~PIDController() = default;
+    PIDController(double Kp, double Ki, double Kd, frc::INode& input,
+                  frc::PIDOutput& output,
+                  double period = frc::INode::kDefaultPeriod);
+    PIDController(double Kp, double Ki, double Kd, double Kff,
+                  frc::INode& input, frc::PIDOutput& output,
+                  double period = frc::INode::kDefaultPeriod);
 
     PIDController(const PIDController&) = delete;
     PIDController& operator=(const PIDController) = delete;
 
-    void SetPID(double Kp, double Ki, double Kd) override;
+    void SetPID(double Kp, double Ki, double Kd);
     void SetPID(double Kp, double Ki, double Kd, double Kff);
-    double GetP() const override;
-    double GetI() const override;
-    double GetD() const override;
+    double GetP() const;
+    double GetI() const;
+    double GetD() const;
     double GetF() const;
 
     void SetContinuous(bool continuous = true);
@@ -51,8 +48,8 @@ public:
     void SetOutputRange(double minimumOutput, double maximumOutput);
     void SetIZone(double maxErrorMagnitude);
 
-    void SetSetpoint(double setpoint) override;
-    double GetSetpoint() const override;
+    void SetSetpoint(double setpoint);
+    double GetSetpoint() const;
 
     void SetAbsoluteTolerance(
         double tolerance,
@@ -65,16 +62,14 @@ public:
     bool IsEnabled() const;
     void SetEnabled(bool enable);
 
-    void Reset() override;
-
-    void InitSendable(SendableBuilder& builder) override;
+    void Reset();
 
 private:
-    RefInput m_refInput{0.0};
-    GainNode m_feedforward{0.0, m_refInput};
-    SumNode m_sum;
-    PIDNode m_pid;
-    Output m_output;
+    frc::RefInput m_refInput{0.0};
+    frc::GainNode m_feedforward{0.0, m_refInput};
+    frc::SumNode m_sum;
+    frc::PIDNode m_pid;
+    frc::Output m_output;
     double m_tolerance = 0.05;
     bool m_enabled = false;
 };

@@ -5,9 +5,9 @@
 #include <cmath>
 #include <string>
 
-#include "frc/smartdashboard/SendableBuilder.h"
+#include <hal/HAL.h>
 
-using namespace frc;
+using namespace frc3512;
 
 /**
  * Allocate a PID object with the given constants for Kp, Ki, and Kd.
@@ -20,15 +20,14 @@ using namespace frc;
  * @param period The loop time for doing calculations. This particularly
  *               effects calculations of the integral and differential terms.
  */
-PIDController::PIDController(double Kp, double Ki, double Kd, INode& input,
-                             PIDOutput& output, double period)
+PIDController::PIDController(double Kp, double Ki, double Kd, frc::INode& input,
+                             frc::PIDOutput& output, double period)
     : m_sum(m_refInput, true, input, false),
       m_pid(Kp, Ki, Kd, m_sum, period),
       m_output(m_pid, output, period) {
     static int instances = 0;
     instances++;
     HAL_Report(HALUsageReporting::kResourceType_PIDController, instances);
-    SetName("PIDController", instances);
 }
 
 /**
@@ -44,7 +43,8 @@ PIDController::PIDController(double Kp, double Ki, double Kd, INode& input,
  *               effects calculations of the integral and differential terms.
  */
 PIDController::PIDController(double Kp, double Ki, double Kd, double Kff,
-                             INode& input, PIDOutput& output, double period)
+                             frc::INode& input, frc::PIDOutput& output,
+                             double period)
     : m_sum(m_refInput, true, input, false),
       m_pid(Kp, Ki, Kd, m_feedforward, m_sum, period),
       m_output(m_pid, output, period) {
@@ -53,7 +53,6 @@ PIDController::PIDController(double Kp, double Ki, double Kd, double Kff,
     static int instances = 0;
     instances++;
     HAL_Report(HALUsageReporting::kResourceType_PIDController, instances);
-    SetName("PIDController", instances);
 }
 
 /**
@@ -225,22 +224,4 @@ void PIDController::Reset() {
     Disable();
 
     m_pid.Reset();
-}
-
-void PIDController::InitSendable(SendableBuilder& builder) {
-    builder.SetSmartDashboardType("PIDController");
-    builder.SetSafeState([=]() { Reset(); });
-    builder.AddDoubleProperty("p", [=]() { return GetP(); },
-                              [=](double value) { m_pid.SetP(value); });
-    builder.AddDoubleProperty("i", [=]() { return GetI(); },
-                              [=](double value) { m_pid.SetI(value); });
-    builder.AddDoubleProperty("d", [=]() { return GetD(); },
-                              [=](double value) { m_pid.SetD(value); });
-    builder.AddDoubleProperty(
-        "f", [=]() { return GetF(); },
-        [=](double value) { m_feedforward.SetGain(value); });
-    builder.AddDoubleProperty("setpoint", [=]() { return GetSetpoint(); },
-                              [=](double value) { SetSetpoint(value); });
-    builder.AddBooleanProperty("enabled", [=]() { return IsEnabled(); },
-                               [=](bool value) { SetEnabled(value); });
 }

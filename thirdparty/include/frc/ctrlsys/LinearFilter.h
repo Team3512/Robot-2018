@@ -3,10 +3,10 @@
 #pragma once
 
 #include <wpi/ArrayRef.h>
+#include <wpi/circular_buffer.h>
 
 #include <vector>
 
-#include "frc/circular_buffer.h"
 #include "frc/ctrlsys/INode.h"
 #include "frc/ctrlsys/NodeBase.h"
 
@@ -95,8 +95,8 @@ public:
     void Reset(void);
 
 private:
-    circular_buffer<double> m_inputs;
-    circular_buffer<double> m_outputs;
+    wpi::circular_buffer<double> m_inputs;
+    wpi::circular_buffer<double> m_outputs;
     std::vector<double> m_inputGains;
     std::vector<double> m_outputGains;
 };

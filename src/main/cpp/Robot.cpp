@@ -199,6 +199,6 @@ void Robot::DS_PrintOut() {
     // successful(butchered) upload
 }
 
-#ifndef RUNNING_FRC_TesTS
-int main() { frc::StartRobot<Robot>(); }
-#endif  // RUNNING_FRC_TesTS
+#ifndef RUNNING_FRC_TESTS
+int main() { return frc::StartRobot<Robot>(); }
+#endif  // RUNNING_FRC_TESTS

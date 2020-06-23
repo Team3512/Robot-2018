@@ -1,4 +1,4 @@
-// Copyright (c) 2017-2019 FRC Team 3512. All Rights Reserved.
+// Copyright (c) 2017-2020 FRC Team 3512. All Rights Reserved.
 
 #include "Robot.hpp"
 
@@ -21,7 +21,8 @@ Logger Robot::logger;
 
 Robot::Robot() {
     // Auton: does nothing
-    dsDisplay.AddAutoMethod("No-op", [] {}, [] {});
+    dsDisplay.AddAutoMethod(
+        "No-op", [] {}, [] {});
     dsDisplay.AddAutoMethod(
         "Autoline", std::bind(&AutoAutoLine::Reset, &autoLine),
         std::bind(&AutoAutoLine::PostEvent, &autoLine, kTimeout));

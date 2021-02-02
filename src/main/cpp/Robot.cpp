@@ -1,4 +1,4 @@
-// Copyright (c) 2017-2020 FRC Team 3512. All Rights Reserved.
+// Copyright (c) 2017-2021 FRC Team 3512. All Rights Reserved.
 
 #include "Robot.hpp"
 
@@ -14,8 +14,6 @@ Climber Robot::climber;
 frc::Joystick Robot::appendageStick{kAppendageStickPort};
 frc::Joystick Robot::driveStick1{kDriveStick1Port};
 frc::Joystick Robot::driveStick2{kDriveStick2Port};
-
-LiveGrapher Robot::liveGrapher{kLiveGrapherPort};
 
 Logger Robot::logger;
 

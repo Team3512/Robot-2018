@@ -1,4 +1,4 @@
-// Copyright (c) 2017-2020 FRC Team 3512. All Rights Reserved.
+// Copyright (c) 2017-2021 FRC Team 3512. All Rights Reserved.
 
 #pragma once
 
@@ -20,7 +20,6 @@
 #include "autonomous/AutoRightSwitch.hpp"
 #include "dsdisplay/DSDisplay.hpp"
 #include "es/Service.hpp"
-#include "livegrapher/LiveGrapher.hpp"
 #include "logging/LogConsoleSink.hpp"
 #include "logging/LogFileSink.hpp"
 #include "logging/Logger.hpp"
@@ -55,9 +54,6 @@ public:
     static frc::Joystick appendageStick;
     static frc::Joystick driveStick1;
     static frc::Joystick driveStick2;
-
-    // LiveGrapher host
-    static LiveGrapher liveGrapher;
 
     // logging
     static Logger logger;

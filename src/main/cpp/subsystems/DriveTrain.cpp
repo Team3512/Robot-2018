@@ -1,4 +1,4 @@
-// Copyright (c) 2016-2019 FRC Team 3512. All Rights Reserved.
+// Copyright (c) 2016-2021 FRC Team 3512. All Rights Reserved.
 
 #include "subsystems/DriveTrain.hpp"
 
@@ -112,7 +112,6 @@ void DriveTrain::Debug() {
         "Left Pos: " + std::to_string(m_leftEncoder.GetDistance()) +
             " Right Pos: " + std::to_string(m_rightEncoder.GetDistance()),
         LogEvent::VERBOSE_DEBUG));
-    m_controller.Debug();
 }
 
 void DriveTrain::HandleEvent(Event event) {}

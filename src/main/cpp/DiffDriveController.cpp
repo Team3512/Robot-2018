@@ -1,4 +1,4 @@
-// Copyright (c) 2017-2020 FRC Team 3512. All Rights Reserved.
+// Copyright (c) 2017-2021 FRC Team 3512. All Rights Reserved.
 
 #include "DiffDriveController.hpp"
 
@@ -72,35 +72,4 @@ bool DiffDriveController::AtPosition() const {
 
 bool DiffDriveController::AtAngle() const {
     return m_angleError.InTolerance() && m_angleRef.AtGoal();
-}
-
-void DiffDriveController::Debug() {
-    Robot::liveGrapher.GraphData(m_positionRef.GetPositionNode().GetOutput(),
-                                 "Position Reference");
-    Robot::liveGrapher.GraphData(m_angleRef.GetPositionNode().GetOutput(),
-                                 "Angle Reference");
-    // Robot::liveGrapher.GraphData(m_rightEncoder.GetOutput(), "Right
-    // Encoder");  Robot::liveGrapher.GraphData(m_leftEncoder.GetOutput(), "Left
-    // Encoder");
-    Robot::liveGrapher.GraphData(
-        (m_leftEncoder.GetOutput() + m_rightEncoder.GetOutput()) / 2,
-        "Encoder Average");
-    Robot::liveGrapher.GraphData(m_leftMotorInput.GetOutput(),
-                                 "Left Motor Input");
-    Robot::liveGrapher.GraphData(m_rightMotorInput.GetOutput(),
-                                 "Right Motor Input");
-    // Robot::liveGrapher.GraphData(m_positionError.GetOutput(), "Position
-    // Error");
-    // Robot::liveGrapher.GraphData(m_angleError.GetOutput(), "Angle Error");
-    // std::cout << "InTolerance: " << m_positionError.InTolerance()
-    //          << " AtGoal: " << m_positionRef.AtGoal() << std::endl;
-    Robot::liveGrapher.GraphData(m_angleSensor.GetOutput(), "Angle");
-    Robot::liveGrapher.GraphData(m_positionRef.GetVelocityNode().GetOutput(),
-                                 "Velocity Reference");
-    Robot::liveGrapher.GraphData(m_angleRef.GetVelocityNode().GetOutput(),
-                                 "Angle Rate Reference");
-    Robot::liveGrapher.GraphData(m_angleFeedForward.GetOutput(),
-                                 "Angle FeedForward");
-    Robot::liveGrapher.GraphData(m_angleRef.GetAccelerationNode().GetOutput(),
-                                 "Angle Acceleration Reference");
 }

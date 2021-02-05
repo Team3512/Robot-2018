@@ -1,4 +1,4 @@
-// Copyright (c) 2016-2019 FRC Team 3512. All Rights Reserved.
+// Copyright (c) 2016-2021 FRC Team 3512. All Rights Reserved.
 
 #pragma once
 
@@ -7,11 +7,12 @@
 #include <atomic>
 #include <chrono>
 #include <functional>
-#include <mutex>
 #include <string>
 #include <thread>
 #include <tuple>
 #include <vector>
+
+#include <wpi/mutex.h>
 
 #include "dsdisplay/Packet.hpp"
 #include "dsdisplay/UdpSocket.hpp"
@@ -110,7 +111,7 @@ private:
     char m_curAutonMode;
 
     std::thread m_recvThread;
-    std::mutex m_ipMutex;
+    wpi::mutex m_ipMutex;
     std::atomic<bool> m_recvRunning{false};
 
     /**

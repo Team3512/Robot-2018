@@ -49,18 +49,18 @@ protected:
     State m_ref = std::make_tuple(0.0, 0.0, 0.0);
 
     frc::FuncNode m_positionNode{[this] {
-        std::lock_guard<wpi::mutex> lock(m_mutex);
+        std::scoped_lock lock(m_mutex);
         m_ref = UpdateSetpoint(m_timer.Get());
         return std::get<0>(m_ref);
     }};
 
     frc::FuncNode m_velocityNode{[this] {
-        std::lock_guard<wpi::mutex> lock(m_mutex);
+        std::scoped_lock lock(m_mutex);
         return std::get<1>(m_ref) * m_sign;
     }};
 
     frc::FuncNode m_accelerationNode{[this] {
-        std::lock_guard<wpi::mutex> lock(m_mutex);
+        std::scoped_lock lock(m_mutex);
         return std::get<2>(m_ref) * m_sign;
     }};
 

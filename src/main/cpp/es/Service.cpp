@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2019 FRC Team 3512. All Rights Reserved.
+// Copyright (c) 2018-2021 FRC Team 3512. All Rights Reserved.
 
 #include "es/Service.hpp"
 
@@ -12,7 +12,7 @@ Service::~Service() {
 
 void Service::PostEvent(Event event) {
     {
-        std::lock_guard<std::mutex> lock(m_mutex);
+        std::scoped_lock lock(m_mutex);
         m_eventQueue.push_back(event);
     }
     m_ready.notify_one();
@@ -20,7 +20,7 @@ void Service::PostEvent(Event event) {
 
 void Service::RunFramework() {
     while (m_isRunning) {
-        std::unique_lock<std::mutex> lock(m_mutex);
+        std::unique_lock lock(m_mutex);
         m_ready.wait(
             lock, [this] { return m_eventQueue.size() > 0 || !m_isRunning; });
 

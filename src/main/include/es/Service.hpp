@@ -1,11 +1,12 @@
-// Copyright (c) 2018-2019 FRC Team 3512. All Rights Reserved.
+// Copyright (c) 2018-2021 FRC Team 3512. All Rights Reserved.
 
 #pragma once
 
 #include <atomic>
-#include <condition_variable>
-#include <mutex>
 #include <thread>
+
+#include <wpi/condition_variable.h>
+#include <wpi/mutex.h>
 
 #include "Constants.hpp"
 #include "Event.hpp"
@@ -29,8 +30,8 @@ public:
 
 private:
     circular_buffer<Event, kEventQueueSize> m_eventQueue;
-    std::condition_variable m_ready;
-    std::mutex m_mutex;
+    wpi::condition_variable m_ready;
+    wpi::mutex m_mutex;
     std::thread m_thread;
     std::atomic<bool> m_isRunning{true};
 

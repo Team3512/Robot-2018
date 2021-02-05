@@ -1,4 +1,4 @@
-// Copyright (c) 2016-2019 FRC Team 3512. All Rights Reserved.
+// Copyright (c) 2016-2021 FRC Team 3512. All Rights Reserved.
 
 #include "dsdisplay/DSDisplay.hpp"
 
@@ -128,7 +128,7 @@ void DSDisplay::SendToDS() {
     uint16_t dsPort;
 
     {
-        std::lock_guard<std::mutex> lock(m_ipMutex);
+        std::scoped_lock lock(m_ipMutex);
         dsIP = m_dsIP;
         dsPort = m_dsPort;
     }
@@ -186,7 +186,7 @@ void DSDisplay::ReceiveFromDS() {
                          m_recvPort) == UdpSocket::Done) {
         if (std::strncmp(m_recvBuffer, "connect\r\n", 9) == 0) {
             {
-                std::lock_guard<std::mutex> lock(m_ipMutex);
+                std::scoped_lock lock(m_ipMutex);
                 m_dsIP = m_recvIP;
                 m_dsPort = m_recvPort;
             }

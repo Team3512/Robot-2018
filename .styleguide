@@ -21,4 +21,5 @@ includeOtherLibs {
   cscore\.h$
   ctre/
   frc/
+  wpi/
 }

@@ -16,49 +16,49 @@ frc::Joystick Robot::driveStick2{kDriveStick2Port};
 
 Logger Robot::logger;
 
+template <typename AutoService>
+void PostAutonEvents(frc3512::AutonomousChooser& chooser, AutoService& auton) {
+    auton.Reset();
+
+    while (frc::DriverStation::GetInstance().IsAutonomousEnabled()) {
+        auton.PostEvent(kTimeout);
+        chooser.YieldToMain();
+    }
+}
+
 Robot::Robot() {
-    // Auton: does nothing
-    dsDisplay.AddAutoMethod(
-        "No-op", [] {}, [] {});
-    dsDisplay.AddAutoMethod(
-        "Autoline", std::bind(&AutoAutoLine::Reset, &autoLine),
-        std::bind(&AutoAutoLine::PostEvent, &autoLine, kTimeout));
-    dsDisplay.AddAutoMethod(
-        "Left Position Switch", std::bind(&AutoLeftSwitch::Reset, &leftSwitch),
-        std::bind(&AutoLeftSwitch::PostEvent, &leftSwitch, kTimeout));
-    dsDisplay.AddAutoMethod(
-        "Center Position Switch",
-        std::bind(&AutoCenterSwitch::Reset, &centerSwitch),
-        std::bind(&AutoCenterSwitch::PostEvent, &centerSwitch, kTimeout));
-    dsDisplay.AddAutoMethod(
-        "Right Position Switch",
-        std::bind(&AutoRightSwitch::Reset, &rightSwitch),
-        std::bind(&AutoRightSwitch::PostEvent, &rightSwitch, kTimeout));
-    dsDisplay.AddAutoMethod(
-        "Left Position Priority",
-        std::bind(&AutoLeftPriority::Reset, &leftPriority),
-        std::bind(&AutoLeftPriority::PostEvent, &leftPriority, kTimeout));
-    dsDisplay.AddAutoMethod(
-        "Right Position Priority",
-        std::bind(&AutoRightPriority::Reset, &rightPriority),
-        std::bind(&AutoRightPriority::PostEvent, &rightPriority, kTimeout));
-    dsDisplay.AddAutoMethod(
-        "Left Position Scale", std::bind(&AutoLeftScale::Reset, &leftScale),
-        std::bind(&AutoLeftScale::PostEvent, &leftScale, kTimeout));
-    dsDisplay.AddAutoMethod(
-        "Center Position Scale",
-        std::bind(&AutoCenterScale::Reset, &centerScale),
-        std::bind(&AutoCenterScale::PostEvent, &centerScale, kTimeout));
-    dsDisplay.AddAutoMethod(
-        "Right Position Scale", std::bind(&AutoRightScale::Reset, &rightScale),
-        std::bind(&AutoRightScale::PostEvent, &rightScale, kTimeout));
-    dsDisplay.AddAutoMethod(
-        "Left Position Double", std::bind(&AutoLeftDouble::Reset, &leftDouble),
-        std::bind(&AutoLeftDouble::PostEvent, &leftDouble, kTimeout));
-    dsDisplay.AddAutoMethod(
-        "Right Position Double",
-        std::bind(&AutoRightDouble::Reset, &rightDouble),
-        std::bind(&AutoRightDouble::PostEvent, &rightDouble, kTimeout));
+    m_autonChooser.AddAutonomous(
+        "Autoline", [=] { PostAutonEvents(m_autonChooser, autoLine); });
+    m_autonChooser.AddAutonomous("Left Position Switch", [=] {
+        PostAutonEvents(m_autonChooser, leftSwitch);
+    });
+    m_autonChooser.AddAutonomous("Center Position Switch", [=] {
+        PostAutonEvents(m_autonChooser, centerSwitch);
+    });
+    m_autonChooser.AddAutonomous("Right Position Switch", [=] {
+        PostAutonEvents(m_autonChooser, rightSwitch);
+    });
+    m_autonChooser.AddAutonomous("Left Position Priority", [=] {
+        PostAutonEvents(m_autonChooser, leftPriority);
+    });
+    m_autonChooser.AddAutonomous("Right Position Priority", [=] {
+        PostAutonEvents(m_autonChooser, rightPriority);
+    });
+    m_autonChooser.AddAutonomous("Left Position Scale", [=] {
+        PostAutonEvents(m_autonChooser, leftScale);
+    });
+    m_autonChooser.AddAutonomous("Center Position Scale", [=] {
+        PostAutonEvents(m_autonChooser, centerScale);
+    });
+    m_autonChooser.AddAutonomous("Right Position Scale", [=] {
+        PostAutonEvents(m_autonChooser, rightScale);
+    });
+    m_autonChooser.AddAutonomous("Left Position Double", [=] {
+        PostAutonEvents(m_autonChooser, leftDouble);
+    });
+    m_autonChooser.AddAutonomous("Right Position Double", [=] {
+        PostAutonEvents(m_autonChooser, rightDouble);
+    });
     server.SetSource(camera1);
 
     // camera1.SetVideoMode(PixelFormat.kYUYV, 320, 240, 30)
@@ -75,6 +75,7 @@ Robot::Robot() {
 }
 
 void Robot::DisabledInit() {
+    m_autonChooser.EndAutonomous();
     drivetrain.StopClosedLoop();
     drivetrain.ResetGyro();
     drivetrain.ResetEncoders();
@@ -90,14 +91,11 @@ void Robot::AutonomousInit() {
     intake.Deploy();
     climber.LockPawl();
 
-    dsDisplay.ExecAutonomousInit();
-    logger.Log(
-        LogEvent("AUTON INITIALIZED: " + dsDisplay.GetAutonomousMode() + " " +
-                     frc::DriverStation::GetInstance().GetGameSpecificMessage(),
-                 LogEvent::VERBOSE_INFO));
+    m_autonChooser.AwaitStartAutonomous();
 }
 
 void Robot::TeleopInit() {
+    m_autonChooser.EndAutonomous();
     drivetrain.StopClosedLoop();
     elevator.StopClosedLoop();
     intake.Deploy();
@@ -106,7 +104,7 @@ void Robot::TeleopInit() {
     logger.Log(LogEvent("TELEOP INITIALIZED", LogEvent::VERBOSE_INFO));
 }
 
-void Robot::TestInit() {}
+void Robot::TestInit() { m_autonChooser.EndAutonomous(); }
 
 void Robot::RobotPeriodic() {
     if (!elevator.GetBottomHallEffect()) {
@@ -134,7 +132,7 @@ void Robot::RobotPeriodic() {
 void Robot::DisabledPeriodic() {}
 
 void Robot::AutonomousPeriodic() {
-    dsDisplay.ExecAutonomousPeriodic();
+    m_autonChooser.AwaitRunAutonomous();
     logger.Log(LogEvent(
         "Pos Goal: " + std::to_string(drivetrain.GetPositionGoal()) +
             " Pos: " + std::to_string(drivetrain.GetPosition()) +

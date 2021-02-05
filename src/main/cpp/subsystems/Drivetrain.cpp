@@ -73,11 +73,13 @@ void Drivetrain::StopClosedLoop() {
     m_drive.SetSafetyEnabled(true);
 }
 
-void Drivetrain::SetPositionGoal(double position) {
-    m_posRef.SetGoal(position);
+void Drivetrain::SetPositionGoal(units::inch_t position) {
+    m_posRef.SetGoal(position.to<double>());
 }
 
-void Drivetrain::SetAngleGoal(double angle) { m_angleRef.SetGoal(angle); }
+void Drivetrain::SetAngleGoal(units::degree_t angle) {
+    m_angleRef.SetGoal(angle.to<double>());
+}
 
 double Drivetrain::GetPosReference() {
     return m_posRef.GetPositionNode().GetOutput();

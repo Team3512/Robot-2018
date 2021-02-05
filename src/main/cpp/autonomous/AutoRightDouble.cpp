@@ -18,8 +18,8 @@ void AutoRightDouble::HandleEvent(Event event) {
             platePosition =
                 frc::DriverStation::GetInstance().GetGameSpecificMessage();
 
-            Robot::drivetrain.SetPositionGoal(236.5 - kRobotLength / 2.0);
-            Robot::drivetrain.SetAngleGoal(0.0);
+            Robot::drivetrain.SetPositionGoal(236.5_in - kRobotLength / 2.0);
+            Robot::drivetrain.SetAngleGoal(0_deg);
             Robot::drivetrain.StartClosedLoop();
 
             Robot::elevator.SetHeightReference(kScaleHeight);
@@ -34,7 +34,7 @@ void AutoRightDouble::HandleEvent(Event event) {
             if (Robot::drivetrain.AtPositionGoal() ||
                 autoTimer.Get() >
                     Robot::drivetrain.PositionProfileTimeTotal() + 1.0) {
-                Robot::drivetrain.SetAngleGoal(-90.0);
+                Robot::drivetrain.SetAngleGoal(-90_deg);
                 autoTimer.Reset();
 
                 state = State::kRightRotate;
@@ -48,15 +48,15 @@ void AutoRightDouble::HandleEvent(Event event) {
                 autoTimer.Reset();
                 if (platePosition[kFriendlySwitch] == 'R' &&
                     platePosition[kScale] == 'R') {
-                    Robot::drivetrain.SetPositionGoal(20.0 -
+                    Robot::drivetrain.SetPositionGoal(20_in -
                                                       kRobotLength / 2.0);
                 } else if (platePosition[kFriendlySwitch] == 'R' &&
                            platePosition[kScale] == 'L') {
-                    Robot::drivetrain.SetPositionGoal(20.0 -
+                    Robot::drivetrain.SetPositionGoal(20_in -
                                                       kRobotLength / 2.0);
 
                 } else {
-                    Robot::drivetrain.SetPositionGoal(236.5 -
+                    Robot::drivetrain.SetPositionGoal(236.5_in -
                                                       kRobotLength / 2.0);
                 }
 
@@ -71,9 +71,9 @@ void AutoRightDouble::HandleEvent(Event event) {
                 autoTimer.Reset();
                 if (platePosition[kFriendlySwitch] == 'R' &&
                     platePosition[kScale] == 'R') {
-                    Robot::drivetrain.SetAngleGoal(90);
+                    Robot::drivetrain.SetAngleGoal(90_deg);
                 } else {
-                    Robot::drivetrain.SetAngleGoal(-90);
+                    Robot::drivetrain.SetAngleGoal(-90_deg);
                 }
 
                 state = State::kFinalRotate;
@@ -84,8 +84,8 @@ void AutoRightDouble::HandleEvent(Event event) {
                 autoTimer.Get() >
                     Robot::drivetrain.AngleProfileTimeTotal() + 1.0) {
                 Robot::drivetrain.ResetEncoders();
-                Robot::drivetrain.SetPositionGoal(40.0 - kRobotLength /
-                                                             2.0);  // esTIMATE
+                Robot::drivetrain.SetPositionGoal(40_in - kRobotLength /
+                                                              2.0);  // estimate
                 autoTimer.Reset();
 
                 state = State::kFinalForward;
@@ -101,9 +101,9 @@ void AutoRightDouble::HandleEvent(Event event) {
 
                 if (platePosition[kScale] == 'R' &&
                     platePosition[kFriendlySwitch] == 'R') {
-                    Robot::drivetrain.SetAngleGoal(-180.0);
+                    Robot::drivetrain.SetAngleGoal(-180_deg);
                 } else {
-                    Robot::drivetrain.SetAngleGoal(0.0);
+                    Robot::drivetrain.SetAngleGoal(0_deg);
                 }
 
                 state = State::kDoubleRotate;
@@ -119,9 +119,9 @@ void AutoRightDouble::HandleEvent(Event event) {
                 Robot::drivetrain.ResetEncoders();
                 if (platePosition[kScale] == 'R' &&
                     platePosition[kFriendlySwitch] == 'R') {
-                    Robot::drivetrain.SetPositionGoal(60.0);
+                    Robot::drivetrain.SetPositionGoal(60_in);
                 } else {
-                    Robot::drivetrain.SetPositionGoal(10.0);
+                    Robot::drivetrain.SetPositionGoal(10_in);
                 }
                 autoTimer.Reset();
 

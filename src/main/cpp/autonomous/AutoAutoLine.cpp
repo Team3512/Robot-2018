@@ -14,8 +14,8 @@ void AutoAutoLine::Reset() { state = State::kInit; }
 void AutoAutoLine::HandleEvent(Event event) {
     switch (state) {
         case State::kInit:
-            Robot::drivetrain.SetPositionGoal(168.0 - kRobotLength / 2.0);
-            Robot::drivetrain.SetAngleGoal(0.0);
+            Robot::drivetrain.SetPositionGoal(168_in - kRobotLength / 2.0);
+            Robot::drivetrain.SetAngleGoal(0_deg);
             Robot::drivetrain.StartClosedLoop();
             autoTimer.Reset();
 

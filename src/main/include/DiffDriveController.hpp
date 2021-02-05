@@ -2,8 +2,6 @@
 
 #pragma once
 
-#include <units/time.h>
-
 #include <frc/PIDOutput.h>
 #include <frc/RobotController.h>
 #include <frc/ctrlsys/FuncNode.h>
@@ -13,6 +11,8 @@
 #include <frc/ctrlsys/OutputGroup.h>
 #include <frc/ctrlsys/PIDNode.h>
 #include <frc/ctrlsys/SumNode.h>
+#include <units/angle.h>
+#include <units/time.h>
 
 #include "Constants.hpp"
 
@@ -88,10 +88,11 @@ private:
                kMaxControlVoltage / RobotController::GetInputVoltage();
     }};
     FuncNode m_angleFeedForward{[&] {
-        return deg2rad(kVAngle * m_angleRef.GetVelocityNode().GetOutput() *
-                           kWheelbaseWidth / 2.0 +
-                       kAAngle * m_angleRef.GetAccelerationNode().GetOutput() *
-                           kWheelbaseWidth / 2.0) *
+        return units::convert<units::degrees, units::radians>(
+                   kVAngle * m_angleRef.GetVelocityNode().GetOutput() *
+                       kWheelbaseWidth.to<double>() / 2.0 +
+                   kAAngle * m_angleRef.GetAccelerationNode().GetOutput() *
+                       kWheelbaseWidth.to<double>() / 2.0) *
                kMaxControlVoltage / RobotController::GetInputVoltage();
     }};
 

@@ -18,8 +18,8 @@ void AutoLeftDouble::HandleEvent(Event event) {
             platePosition =
                 frc::DriverStation::GetInstance().GetGameSpecificMessage();
 
-            Robot::drivetrain.SetPositionGoal(236.5 - kRobotLength / 2.0);
-            Robot::drivetrain.SetAngleGoal(0.0);
+            Robot::drivetrain.SetPositionGoal(236.5_in - kRobotLength / 2.0);
+            Robot::drivetrain.SetAngleGoal(0_deg);
             Robot::drivetrain.StartClosedLoop();
 
             Robot::elevator.SetHeightReference(kScaleHeight);
@@ -34,7 +34,7 @@ void AutoLeftDouble::HandleEvent(Event event) {
             if (Robot::drivetrain.AtPositionGoal() ||
                 autoTimer.Get() >
                     Robot::drivetrain.PositionProfileTimeTotal() + 1.0) {
-                Robot::drivetrain.SetAngleGoal(90.0);
+                Robot::drivetrain.SetAngleGoal(90_deg);
                 autoTimer.Reset();
 
                 state = State::kLeftRotate;
@@ -47,9 +47,9 @@ void AutoLeftDouble::HandleEvent(Event event) {
                 Robot::drivetrain.ResetEncoders();
                 autoTimer.Reset();
                 if (platePosition[kScale] == 'L') {
-                    Robot::drivetrain.SetPositionGoal(20.0);
+                    Robot::drivetrain.SetPositionGoal(20_in);
                 } else {
-                    Robot::drivetrain.SetPositionGoal(137.0);  // Estimate
+                    Robot::drivetrain.SetPositionGoal(137_in);  // Estimate
                 }
 
                 state = State::kLeftForward;
@@ -60,7 +60,7 @@ void AutoLeftDouble::HandleEvent(Event event) {
                 autoTimer.Get() >
                     Robot::drivetrain.PositionProfileTimeTotal() + 1.0) {
                 Robot::drivetrain.ResetGyro();
-                Robot::drivetrain.SetAngleGoal(-90.0);
+                Robot::drivetrain.SetAngleGoal(-90_deg);
                 autoTimer.Reset();
 
                 state = State::kFinalRotate;
@@ -71,7 +71,7 @@ void AutoLeftDouble::HandleEvent(Event event) {
                 autoTimer.Get() >
                     Robot::drivetrain.AngleProfileTimeTotal() + 1.0) {
                 Robot::drivetrain.ResetEncoders();
-                Robot::drivetrain.SetPositionGoal(50.0);  // esTIMATE
+                Robot::drivetrain.SetPositionGoal(50_in);  // estimate
                 autoTimer.Reset();
 
                 state = State::kFinalForward;
@@ -83,7 +83,7 @@ void AutoLeftDouble::HandleEvent(Event event) {
                     Robot::drivetrain.PositionProfileTimeTotal() + 1.0) {
                 Robot::intake.Open();
                 Robot::drivetrain.ResetGyro();
-                Robot::drivetrain.SetAngleGoal(180.0);
+                Robot::drivetrain.SetAngleGoal(180_deg);
                 autoTimer.Reset();
 
                 state = State::kDoubleRotate;
@@ -95,7 +95,7 @@ void AutoLeftDouble::HandleEvent(Event event) {
                     Robot::drivetrain.AngleProfileTimeTotal() + 1.0) {
                 Robot::elevator.SetHeightReference(kFloorHeight);
                 Robot::drivetrain.ResetEncoders();
-                Robot::drivetrain.SetPositionGoal(60.0);
+                Robot::drivetrain.SetPositionGoal(60_in);
                 autoTimer.Reset();
 
                 state = State::kDoubleForward;

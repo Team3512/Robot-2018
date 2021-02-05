@@ -6,6 +6,7 @@
 #include <frc/Joystick.h>
 #include <frc/TimedRobot.h>
 
+#include "AutonomousChooser.hpp"
 #include "Constants.hpp"
 #include "autonomous/AutoAutoLine.hpp"
 #include "autonomous/AutoCenterScale.hpp"
@@ -18,7 +19,6 @@
 #include "autonomous/AutoRightPriority.hpp"
 #include "autonomous/AutoRightScale.hpp"
 #include "autonomous/AutoRightSwitch.hpp"
-#include "dsdisplay/DSDisplay.hpp"
 #include "es/Service.hpp"
 #include "logging/LogConsoleSink.hpp"
 #include "logging/LogFileSink.hpp"
@@ -69,8 +69,7 @@ private:
     AutoRightScale rightScale;
     AutoRightSwitch rightSwitch;
 
-    // Used for sending data to the Driver Station
-    DSDisplay dsDisplay{kDsPort};
+    frc3512::AutonomousChooser m_autonChooser{"No-op", [] {}};
 
     // logging Sinks
     LogFileSink fileSink{"/home/lvuser/Robot.log"};

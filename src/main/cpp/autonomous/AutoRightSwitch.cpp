@@ -19,12 +19,12 @@ void AutoRightSwitch::HandleEvent(Event event) {
                 frc::DriverStation::GetInstance().GetGameSpecificMessage();
 
             if (platePosition[kFriendlySwitch] == 'R') {
-                Robot::drivetrain.SetPositionGoal(168.0 - kRobotLength / 2.0);
+                Robot::drivetrain.SetPositionGoal(168_in - kRobotLength / 2.0);
             } else {
-                Robot::drivetrain.SetPositionGoal(252.0 - 17.0 -
+                Robot::drivetrain.SetPositionGoal(252_in - 17_in -
                                                   kRobotLength / 2.0);
             }
-            Robot::drivetrain.SetAngleGoal(0.0);
+            Robot::drivetrain.SetAngleGoal(0_deg);
             Robot::drivetrain.StartClosedLoop();
 
             Robot::elevator.SetHeightReference(kSwitchHeight);
@@ -40,7 +40,7 @@ void AutoRightSwitch::HandleEvent(Event event) {
                 autoTimer.Get() >
                     Robot::drivetrain.PositionProfileTimeTotal() + 1.0) {
                 Robot::drivetrain.ResetGyro();
-                Robot::drivetrain.SetAngleGoal(-90.0);
+                Robot::drivetrain.SetAngleGoal(-90_deg);
                 autoTimer.Reset();
                 if (platePosition[kFriendlySwitch] == 'R') {
                     state = State::kFinalRotate;
@@ -54,7 +54,7 @@ void AutoRightSwitch::HandleEvent(Event event) {
                 autoTimer.Get() >
                     Robot::drivetrain.AngleProfileTimeTotal() + 1.0) {
                 Robot::drivetrain.ResetEncoders();
-                Robot::drivetrain.SetPositionGoal(190.0 - 38.0);
+                Robot::drivetrain.SetPositionGoal(190_in - 38_in);
                 autoTimer.Reset();
 
                 state = State::kRightForward;
@@ -65,7 +65,7 @@ void AutoRightSwitch::HandleEvent(Event event) {
                 autoTimer.Get() >
                     Robot::drivetrain.PositionProfileTimeTotal() + 1.0) {
                 Robot::drivetrain.ResetGyro();
-                Robot::drivetrain.SetAngleGoal(-90.0 + 35.0);
+                Robot::drivetrain.SetAngleGoal(-90_deg + 35_deg);
                 autoTimer.Reset();
 
                 state = State::kFinalRotate;
@@ -78,10 +78,10 @@ void AutoRightSwitch::HandleEvent(Event event) {
                 Robot::drivetrain.ResetEncoders();
                 if (platePosition[kFriendlySwitch] == 'R') {
                     Robot::drivetrain.SetPositionGoal(
-                        65.0 + 12.0 - kRobotLength / 2.0 - kRobotWidth / 2.0);
+                        65_in + 12_in - kRobotLength / 2.0 - kRobotWidth / 2.0);
                 } else {
                     Robot::drivetrain.SetPositionGoal(
-                        36.0 + 24.0 - kRobotLength / 2.0);  // 28.0
+                        36_in + 24_in - kRobotLength / 2.0);  // 28.0
                 }
                 autoTimer.Reset();
 

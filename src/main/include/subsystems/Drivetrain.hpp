@@ -8,6 +8,8 @@
 #include <frc/ctrlsys/FuncNode.h>
 #include <frc/ctrlsys/TrapezoidProfile.h>
 #include <frc/drive/DifferentialDrive.h>
+#include <units/angle.h>
+#include <units/length.h>
 
 #include "Constants.hpp"
 #include "DiffDriveController.hpp"
@@ -63,8 +65,8 @@ public:
     void StopClosedLoop();
 
     // Sets encoder PID setpoints
-    void SetPositionGoal(double position);
-    void SetAngleGoal(double angle);
+    void SetPositionGoal(units::inch_t position);
+    void SetAngleGoal(units::degree_t angle);
 
     // Returns encoder PID loop references
     double GetPosReference();

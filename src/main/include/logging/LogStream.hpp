@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2019 FRC Team 3512. All Rights Reserved.
+// Copyright (c) 2014-2021 FRC Team 3512. All Rights Reserved.
 
 #pragma once
 
@@ -38,7 +38,4 @@ public:
      * @param level The verbosity level with which to log the current message.
      */
     void SetLevel(LogEvent::VerbosityLevel level);
-
-private:
-    Logger& m_logger;
 };

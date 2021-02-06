@@ -41,11 +41,12 @@ private:
     PIDOutput& m_output;
     units::second_t m_period;
 
-    Notifier m_thread;
     wpi::mutex m_mutex;
 
     double m_minU = -1.0;
     double m_maxU = 1.0;
+
+    Notifier m_thread;
 };
 
 }  // namespace frc

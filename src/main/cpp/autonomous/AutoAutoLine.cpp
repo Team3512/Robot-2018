@@ -1,4 +1,4 @@
-// Copyright (c) 2016-2020 FRC Team 3512. All Rights Reserved.
+// Copyright (c) 2016-2021 FRC Team 3512. All Rights Reserved.
 
 #include "autonomous/AutoAutoLine.hpp"
 
@@ -14,18 +14,18 @@ void AutoAutoLine::Reset() { state = State::kInit; }
 void AutoAutoLine::HandleEvent(Event event) {
     switch (state) {
         case State::kInit:
-            Robot::robotDrive.SetPositionGoal(168.0 - kRobotLength / 2.0);
-            Robot::robotDrive.SetAngleGoal(0.0);
-            Robot::robotDrive.StartClosedLoop();
+            Robot::drivetrain.SetPositionGoal(168.0 - kRobotLength / 2.0);
+            Robot::drivetrain.SetAngleGoal(0.0);
+            Robot::drivetrain.StartClosedLoop();
             autoTimer.Reset();
 
             state = State::kMoveForward;
             break;
         case State::kMoveForward:
-            if (Robot::robotDrive.AtPositionGoal() ||
+            if (Robot::drivetrain.AtPositionGoal() ||
                 autoTimer.Get() >
-                    Robot::robotDrive.PositionProfileTimeTotal() + 1.0) {
-                Robot::robotDrive.StopClosedLoop();
+                    Robot::drivetrain.PositionProfileTimeTotal() + 1.0) {
+                Robot::drivetrain.StopClosedLoop();
 
                 state = State::kIdle;
             }

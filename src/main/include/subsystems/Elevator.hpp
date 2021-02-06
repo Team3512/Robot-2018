@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2019 FRC Team 3512. All Rights Reserved.
+// Copyright (c) 2018-2021 FRC Team 3512. All Rights Reserved.
 
 #pragma once
 
@@ -12,7 +12,6 @@
 #include <frc/ctrlsys/SumNode.h>
 
 #include "Constants.hpp"
-#include "DriveTrain.hpp"
 #include "es/Service.hpp"
 #include "subsystems/CANTalonGroup.hpp"
 

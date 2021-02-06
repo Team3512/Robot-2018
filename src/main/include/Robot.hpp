@@ -25,7 +25,7 @@
 #include "logging/Logger.hpp"
 #include "subsystems/CANTalonGroup.hpp"
 #include "subsystems/Climber.hpp"
-#include "subsystems/DriveTrain.hpp"
+#include "subsystems/Drivetrain.hpp"
 #include "subsystems/Elevator.hpp"
 #include "subsystems/Intake.hpp"
 
@@ -45,9 +45,7 @@ public:
 
     void HandleEvent(Event event) override;
 
-    void DS_PrintOut();
-
-    static DriveTrain robotDrive;
+    static Drivetrain drivetrain;
     static Intake intake;
     static Elevator elevator;
     static Climber climber;

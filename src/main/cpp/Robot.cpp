@@ -2,12 +2,11 @@
 
 #include "Robot.hpp"
 
-#include <iostream>
 #include <string>
 
 #include <frc/DriverStation.h>
 
-DriveTrain Robot::robotDrive;
+Drivetrain Robot::drivetrain;
 Intake Robot::intake;
 Elevator Robot::elevator;
 Climber Robot::climber;
@@ -76,17 +75,17 @@ Robot::Robot() {
 }
 
 void Robot::DisabledInit() {
-    robotDrive.StopClosedLoop();
-    robotDrive.ResetGyro();
-    robotDrive.ResetEncoders();
+    drivetrain.StopClosedLoop();
+    drivetrain.ResetGyro();
+    drivetrain.ResetEncoders();
     intake.SetMotors(MotorState::kIdle);
     elevator.StopClosedLoop();
     elevator.SetHeightReference(elevator.GetHeight());
 }
 
 void Robot::AutonomousInit() {
-    robotDrive.ResetEncoders();
-    robotDrive.ResetGyro();
+    drivetrain.ResetEncoders();
+    drivetrain.ResetGyro();
     elevator.ResetEncoder();
     intake.Deploy();
     climber.LockPawl();
@@ -99,7 +98,7 @@ void Robot::AutonomousInit() {
 }
 
 void Robot::TeleopInit() {
-    robotDrive.StopClosedLoop();
+    drivetrain.StopClosedLoop();
     elevator.StopClosedLoop();
     intake.Deploy();
     intake.Close();
@@ -137,64 +136,44 @@ void Robot::DisabledPeriodic() {}
 void Robot::AutonomousPeriodic() {
     dsDisplay.ExecAutonomousPeriodic();
     logger.Log(LogEvent(
-        "Pos Goal: " + std::to_string(robotDrive.GetPositionGoal()) +
-            " Pos: " + std::to_string(robotDrive.GetPosition()) +
-            " At Goal?: " + std::to_string(robotDrive.AtPositionGoal()),
+        "Pos Goal: " + std::to_string(drivetrain.GetPositionGoal()) +
+            " Pos: " + std::to_string(drivetrain.GetPosition()) +
+            " At Goal?: " + std::to_string(drivetrain.AtPositionGoal()),
         LogEvent::VERBOSE_DEBUG));
     logger.Log(
-        LogEvent("Angle Goal: " + std::to_string(robotDrive.GetAngleGoal()) +
-                     " Angle: " + std::to_string(robotDrive.GetAngle()) +
-                     " At Goal?: " + std::to_string(robotDrive.AtAngleGoal()),
+        LogEvent("Angle Goal: " + std::to_string(drivetrain.GetAngleGoal()) +
+                     " Angle: " + std::to_string(drivetrain.GetAngle()) +
+                     " At Goal?: " + std::to_string(drivetrain.AtAngleGoal()),
                  LogEvent::VERBOSE_DEBUG));
-    DS_PrintOut();
+    logger.Log(
+        LogEvent("Elevator Position: " + std::to_string(elevator.GetHeight()),
+                 LogEvent::VERBOSE_DEBUG));
+    drivetrain.Debug();
 }
 
 void Robot::TeleopPeriodic() {
     if (driveStick1.GetRawButton(1)) {
-        robotDrive.Drive(driveStick1.GetY() * 0.5, driveStick2.GetX() * 0.5,
+        drivetrain.Drive(driveStick1.GetY() * 0.5, driveStick2.GetX() * 0.5,
                          driveStick2.GetRawButton(2));
     } else {
-        robotDrive.Drive(driveStick1.GetY(), driveStick2.GetX(),
+        drivetrain.Drive(driveStick1.GetY(), driveStick2.GetX(),
                          driveStick2.GetRawButton(2));
     }
-    // robotDrive.PostEvent(EventType::kTimeout);
+    // drivetrain.PostEvent(EventType::kTimeout);
     elevator.PostEvent(EventType::kTimeout);
     climber.PostEvent(EventType::kTimeout);
 }
 
 void Robot::HandleEvent(Event event) {
-    /*if (event == Event{kButtonPressed, 11}) {
+#if 0
+    if (event == Event{kButtonPressed, 11}) {
         if (server.GetSource() == camera1) {
             server.SetSource(camera2);
         } else {
             server.SetSource(camera1);
         }
-    }*/
-}
-
-void Robot::DS_PrintOut() {
-    /*if (liveGrapher.HasIntervalPassed()) {
-        liveGrapher.GraphData(
-            (robotDrive.GetLeftRate() + robotDrive.GetRightRate()) / 2,
-            "Average Velocity");
-        liveGrapher.GraphData(robotDrive.GetAngularRate(), "Angle Rate");
-        static double prevVel = 0.0;
-        static double curVel = 0.0;
-        curVel = robotDrive.GetAngularRate();
-        liveGrapher.GraphData((curVel - prevVel) / .005, "Angle Accel");
-        prevVel = curVel;
-        liveGrapher.ResetInterval();
-        */
-    logger.Log(
-        LogEvent("Elevator Position: " + std::to_string(elevator.GetHeight()),
-                 LogEvent::VERBOSE_DEBUG));
-    robotDrive.Debug();
-    // std::cout << robotDrive.GetLeftDisplacement() << "Left, Right" <<
-    // robotDrive.GetRightDisplacement() << std::endl;
-    // std::cout << robotDrive.GetAngle() << std::endl;
-    // std::cout << elevator.GetHeight() << std::endl;
-    // std::cout << "Version 1.5" << std::endl; // To ensure a
-    // successful(butchered) upload
+    }
+#endif
 }
 
 #ifndef RUNNING_FRC_TESTS

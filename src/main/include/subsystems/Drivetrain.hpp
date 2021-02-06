@@ -1,4 +1,4 @@
-// Copyright (c) 2016-2019 FRC Team 3512. All Rights Reserved.
+// Copyright (c) 2016-2021 FRC Team 3512. All Rights Reserved.
 
 #pragma once
 
@@ -19,12 +19,12 @@ class DriveTalonGroup;
 /**
  * Provides an interface for this year's drive train
  */
-class DriveTrain : public Service {
+class Drivetrain : public Service {
 public:
     using WPI_TalonSRX = ctre::phoenix::motorcontrol::can::WPI_TalonSRX;
 
-    DriveTrain();
-    virtual ~DriveTrain() = default;
+    Drivetrain();
+    virtual ~Drivetrain() = default;
 
     int32_t GetLeftRaw() const;
     int32_t GetRightRaw() const;
